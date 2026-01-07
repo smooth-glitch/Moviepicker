@@ -77,6 +77,41 @@
                         </div>
 
                         <div class="flex flex-col gap-2">
+                            <label class="label"><span class="label-text text-xs">Type</span></label>
+                            <select id="mediaType" class="select select-bordered select-sm">
+                                <option value="movie" selected>Movies</option>
+                                <option value="tv">TV Shows</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="label"><span class="label-text text-xs">Year</span></label>
+                            <input id="yearFilter" type="number" class="input input-bordered input-sm"
+                                placeholder="e.g. 2023" min="1900" max="2100" />
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="label"><span class="label-text text-xs">Genres</span></label>
+
+                            <div class="dropdown w-full">
+                                <button id="genreDropdownBtn" type="button"
+                                    class="btn btn-outline btn-sm w-full justify-between">
+                                    Genres
+                                    <span class="opacity-60 text-xs" id="genreDropdownCount"></span>
+                                </button>
+
+                                <div id="genreDropdownMenu"
+                                    class="dropdown-content z-[50] mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
+                                    <!-- checkboxes injected here -->
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                        <div class="flex flex-col gap-2">
                             <label class="label">
                                 <span class="label-text text-xs">Result sort</span>
                             </label>
@@ -90,6 +125,8 @@
                         <button id="btnSearch" class="btn btn-secondary">
                             Search
                         </button>
+                        <button id="btnResetFilters" class="btn btn-outline btn-sm">Reset filters</button>
+
                         <button id="btnTrending" class="btn btn-ghost">
                             Trending
                         </button>

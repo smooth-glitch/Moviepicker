@@ -1,7 +1,7 @@
 (() => {
     const $ = (id) => document.getElementById(id);
     const API = "https://api.themoviedb.org/3";
-
+    const id = (x) => document.getElementById(x);
     const LS_POOL = "mnp_pool_v1";
     const LS_WATCHED = "mnp_watched_v1";
     const LS_THEME = "mnp_theme_v1";
@@ -11,6 +11,8 @@
     let saveTimer = null;
     let loadedSharedList = null;
     let lastAutoOpenedPickKey = null;
+    let lastPickedMovieId = null;
+    const btnResetFilters = id("btnResetFilters");
 
     let unsubMembers = null;
     let heartbeatTimer = null;
@@ -24,7 +26,13 @@
         results: [],
         pool: [],
         watched: new Set(),
-        filters: { excludeWatched: true, minRating: 6 },
+        filters: {
+            excludeWatched: true,
+            minRating: 6,
+            mediaType: "movie",
+            year: "",
+            genres: [] // array of genre ids
+        },
         currentDetails: null,
         busy: false,
 
@@ -68,6 +76,11 @@
 
     const roomState = { id: null, unsub: null };
 
+    function getMultiSelectValues(sel) {
+        if (!sel) return [];
+        return Array.from(sel.selectedOptions).map(o => Number(o.value)).filter(Number.isFinite);
+    }
+
     function requireLoginForRoomWrite() {
         if (!inRoom()) return true;      // non-room mode: allow local edits
         if (authState.user) return true; // room mode + logged in: allow
@@ -96,6 +109,64 @@
 
         return "IN";
     }
+
+
+    async function loadGenres(kind) {
+        // kind: "movie" or "tv"
+        const data = await tmdb(`/genre/${kind}/list`, { language: "en-US" });
+        return Array.isArray(data.genres) ? data.genres : [];
+    }
+
+    function updateGenreDropdownLabel() {
+        const countEl = document.getElementById("genreDropdownCount");
+        const n = Array.isArray(state.filters.genres) ? state.filters.genres.length : 0;
+        if (countEl) countEl.textContent = n ? `${n} selected` : "";
+    }
+
+    async function populateGenreSelect(kind) {
+        const menu = document.getElementById("genreDropdownMenu");
+        if (!menu) return;
+
+        if (!Array.isArray(state.filters.genres)) state.filters.genres = [];
+        const chosen = new Set(state.filters.genres);
+
+        menu.innerHTML = `<div class="text-xs opacity-60 p-2">Loading…</div>`;
+        const genres = await loadGenres(kind);
+
+        menu.innerHTML = "";
+        for (const g of genres) {
+            const row = document.createElement("label");
+            row.className = "flex items-center gap-2 p-2 rounded-lg hover:bg-base-200/40 cursor-pointer";
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.className = "checkbox checkbox-xs";
+            cb.checked = chosen.has(g.id);
+
+            cb.addEventListener("change", () => {
+                if (cb.checked) chosen.add(g.id);
+                else chosen.delete(g.id);
+
+                state.filters.genres = Array.from(chosen);
+                saveJson(LSFILTERS, state.filters);
+                scheduleCloudSave();
+                updateGenreDropdownLabel();
+
+                if (state.lastMode !== "trending") doSearch(1);
+            });
+
+            const txt = document.createElement("span");
+            txt.className = "text-sm";
+            txt.textContent = g.name;
+
+            row.appendChild(cb);
+            row.appendChild(txt);
+            menu.appendChild(row);
+        }
+
+        updateGenreDropdownLabel();
+    }
+
 
 
 
@@ -481,6 +552,15 @@
                 const lp = data.lastPick;
 
                 if (lp && lp.movieId) {
+
+                    const banner = document.getElementById("roomPickBanner");
+                    const text = document.getElementById("roomPickText");
+
+                    if (banner && text) {
+                        const title = lp.title || "Tonight’s pick";
+                        banner.classList.remove("hidden");
+                        text.textContent = `Tonight’s pick: ${title}`;
+                    }
                     // Build a stable key so we open only once per pick
                     const pickedAtMs =
                         typeof lp.pickedAt?.toMillis === "function" ? lp.pickedAt.toMillis() : "";
@@ -566,6 +646,8 @@
         stopMembersListener();
         stopHeartbeat();
         $("roomMembersWrap")?.classList.add("hidden");
+        lastPickedMovieId = null;
+        roomPickBanner?.classList.add("hidden");
 
         roomState.id = null;
         setRoomInUrl(null);
@@ -882,7 +964,9 @@
         }
         empty?.classList.add("hidden");
 
-        for (const m of state.results) {
+        for (const raw of state.results) {
+            const m = normalizeItem(raw, state.filters.mediaType || "movie");
+            if (!m) continue;
             const inPool = state.pool.some((x) => x.id === m.id);
 
             const card = document.createElement("div");
@@ -1006,14 +1090,19 @@
             row.addEventListener("click", (e) => {
                 const btn = e.target.closest("button[data-action]");
                 if (!btn) return;
-
                 const id = Number(btn.dataset.id);
                 const action = btn.dataset.action;
 
-                if (action === "details") openDetails(id);
+                if (action === "details") {
+                    const item = state.pool.find((x) => x.id === id);
+                    openDetails(id, { mediaType: item?.mediaType || "movie" });
+                    return;
+                }
+
                 if (action === "toggleWatched") toggleWatched(id);
                 if (action === "remove") removeFromPool(id);
             });
+
 
             wrap.appendChild(row);
         }
@@ -1021,14 +1110,19 @@
 
     // ---------- pool ops ----------
     function pickFields(m) {
+        const kind = state.filters.mediaType || "movie";
+        const n = normalizeItem(m, kind);
+
         return {
-            id: m.id,
-            title: m.title,
-            poster_path: m.poster_path,
-            vote_average: m.vote_average,
-            release_date: m.release_date
+            id: n.id,
+            title: n.title,
+            posterpath: n.poster_path,      // keep existing pool schema to avoid migration
+            voteaverage: n.vote_average ?? n.voteaverage,
+            releasedate: n.release_date,    // keep existing pool schema
+            mediaType: kind                 // NEW: remember if it’s movie or tv
         };
     }
+
 
     function addToPoolById(id) {
         if (!requireLoginForRoomWrite()) return;
@@ -1129,18 +1223,42 @@
     async function openDetails(id, opts = {}) {
         try {
             setBusy(true);
-            const data = await tmdb(`/movie/${id}`, { language: "en-US" });
-            state.currentDetails = data;
 
-            $("dlgTitle").textContent = data.title || "Untitled";
+            // Decide whether this id is a movie or tv show.
+            // Priority: opts.mediaType (when opening from pool) -> current UI filter -> default "movie"
+            const kind = opts.mediaType || state.filters?.mediaType || "movie"; // "movie" | "tv"
+
+            // Details
+            const data = await tmdb(`/${kind}/${id}`, { language: "en-US" });
+            state.currentDetails = { ...data, mediaType: kind };
+
+            // Title + date fields differ for tv
+            const title =
+                kind === "tv"
+                    ? data.name || data.original_name || "Untitled"
+                    : data.title || data.original_title || "Untitled";
+
+            const dateStr = kind === "tv" ? data.first_air_date : data.release_date;
+
+            $("dlgTitle").textContent = title;
 
             const parts = [];
-            parts.push(year(data.release_date));
-            if (typeof data.runtime === "number" && data.runtime > 0) parts.push(`${data.runtime} min`);
-            if (Array.isArray(data.genres) && data.genres.length) parts.push(data.genres.map((g) => g.name).join(", "));
-            parts.push(`★ ${Number(data.vote_average ?? 0).toFixed(1)}`);
+            parts.push(year(dateStr));
 
-            $("dlgMeta").textContent = parts.join(" • ");
+            // Runtime differs for tv (episode_run_time array)
+            if (kind === "movie") {
+                if (typeof data.runtime === "number" && data.runtime > 0) parts.push(`${data.runtime} min`);
+            } else {
+                const rt = Array.isArray(data.episode_run_time) ? data.episode_run_time[0] : null;
+                if (typeof rt === "number" && rt > 0) parts.push(`${rt} min/ep`);
+            }
+
+            if (Array.isArray(data.genres) && data.genres.length) {
+                parts.push(data.genres.map((g) => g.name).join(", "));
+            }
+
+            parts.push(`★ ${Number(data.vote_average ?? 0).toFixed(1)}`);
+            $("dlgMeta").textContent = parts.filter(Boolean).join(" • ");
 
             const box = $("dlgOverview");
             box.innerHTML = "";
@@ -1150,8 +1268,8 @@
 
             const left = document.createElement("div");
             left.className = "sm:w-40";
-            const p = posterUrl(data.poster_path);
 
+            const p = posterUrl(data.poster_path);
             left.innerHTML = p
                 ? `<img class="rounded-xl w-full aspect-[2/3] object-cover" src="${p}" alt="" loading="lazy">`
                 : `<div class="rounded-xl bg-base-200 aspect-[2/3] grid place-items-center text-base-content/60">No poster</div>`;
@@ -1164,9 +1282,9 @@
             ov.textContent = data.overview || "No overview available.";
             right.appendChild(ov);
 
-            // Where to watch
+            // Where to watch (movie vs tv endpoint)
             try {
-                const wp = await tmdb(`/movie/${id}/watch/providers`, {}); // [web:12]
+                const wp = await tmdb(`/${kind}/${id}/watch/providers`, {});
                 const wpSection = renderWatchProvidersSection(wp);
                 if (wpSection) right.appendChild(wpSection);
             } catch {
@@ -1228,9 +1346,14 @@
     }
 
     async function doSearch(page = 1) {
-        const q = $("q").value.trim();
-        const sort = $("resultSort")?.value || "popularity.desc";
+        const query = q.value.trim();
+        const sort = resultSort?.value || "popularity.desc";
         const minVote = Number(state.filters.minRating ?? 0);
+
+        const kind = state.filters.mediaType || "movie";
+        const year = String(state.filters.year || "").trim();
+        const genres = Array.isArray(state.filters.genres) ? state.filters.genres : [];
+        const withGenres = genres.length ? genres.join(",") : undefined; // AND semantics [web:16]
 
         try {
             setBusy(true);
@@ -1240,38 +1363,39 @@
             state.lastSort = sort;
 
             let data;
-            if (q) {
+            if (query) {
                 state.lastMode = "search";
-                state.lastQuery = q;
+                state.lastQuery = query;
 
-                data = await tmdb("/search/movie", {
-                    query: q,
+                data = await tmdb(`/search/${kind}`, {
+                    query,
                     language: "en-US",
-                    include_adult: "false",
+                    include_adult: false,
                     page
                 });
             } else {
-                ensureWatchFilterDefaults();
-                const region = state.filters.region || "IN";
-                const providerIds = selectedProviderIds();
+                state.lastMode = "discover";
+                state.lastQuery = "";
 
-                data = await tmdb("/discover/movie", {
+                const params = {
                     language: "en-US",
                     sort_by: sort,
                     "vote_average.gte": minVote,
                     "vote_count.gte": 100,
-                    page,
-                    watch_region: providerIds.length ? region : undefined,
-                    with_watch_providers: providerIds.length ? providerIds.join("|") : undefined,
-                    with_watch_monetization_types: providerIds.length ? "flatrate" : undefined,
-                });
+                    with_genres: withGenres,
+                    page
+                };
 
+                if (kind === "movie" && year) params.primary_release_year = year; // [web:16]
+                if (kind === "tv" && year) params.first_air_date_year = year;      // [web:22]
+
+                data = await tmdb(`/discover/${kind}`, params);
             }
 
             state.totalPages = data.total_pages || 1;
-            renderResults(data.results || []);
-        } catch {
-            toast("Search / discover failed.", "error");
+            renderResults(data.results);
+        } catch (e) {
+            toast("Search/discover failed.", "error");
             state.totalPages = 1;
             renderResults([]);
         } finally {
@@ -1306,6 +1430,27 @@
         }
     }
 
+
+    function normalizeItem(item, kind) {
+        if (!item) return null;
+
+        if (kind === "tv") {
+            return {
+                ...item,
+                title: item.name || item.original_name || "Untitled",
+                release_date: item.first_air_date || "",
+                poster_path: item.poster_path || item.posterpath || null,
+            };
+        }
+
+        // movie default
+        return {
+            ...item,
+            title: item.title || item.original_title || "Untitled",
+            release_date: item.release_date || item.releasedate || "",
+            poster_path: item.poster_path || item.posterpath || null,
+        };
+    }
 
     function openAuthDialog() {
         const dlg = $("dlgAuth");
@@ -1395,16 +1540,78 @@
 
     // ---------- boot ----------
     function syncControls() {
-        const ex = $("excludeWatched");
-        const mr = $("minRating");
+        const ex = excludeWatched;
+        const mr = minRating;
+
         if (ex) ex.checked = !!state.filters.excludeWatched;
         if (mr) mr.value = String(state.filters.minRating ?? 6);
+
+        if (mediaType) mediaType.value = state.filters.mediaType || "movie";
+        if (yearFilter) yearFilter.value = String(state.filters.year || "");
+
+        updateGenreDropdownLabel(); // new
     }
+
+
+    function resetAllFilters() {
+        if (!requireLoginForRoomWrite()) return;
+
+        // Reset core filter state
+        state.filters = normalizeFilters(DEFAULT_FILTERS);
+        state.filters.mediaType = "movie";
+        state.filters.year = "";
+        state.filters.genres = [];
+        ensureWatchFilterDefaults();
+
+        // Reset visible UI fields
+        const qEl = id("q");
+        const mediaTypeEl = id("mediaType");
+        const yearEl = id("yearFilter");
+        const sortEl = id("resultSort");
+        const excludeEl = id("excludeWatched");
+        const minRatingEl = id("minRating");
+
+        if (qEl) qEl.value = "";
+        if (mediaTypeEl) mediaTypeEl.value = "movie";
+        if (yearEl) yearEl.value = "";
+        if (sortEl) sortEl.value = "popularity.desc";
+        if (excludeEl) excludeEl.checked = true;
+        if (minRatingEl) minRatingEl.value = "6";
+
+        // Reset watch filters UI
+        const regionSel = id("watchRegion");
+        const hint = id("regionHint");
+        const cbNetflix = id("ottNetflix");
+        const cbPrime = id("ottPrime");
+        const cbHotstar = id("ottHotstar");
+
+        if (regionSel) regionSel.value = state.filters.region;
+        if (hint) hint.textContent = `Auto ${state.filters.region}`;
+        if (cbNetflix) cbNetflix.checked = false;
+        if (cbPrime) cbPrime.checked = false;
+        if (cbHotstar) cbHotstar.checked = false;
+
+        // Persist + refresh
+        saveJson(LSFILTERS, state.filters);
+        scheduleCloudSave();
+
+        populateGenreSelect("movie");        // rebuild genre checkbox list for movies
+        updateGenreDropdownLabel();          // "0 selected"
+        renderPool();
+
+        // Load something visible immediately
+        loadTrending(1);
+
+        toast("Filters reset.", "info");
+    }
+
+
 
     async function boot() {
         initTheme();
         syncControls();
         await initWatchFiltersUI();
+        await populateGenreSelect(state.filters.mediaType || "movie");
         renderPager();
         updateUserChip();
         await loadSharedListFromUrl();
@@ -1454,6 +1661,7 @@
         }
 
         async function loadSharedListFromUrl() {
+
             const fs = window.firebaseStore;
             if (!fs) return;
 
@@ -1528,6 +1736,13 @@
             else doSearch(nextPage);
         });
 
+        btnOpenPicked?.addEventListener("click", () => {
+            if (!lastPickedMovieId) return toast("No pick yet.", "info");
+            openDetails(lastPickedMovieId, { highlight: true });
+        });
+
+        btnResetFilters?.addEventListener("click", resetAllFilters);
+
         $("themeToggleBtn")?.addEventListener("click", () => {
             const current =
                 document.documentElement.getAttribute("data-theme") || "synthwave";
@@ -1542,6 +1757,18 @@
             } else {
                 openAuthDialog();
             }
+        });
+
+        mediaType?.addEventListener("change", async () => {
+            state.filters.mediaType = mediaType.value;
+            saveJson(LSFILTERS, state.filters);
+            await populateGenreSelect(state.filters.mediaType); // swap genre list
+            doSearch(1);
+        });
+
+        yearFilter?.addEventListener("input", () => {
+            state.filters.year = yearFilter.value;
+            saveJson(LSFILTERS, state.filters);
         });
 
         $("btnImportList")?.addEventListener("click", async () => {
