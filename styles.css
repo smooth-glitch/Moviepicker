@@ -1081,3 +1081,47 @@ html[data-theme="cupcake"] .btn-accent:hover {
         width: 100%;
     }
 }
+
+/* =========================================================
+   Room members header cut-off FIX (append at END)
+   ========================================================= */
+
+/* Your global .card has overflow:hidden; this nested card needs to allow overflow */
+#roomMembersWrap.card {
+  overflow: visible !important;
+}
+
+/* Ensure inner areas also don’t clip the badge */
+#roomMembersWrap .card-body,
+#roomMembersWrap .card-body > div:first-child {
+  overflow: visible !important;
+}
+
+/* Make the "Room members" + "Online" row a stable 2-col grid */
+#roomMembersWrap .card-body > div:first-child {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+/* Prevent the title from pushing the badge off / causing clipping */
+#roomMembersWrap .card-body > div:first-child h3 {
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+/* Give the badge breathing room from the rounded edge */
+#roomOnlineCount {
+  margin-right: 0.35rem !important;
+  white-space: nowrap !important;
+}
+
+/* Mobile: slightly tighter sizing so it never touches the edge */
+@media (max-width: 420px) {
+  #roomOnlineCount {
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.45rem !important;
+    margin-right: 0.25rem !important;
+  }
+}
