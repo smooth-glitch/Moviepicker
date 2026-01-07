@@ -47,6 +47,14 @@
 
     const roomState = { id: null, unsub: null };
 
+    function requireLoginForRoomWrite() {
+        if (!inRoom()) return true;      // non-room mode: allow local edits
+        if (authState.user) return true; // room mode + logged in: allow
+        toast("Login to edit this room.", "info");
+        openAuthDialog();
+        return false;
+    }
+
     function inRoom() {
         return !!roomState.id;
     }
