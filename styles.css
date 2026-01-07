@@ -1,298 +1,302 @@
 /* Peppy background + subtle grain */
 body {
-    background:
-        radial-gradient(900px 500px at 15% -10%, rgba(255, 0, 170, 0.28), transparent 55%),
-        radial-gradient(800px 520px at 90% 0%, rgba(0, 255, 230, 0.22), transparent 55%),
-        radial-gradient(900px 520px at 60% 110%, rgba(120, 90, 255, 0.24), transparent 55%),
-        hsl(var(--b2));
+  background: radial-gradient(
+      900px 500px at 15% -10%,
+      rgba(255, 0, 170, 0.28),
+      transparent 55%
+    ),
+    radial-gradient(
+      800px 520px at 90% 0%,
+      rgba(0, 255, 230, 0.22),
+      transparent 55%
+    ),
+    radial-gradient(
+      900px 520px at 60% 110%,
+      rgba(120, 90, 255, 0.24),
+      transparent 55%
+    ),
+    hsl(var(--b2));
 }
 
 body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: .08;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
 }
 
 /* Make posters feel snappy on hover */
 .card img {
-    transition: transform 160ms ease, filter 160ms ease;
+  transition: transform 160ms ease, filter 160ms ease;
 }
 
 .card:hover img {
-    transform: translateY(-2px) scale(1.02);
-    filter: saturate(1.1) contrast(1.05);
+  transform: translateY(-2px) scale(1.02);
+  filter: saturate(1.1) contrast(1.05);
 }
 
 /* A tiny â€œpopâ€ for Tonightâ€™s pick badge */
 @keyframes pop {
-    0% {
-        transform: scale(.96);
-        opacity: .7;
-    }
+  0% {
+    transform: scale(0.96);
+    opacity: 0.7;
+  }
 
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .badge-primary {
-    animation: pop 220ms ease-out;
+  animation: pop 220ms ease-out;
 }
 
 /* Better scrollbar (Chrome/Edge) */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, hsl(var(--p)) 42%, transparent);
-    border-radius: 999px;
+  background: color-mix(in oklab, hsl(var(--p)) 42%, transparent);
+  border-radius: 999px;
 }
 
 ::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 /* Accessibility: reduce motion */
 @media (prefers-reduced-motion: reduce) {
-    * {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-    }
+  * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ===== Custom themes on top of daisyUI ===== */
 
 /* Synthwave (default) â€“ deep neon night */
 html[data-theme="synthwave"] {
-    /* surfaces: deep blue / purple */
-    --b1: 240 29% 16%;
-    /* base-100: cards */
-    --b2: 248 38% 10%;
-    /* base-200: page */
-    --b3: 248 40% 8%;
-    /* base-300: borders */
+  /* surfaces: deep blue / purple */
+  --b1: 240 29% 16%;
+  /* base-100: cards */
+  --b2: 248 38% 10%;
+  /* base-200: page */
+  --b3: 248 40% 8%;
+  /* base-300: borders */
 
-    /* neon core colors */
-    --p: 315 93% 63%;
-    /* primary: hot magenta */
-    --s: 184 100% 60%;
-    /* secondary: cyan */
-    --a: 52 100% 63%;
-    /* accent: neon yellow/orange */
+  /* neon core colors */
+  --p: 315 93% 63%;
+  /* primary: hot magenta */
+  --s: 184 100% 60%;
+  /* secondary: cyan */
+  --a: 52 100% 63%;
+  /* accent: neon yellow/orange */
 
-    /* content */
-    --bc: 210 32% 92%;
-    /* base-content: near white text */
+  /* content */
+  --bc: 210 32% 92%;
+  /* base-content: near white text */
 
-    /* slightly brighter success/error for dark bg */
-    --su: 145 72% 55%;
-    --er: 0 83% 64%;
+  /* slightly brighter success/error for dark bg */
+  --su: 145 72% 55%;
+  --er: 0 83% 64%;
 }
 
 /* Cupcake (light) â€“ pastel cyberpunk */
 html[data-theme="cupcake"] {
-    /* soft, slightly cool surfaces */
-    --b1: 220 40% 99%;
-    /* card bg */
-    --b2: 220 45% 96%;
-    /* page bg */
-    --b3: 220 30% 92%;
-    /* borders */
+  /* soft, slightly cool surfaces */
+  --b1: 220 40% 99%;
+  /* card bg */
+  --b2: 220 45% 96%;
+  /* page bg */
+  --b3: 220 30% 92%;
+  /* borders */
 
-    /* pastel neon accents */
-    --p: 283 84% 62%;
-    /* soft violet */
-    --s: 192 94% 62%;
-    /* bright cyan */
-    --a: 46 98% 64%;
-    /* punchy amber */
+  /* pastel neon accents */
+  --p: 283 84% 62%;
+  /* soft violet */
+  --s: 192 94% 62%;
+  /* bright cyan */
+  --a: 46 98% 64%;
+  /* punchy amber */
 
-    --bc: 222 18% 18%;
-    /* dark text on light */
-    --su: 145 64% 40%;
-    --er: 0 76% 55%;
+  --bc: 222 18% 18%;
+  /* dark text on light */
+  --su: 145 64% 40%;
+  --er: 0 76% 55%;
 }
 
 /* Theme icon animation */
 .theme-ico {
-    transition:
-        transform 260ms ease,
-        color 260ms ease,
-        stroke 260ms ease;
+  transition: transform 260ms ease, color 260ms ease, stroke 260ms ease;
 }
 
 /* Dark synthwave: neon magenta camera with slight tilt */
 html[data-theme="synthwave"] .theme-ico {
-    color: hsl(315 93% 63%);
-    stroke: currentColor;
-    transform: rotate(-8deg) scale(1);
+  color: hsl(315 93% 63%);
+  stroke: currentColor;
+  transform: rotate(-8deg) scale(1);
 }
 
 /* Light cupcake: teal camera, opposite tilt */
 html[data-theme="cupcake"] .theme-ico {
-    color: hsl(192 94% 62%);
-    stroke: currentColor;
-    transform: rotate(8deg) scale(1.05);
+  color: hsl(192 94% 62%);
+  stroke: currentColor;
+  transform: rotate(8deg) scale(1.05);
 }
 
 /* Press feedback */
 button:active .theme-ico,
 .btn:active .theme-ico {
-    transform: scale(0.94) translateY(1px);
+  transform: scale(0.94) translateY(1px);
 }
 
 /* Ensure readable text in both themes */
 html[data-theme="synthwave"] body,
 html[data-theme="synthwave"] .card,
 html[data-theme="synthwave"] .navbar {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 html[data-theme="cupcake"] body,
 html[data-theme="cupcake"] .card,
 html[data-theme="cupcake"] .navbar {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 /* Make card backgrounds use theme base-100 explicitly */
 .card {
-    background-color: hsl(var(--b1));
+  background-color: hsl(var(--b1));
 }
 
 /* Ensure auth dialog text and fields are visible */
 html[data-theme="synthwave"] .modal-box {
-    background-color: hsl(var(--b1));
-    color: hsl(var(--bc));
+  background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
 }
 
 html[data-theme="cupcake"] .modal-box {
-    background-color: hsl(var(--b1));
-    color: hsl(var(--bc));
+  background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
 }
 
 /* Inputs and labels inside dialogs */
 .modal-box .label-text,
 .modal-box p,
 .modal-box h3 {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 .modal-box .input,
 .modal-box .btn,
 .modal-box .divider {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 /* Layout: results grid a bit roomier */
 /* Results grid: responsive, wider cards on desktop */
 #results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
-
 
 /* Card shell: more professional look */
 .card {
-    border-radius: 0.9rem;
-    /* less bubbly */
-    border: 1px solid hsl(var(--b3));
-    /* subtle outline */
-    background-color: hsl(var(--b1));
-    box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.48),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
-    /* layered shadow */
-    overflow: hidden;
+  border-radius: 0.9rem;
+  /* less bubbly */
+  border: 1px solid hsl(var(--b3));
+  /* subtle outline */
+  background-color: hsl(var(--b1));
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
+  /* layered shadow */
+  overflow: hidden;
 }
 
 /* Card hover: gentle lift, not cartoonish */
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 22px 55px rgba(0, 0, 0, 0.6),
-        0 0 0 1px rgba(255, 255, 255, 0.04);
+  transform: translateY(-2px);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 /* Card poster area */
 .card figure {
-    padding: 0.75rem 0.75rem 0;
+  padding: 0.75rem 0.75rem 0;
 }
 
 .card img {
-    border-radius: 0.7rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border-radius: 0.7rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 /* Card body spacing / typography */
 .card-body {
-    padding: 0.75rem 0.9rem 0.9rem;
-    gap: 0.4rem;
+  padding: 0.75rem 0.9rem 0.9rem;
+  gap: 0.4rem;
 }
 
 .card-title {
-    font-size: 0.96rem;
-    letter-spacing: 0.01em;
+  font-size: 0.96rem;
+  letter-spacing: 0.01em;
 }
 
 /* Rating badge more “pro” */
 .badge-primary {
-    border-radius: 999px;
-    padding-inline: 0.55rem;
-    font-weight: 600;
+  border-radius: 999px;
+  padding-inline: 0.55rem;
+  font-weight: 600;
 }
 
 /* Pool rows: cleaner chips */
 #pool .badge {
-    border-radius: 999px;
+  border-radius: 999px;
 }
 
 /* Header shell that follows theme */
 .header-shell {
-    background-color: hsl(var(--b1));
-    border-color: hsl(var(--b3));
-    box-shadow:
-        0 14px 30px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
+  background-color: hsl(var(--b1));
+  border-color: hsl(var(--b3));
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 /* Ensure text matches theme content color */
 .header-shell,
 .header-shell span {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 /* Main layout: stack on small screens, 2-column on md+ (already in HTML) */
 @media (max-width: 768px) {
-    .card-body {
-        padding-inline: 0.9rem;
-    }
+  .card-body {
+    padding-inline: 0.9rem;
+  }
 }
 
 /* Make buttons not shrink too small in header */
 .header-shell .btn {
-    min-width: 2.25rem;
+  min-width: 2.25rem;
 }
 
 /* Ensure Add button is visible on dark synthwave theme */
 html[data-theme="synthwave"] .btn-secondary {
-    background-color: hsl(var(--s));
-    /* bright cyan secondary */
-    color: hsl(0 0% 5%);
-    /* almost black text */
-    border-color: transparent;
+  background-color: hsl(var(--s));
+  /* bright cyan secondary */
+  color: hsl(0 0% 5%);
+  /* almost black text */
+  border-color: transparent;
 }
 
 html[data-theme="synthwave"] .btn-secondary:hover {
-    filter: brightness(1.1);
+  filter: brightness(1.1);
 }
 
 /* === Unified controls: buttons + inputs === */
@@ -301,182 +305,181 @@ html[data-theme="synthwave"] .btn-secondary:hover {
 .btn,
 .input,
 .select {
-    min-height: 2.4rem;
-    height: 2.4rem;
-    border-radius: 0.7rem;
-    font-size: 0.9rem;
-    padding-inline: 0.85rem;
+  min-height: 2.4rem;
+  height: 2.4rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  padding-inline: 0.85rem;
 }
 
 /* Small variants still slightly smaller but consistent */
 .btn-sm,
 .input-sm,
 .select-sm {
-    min-height: 2.1rem;
-    height: 2.1rem;
-    font-size: 0.82rem;
-    border-radius: 0.65rem;
+  min-height: 2.1rem;
+  height: 2.1rem;
+  font-size: 0.82rem;
+  border-radius: 0.65rem;
 }
 
 /* XS (pool filters) */
 .btn-xs,
 .input-xs,
 .select-xs {
-    min-height: 1.8rem;
-    height: 1.8rem;
-    font-size: 0.78rem;
-    border-radius: 0.6rem;
+  min-height: 1.8rem;
+  height: 1.8rem;
+  font-size: 0.78rem;
+  border-radius: 0.6rem;
 }
 
 /* Primary button look */
 .btn-primary {
-    background: linear-gradient(135deg,
-            hsl(var(--p)),
-            color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%));
-    border-color: transparent;
-    color: hsl(0 0% 5%);
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--p)),
+    color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%)
+  );
+  border-color: transparent;
+  color: hsl(0 0% 5%);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .btn-primary:hover {
-    filter: brightness(1.05);
+  filter: brightness(1.05);
 }
 
 /* Secondary button look (Search / Add) */
 .btn-secondary {
-    background: linear-gradient(135deg,
-            hsl(var(--s)),
-            color-mix(in oklab, hsl(var(--s)) 75%, hsl(var(--p)) 25%));
-    border-color: transparent;
-    color: hsl(0 0% 5%);
-    box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--s)),
+    color-mix(in oklab, hsl(var(--s)) 75%, hsl(var(--p)) 25%)
+  );
+  border-color: transparent;
+  color: hsl(0 0% 5%);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .btn-secondary:hover {
-    filter: brightness(1.06);
+  filter: brightness(1.06);
 }
 
 /* Ghost buttons (header/login, details) */
 .btn-ghost {
-    border-radius: 999px;
-    border-color: transparent;
-    background-color: transparent;
-    box-shadow: none;
+  border-radius: 999px;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .btn-ghost:hover {
-    background-color: color-mix(in oklab, hsl(var(--b3)) 60%, transparent);
+  background-color: color-mix(in oklab, hsl(var(--b3)) 60%, transparent);
 }
 
 /* Inputs/selects: consistent look */
 .input,
 .select {
-    border-width: 1px;
-    border-color: hsl(var(--b3));
-    background-color: hsl(var(--b1));
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.35),
-        0 0 0 1px rgba(255, 255, 255, 0.03);
-    color: hsl(var(--bc));
+  border-width: 1px;
+  border-color: hsl(var(--b3));
+  background-color: hsl(var(--b1));
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  color: hsl(var(--bc));
 }
 
 .input:focus,
 .select:focus {
-    outline: none;
-    border-color: hsl(var(--p));
-    box-shadow:
-        0 0 0 1px hsl(var(--p)),
-        0 10px 24px rgba(0, 0, 0, 0.55);
+  outline: none;
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55);
 }
 
 /* Theme toggle button animation */
 .theme-toggle__dark-inner {
-    transition:
-        transform 260ms ease,
-        color 260ms ease;
+  transition: transform 260ms ease, color 260ms ease;
 }
 
 /* Rotate / color by theme */
 html[data-theme="synthwave"] .theme-toggle__dark-inner {
-    color: hsl(315 93% 63%);
-    transform: rotate(-10deg);
+  color: hsl(315 93% 63%);
+  transform: rotate(-10deg);
 }
 
 html[data-theme="cupcake"] .theme-toggle__dark-inner {
-    color: hsl(192 94% 62%);
-    transform: rotate(10deg);
+  color: hsl(192 94% 62%);
+  transform: rotate(10deg);
 }
 
 /* Press feedback */
 .theme-toggle:active .theme-toggle__dark-inner {
-    transform: scale(0.92) translateY(1px);
+  transform: scale(0.92) translateY(1px);
 }
 
 /* Result sort dropdown text contrast */
 #resultSort.select {
-    color: hsl(var(--bc));
+  color: hsl(var(--bc));
 }
 
 #resultSort.select option {
-    color: hsl(var(--bc));
-    background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
+  background-color: hsl(var(--b1));
 }
 
 /* Dark theme: all main buttons purple */
 html[data-theme="synthwave"] .btn-primary,
 html[data-theme="synthwave"] .btn-secondary,
 html[data-theme="synthwave"] .btn-accent {
-    background: linear-gradient(135deg,
-            hsl(var(--p)),
-            color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%));
-    border-color: transparent;
-    color: hsl(0 0% 5%);
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--p)),
+    color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%)
+  );
+  border-color: transparent;
+  color: hsl(0 0% 5%);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 html[data-theme="synthwave"] .btn-primary:hover,
 html[data-theme="synthwave"] .btn-secondary:hover,
 html[data-theme="synthwave"] .btn-accent:hover {
-    filter: brightness(1.06);
+  filter: brightness(1.06);
 }
 
 /* Light theme: all main buttons blue (match toggle) */
 html[data-theme="cupcake"] .btn-primary,
 html[data-theme="cupcake"] .btn-secondary,
 html[data-theme="cupcake"] .btn-accent {
-    background: linear-gradient(135deg,
-            hsl(var(--s)),
-            color-mix(in oklab, hsl(var(--s)) 80%, hsl(var(--p)) 20%));
-    border-color: transparent;
-    color: hsl(0 0% 5%);
-    box-shadow:
-        0 10px 22px rgba(15, 23, 42, 0.3),
-        0 0 0 1px rgba(15, 23, 42, 0.06);
+  background: linear-gradient(
+    135deg,
+    hsl(var(--s)),
+    color-mix(in oklab, hsl(var(--s)) 80%, hsl(var(--p)) 20%)
+  );
+  border-color: transparent;
+  color: hsl(0 0% 5%);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.3),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
 }
 
 html[data-theme="cupcake"] .btn-primary:hover,
 html[data-theme="cupcake"] .btn-secondary:hover,
 html[data-theme="cupcake"] .btn-accent:hover {
-    filter: brightness(1.04);
+  filter: brightness(1.04);
 }
 
 /* Slightly wider content on large screens */
 @media (min-width: 1024px) {
-    .max-w-5xl {
-        max-width: 1200px;
-    }
+  .max-w-5xl {
+    max-width: 1200px;
+  }
 }
 
 /* Card subtitles (years, helper text) a bit softer */
 .card-body p,
 .text-base-content\/60 {
-    font-weight: 400;
+  font-weight: 400;
 }
 
 /* =========================================================
@@ -485,94 +488,94 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 /* 1) Mobile header wrapping (your header is flex; buttons can overflow) */
 @media (max-width: 640px) {
-    header.header-shell {
-        flex-wrap: wrap;
-        row-gap: 0.5rem;
-    }
+  header.header-shell {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
 
-    /* second header row (button group) becomes full width and wraps */
-    header.header-shell>div:last-child {
-        width: 100%;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-    }
+  /* second header row (button group) becomes full width and wraps */
+  header.header-shell > div:last-child {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 
-    /* make “Pick for me” easy to tap */
-    #btnPick {
-        width: 100%;
-    }
+  /* make “Pick for me” easy to tap */
+  #btnPick {
+    width: 100%;
+  }
 }
 
 /* 2) Room members list: long names/emails shouldn’t break layout */
 #roomMembersWrap {
-    border-radius: 0.9rem;
+  border-radius: 0.9rem;
 }
 
-#roomMembersList>div {
-    word-break: break-word;
+#roomMembersList > div {
+  word-break: break-word;
 }
 
 /* 3) Pager can wrap on small screens */
 #pagerWrap {
-    flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 /* 4) Room pick banner: match your “card-ish” look */
 #roomPickBanner {
-    border: 1px solid hsl(var(--b3));
-    border-radius: 0.9rem;
+  border: 1px solid hsl(var(--b3));
+  border-radius: 0.9rem;
 }
 
 /* 5) Modals: ensure usable on very small screens */
 @media (max-width: 480px) {
-    .modal-box {
-        max-height: calc(100vh - 2rem);
-        overflow: auto;
-        padding: 1rem;
-    }
+  .modal-box {
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    padding: 1rem;
+  }
 
-    .modal-action {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
+  .modal-action {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
 
-    .modal-action .btn {
-        flex: 1 1 9rem;
-    }
+  .modal-action .btn {
+    flex: 1 1 9rem;
+  }
 }
 
 /* 6) Fallback utility classes used in app.js-rendered HTML
         (in case CDN Tailwind doesn’t generate these) */
 .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .aspect-23 {
-    aspect-ratio: 2 / 3;
+  aspect-ratio: 2 / 3;
 }
 
 .bg-base-20040 {
-    background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
+  background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
 }
 
 .text-base-content60 {
-    color: color-mix(in oklab, hsl(var(--bc)) 60%, transparent);
+  color: color-mix(in oklab, hsl(var(--bc)) 60%, transparent);
 }
 
 .text-base-content70 {
-    color: color-mix(in oklab, hsl(var(--bc)) 70%, transparent);
+  color: color-mix(in oklab, hsl(var(--bc)) 70%, transparent);
 }
 
 /* toast wrapper created by app.js uses z-999 */
 .z-999 {
-    z-index: 999;
+  z-index: 999;
 }
 
 #toasts.toast {
-    z-index: 9999;
+  z-index: 9999;
 }
 
 /* =========================================================
@@ -581,191 +584,189 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 /* 1) Room members wrapper: match card styling, proper spacing */
 #roomMembersWrap {
-    border-radius: 0.9rem;
-    border: 1px solid hsl(var(--b3));
-    background-color: hsl(var(--b1));
-    box-shadow:
-        0 18px 45px rgba(0, 0, 0, 0.48),
-        0 0 0 1px rgba(255, 255, 255, 0.02);
+  border-radius: 0.9rem;
+  border: 1px solid hsl(var(--b3));
+  background-color: hsl(var(--b1));
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 #roomMembersWrap .card-body {
-    padding: 1rem;
-    gap: 0.75rem;
+  padding: 1rem;
+  gap: 0.75rem;
 }
 
 /* 2) Room members list: each member row */
 #roomMembersList {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-#roomMembersList>div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 0.75rem;
-    border-radius: 0.7rem;
-    background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
-    border: 1px solid hsl(var(--b3));
-    gap: 0.5rem;
-    word-break: break-word;
-    backdrop-filter: blur(6px);
-    transition: background-color 160ms ease;
+#roomMembersList > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.7rem;
+  background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
+  border: 1px solid hsl(var(--b3));
+  gap: 0.5rem;
+  word-break: break-word;
+  backdrop-filter: blur(6px);
+  transition: background-color 160ms ease;
 }
 
-#roomMembersList>div:hover {
-    background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
+#roomMembersList > div:hover {
+  background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
 }
 
 /* Member name/email */
 #roomMembersList .truncate {
-    flex: 1;
-    min-width: 0;
-    font-size: 0.875rem;
-    font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Status badge */
 #roomMembersList .badge {
-    flex-shrink: 0;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    padding: 0.25rem 0.5rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
 }
 
 /* 3) Pool rows: prevent button overlap, ensure proper wrapping */
-#pool>div {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.65rem 0.75rem;
-    border-radius: 0.7rem;
-    background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
-    border: 1px solid hsl(var(--b3));
-    backdrop-filter: blur(6px);
-    transition: background-color 160ms ease;
+#pool > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.7rem;
+  background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
+  border: 1px solid hsl(var(--b3));
+  backdrop-filter: blur(6px);
+  transition: background-color 160ms ease;
 }
 
-#pool>div:hover {
-    background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
+#pool > div:hover {
+  background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
 }
 
 /* Thumbnail */
 #pool img,
-#pool>div>div:first-child {
-    width: 3rem;
-    height: 4rem;
-    flex-shrink: 0;
-    border-radius: 0.5rem;
-    object-fit: cover;
+#pool > div > div:first-child {
+  width: 3rem;
+  height: 4rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  object-fit: cover;
 }
 
 /* Movie info column */
-#pool>div>div:nth-child(2) {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+#pool > div > div:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 #pool .font-semibold {
-    font-size: 0.9rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Button column - prevent overflow */
-#pool>div>div:last-child {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    flex-shrink: 0;
-    justify-content: flex-end;
+#pool > div > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  justify-content: flex-end;
 }
 
 /* Stack buttons vertically on very small screens */
 @media (max-width: 480px) {
-    #pool>div {
-        flex-wrap: wrap;
-    }
+  #pool > div {
+    flex-wrap: wrap;
+  }
 
-    #pool>div>div:last-child {
-        width: 100%;
-        justify-content: flex-start;
-    }
+  #pool > div > div:last-child {
+    width: 100%;
+    justify-content: flex-start;
+  }
 
-    #pool .btn-xs {
-        flex: 1 1 auto;
-        min-width: 4.5rem;
-    }
+  #pool .btn-xs {
+    flex: 1 1 auto;
+    min-width: 4.5rem;
+  }
 }
 
 /* 4) Result cards: prevent Details/Add overlap */
 .card-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: flex-end;
-    margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
 }
 
 .card-actions .btn {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 /* On very small cards, stack buttons */
 @media (max-width: 380px) {
-    .card-actions {
-        flex-direction: column;
-    }
+  .card-actions {
+    flex-direction: column;
+  }
 
-    .card-actions .btn {
-        width: 100%;
-    }
+  .card-actions .btn {
+    width: 100%;
+  }
 }
 
 /* 5) Ensure pool/members lists scroll if too long */
 #pool,
 #roomMembersList {
-    max-height: 32rem;
-    overflow-y: auto;
+  max-height: 32rem;
+  overflow-y: auto;
 }
 
 @media (max-width: 768px) {
-
-    #pool,
-    #roomMembersList {
-        max-height: 24rem;
-    }
+  #pool,
+  #roomMembersList {
+    max-height: 24rem;
+  }
 }
 
 /* 6) Online count badge in members header */
 #roomOnlineCount {
-    border-radius: 999px;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.6rem;
 }
 
 /* 7) Prevent long room IDs from breaking header layout */
 #roomBadge {
-    max-width: 12rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.8rem;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.8rem;
 }
 
 @media (max-width: 640px) {
-    #roomBadge {
-        max-width: 8rem;
-    }
+  #roomBadge {
+    max-width: 8rem;
+  }
 }
 
 /* =========================================================
@@ -775,40 +776,40 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 /* ---------- 0) Stronger fallbacks for Tailwind-like helpers used in app.js ---------- */
 .truncate {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Fallback if color-mix isn't supported */
 .bg-base-20040 {
-    background-color: rgba(255, 255, 255, 0.06);
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
 @supports (background-color: color-mix(in oklab, black, white)) {
-    .bg-base-20040 {
-        background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
-    }
+  .bg-base-20040 {
+    background-color: color-mix(in oklab, hsl(var(--b2)) 40%, transparent);
+  }
 }
 
 /* ---------- 1) Room Members panel (nested card inside pool card) ---------- */
 /* Your HTML makes #roomMembersWrap a .card inside another .card-body [file:7] */
 #roomMembersWrap {
-    box-shadow: none !important;
-    /* remove double heavy shadow */
-    border: 1px solid hsl(var(--b3)) !important;
-    background: color-mix(in oklab, hsl(var(--b1)) 70%, transparent) !important;
+  box-shadow: none !important;
+  /* remove double heavy shadow */
+  border: 1px solid hsl(var(--b3)) !important;
+  background: color-mix(in oklab, hsl(var(--b1)) 70%, transparent) !important;
 }
 
 #roomMembersWrap .card-body {
-    padding: 0.85rem !important;
+  padding: 0.85rem !important;
 }
 
 /* Ensure header row aligns nicely (Room members + Online badge) */
-#roomMembersWrap .card-body>div:first-child {
-    align-items: center;
-    gap: 0.5rem;
+#roomMembersWrap .card-body > div:first-child {
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Members list rows from app.js:
@@ -818,125 +819,125 @@ html[data-theme="cupcake"] .btn-accent:hover {
      </div> [file:4]
   */
 #roomMembersList {
-    margin-top: 0.25rem;
+  margin-top: 0.25rem;
 }
 
-#roomMembersList>div {
-    display: grid !important;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    column-gap: 0.6rem;
+#roomMembersList > div {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 0.6rem;
 
-    padding: 0.6rem 0.7rem !important;
-    border-radius: 0.75rem !important;
-    border: 1px solid hsl(var(--b3)) !important;
+  padding: 0.6rem 0.7rem !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid hsl(var(--b3)) !important;
 }
 
-#roomMembersList>div>.truncate {
-    min-width: 0;
+#roomMembersList > div > .truncate {
+  min-width: 0;
 }
 
-#roomMembersList>div>.badge {
-    justify-self: end;
-    white-space: nowrap;
+#roomMembersList > div > .badge {
+  justify-self: end;
+  white-space: nowrap;
 }
 
 /* Keep list from blowing up the right column on mobile */
 #roomMembersList {
-    max-height: 14rem;
-    overflow: auto;
+  max-height: 14rem;
+  overflow: auto;
 }
 
 @media (max-width: 768px) {
-    #roomMembersList {
-        max-height: 12rem;
-    }
+  #roomMembersList {
+    max-height: 12rem;
+  }
 }
 
 /* ---------- 2) Results cards: stop “Details/Add” overlap ---------- */
 /* app.js renders .card-actions with Tailwind classes; force reliable layout [file:4] */
 #results .card .card-body {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Title + rating badge row can squeeze; allow wrap cleanly */
-#results .card .card-body>.flex.items-start {
-    flex-wrap: wrap;
+#results .card .card-body > .flex.items-start {
+  flex-wrap: wrap;
 }
 
-#results .card .card-body>.flex.items-start .card-title {
-    min-width: 0;
+#results .card .card-body > .flex.items-start .card-title {
+  min-width: 0;
 }
 
 /* Actions row: wrap and never overlap content */
 #results .card .card-actions {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 0.5rem !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
 
-    margin-top: auto !important;
-    /* push buttons to bottom of card body */
+  margin-top: auto !important;
+  /* push buttons to bottom of card body */
 }
 
 #results .card .card-actions .btn {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 /* Small phones: stack buttons full width */
 @media (max-width: 420px) {
-    #results .card .card-actions {
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
+  #results .card .card-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 
-    #results .card .card-actions .btn {
-        width: 100%;
-    }
+  #results .card .card-actions .btn {
+    width: 100%;
+  }
 }
 
 /* ---------- 3) Pool rows: prevent right-side action buttons overlapping text ---------- */
 /* Each pool row is a flex container created by app.js [file:4] */
-#pool>div {
-    align-items: flex-start;
-    /* allow right column to wrap down cleanly */
+#pool > div {
+  align-items: flex-start;
+  /* allow right column to wrap down cleanly */
 }
 
 /* Actions column is the last child in the row HTML [file:4] */
-#pool>div>div:last-child {
-    margin-left: auto;
-    /* keep it on the right when space allows */
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.45rem;
-    max-width: 45%;
+#pool > div > div:last-child {
+  margin-left: auto;
+  /* keep it on the right when space allows */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  max-width: 45%;
 }
 
 /* If title is long, it should truncate and not collide with buttons */
-#pool>div>div:nth-child(2) {
-    min-width: 0;
+#pool > div > div:nth-child(2) {
+  min-width: 0;
 }
 
 /* Mobile: actions go below, full width */
 @media (max-width: 640px) {
-    #pool>div {
-        flex-wrap: wrap;
-    }
+  #pool > div {
+    flex-wrap: wrap;
+  }
 
-    #pool>div>div:last-child {
-        max-width: 100%;
-        width: 100%;
-        justify-content: flex-start;
-        margin-left: 0;
-    }
+  #pool > div > div:last-child {
+    max-width: 100%;
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
 
-    #pool .btn-xs {
-        flex: 1 1 auto;
-        min-width: 5rem;
-    }
+  #pool .btn-xs {
+    flex: 1 1 auto;
+    min-width: 5rem;
+  }
 }
 
 /* =========================================================
@@ -946,140 +947,140 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 /* ---------- Room Members panel: force full width + clean header row ---------- */
 #roomMembersWrap {
-    width: 100% !important;
-    display: block !important;
-    margin-top: 0.75rem !important;
-    box-shadow: none !important;
-    /* nested card: avoid heavy double shadow */
+  width: 100% !important;
+  display: block !important;
+  margin-top: 0.75rem !important;
+  box-shadow: none !important;
+  /* nested card: avoid heavy double shadow */
 }
 
 #roomMembersWrap .card-body {
-    padding: 0.9rem !important;
+  padding: 0.9rem !important;
 }
 
-#roomMembersWrap .card-body>.flex {
-    gap: 0.75rem !important;
+#roomMembersWrap .card-body > .flex {
+  gap: 0.75rem !important;
 }
 
 #roomOnlineCount {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 
 /* Member list rows generated by app.js */
 #roomMembersList {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 0.5rem !important;
-    margin-top: 0.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+  margin-top: 0.5rem !important;
 }
 
-#roomMembersList>div {
-    width: 100% !important;
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    column-gap: 0.6rem !important;
+#roomMembersList > div {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  column-gap: 0.6rem !important;
 
-    padding: 0.6rem 0.75rem !important;
-    border-radius: 0.75rem !important;
-    border: 1px solid hsl(var(--b3)) !important;
+  padding: 0.6rem 0.75rem !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid hsl(var(--b3)) !important;
 }
 
-#roomMembersList>div>.truncate {
-    min-width: 0 !important;
+#roomMembersList > div > .truncate {
+  min-width: 0 !important;
 }
 
-#roomMembersList>div>.badge {
-    justify-self: end !important;
-    white-space: nowrap !important;
+#roomMembersList > div > .badge {
+  justify-self: end !important;
+  white-space: nowrap !important;
 }
 
 /* Keep members list usable without pushing the whole sidebar */
 #roomMembersList {
-    max-height: 12rem;
-    overflow: auto;
+  max-height: 12rem;
+  overflow: auto;
 }
 
 @media (min-width: 1024px) {
-    #roomMembersList {
-        max-height: 14rem;
-    }
+  #roomMembersList {
+    max-height: 14rem;
+  }
 }
 
 /* ---------- Pool rows: switch to grid so buttons never overlap text ---------- */
 /* Each pool row is created by app.js as a direct child of #pool [file:4] */
-#pool>div {
-    display: grid !important;
-    grid-template-columns: 3rem minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
+#pool > div {
+  display: grid !important;
+  grid-template-columns: 3rem minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
 }
 
 /* Thumbnail (either <img> or placeholder div) */
-#pool>div> :first-child {
-    width: 3rem !important;
-    height: 4rem !important;
-    border-radius: 0.6rem !important;
-    overflow: hidden !important;
+#pool > div > :first-child {
+  width: 3rem !important;
+  height: 4rem !important;
+  border-radius: 0.6rem !important;
+  overflow: hidden !important;
 }
 
 /* Info column */
-#pool>div> :nth-child(2) {
-    min-width: 0 !important;
+#pool > div > :nth-child(2) {
+  min-width: 0 !important;
 }
 
 /* Actions column */
-#pool>div> :nth-child(3) {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 0.45rem !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
+#pool > div > :nth-child(3) {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.45rem !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
 }
 
 /* Mobile: move actions to next line full width */
 @media (max-width: 640px) {
-    #pool>div {
-        grid-template-columns: 3rem minmax(0, 1fr) !important;
-        grid-template-rows: auto auto !important;
-    }
+  #pool > div {
+    grid-template-columns: 3rem minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+  }
 
-    #pool>div> :nth-child(3) {
-        grid-column: 1 / -1 !important;
-        justify-content: flex-start !important;
-    }
+  #pool > div > :nth-child(3) {
+    grid-column: 1 / -1 !important;
+    justify-content: flex-start !important;
+  }
 
-    #pool .btn-xs {
-        flex: 1 1 auto;
-        min-width: 5.25rem;
-    }
+  #pool .btn-xs {
+    flex: 1 1 auto;
+    min-width: 5.25rem;
+  }
 }
 
 /* ---------- Results cards: ensure action row is always below content ---------- */
 #results .card .card-body {
-    display: flex !important;
-    flex-direction: column !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Push buttons to bottom, prevent overlap on small widths */
 #results .card .card-actions {
-    margin-top: auto !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 0.5rem !important;
-    justify-content: flex-end !important;
+  margin-top: auto !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  justify-content: flex-end !important;
 }
 
 @media (max-width: 420px) {
-    #results .card .card-actions {
-        flex-direction: column !important;
-        align-items: stretch !important;
-    }
+  #results .card .card-actions {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 
-    #results .card .card-actions .btn {
-        width: 100%;
-    }
+  #results .card .card-actions .btn {
+    width: 100%;
+  }
 }
 
 /* =========================================================
@@ -1088,42 +1089,42 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 /* Your global .card has overflow:hidden; this nested card needs to allow overflow */
 #roomMembersWrap.card {
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 /* Ensure inner areas also don’t clip the badge */
 #roomMembersWrap .card-body,
-#roomMembersWrap .card-body>div:first-child {
-    overflow: visible !important;
+#roomMembersWrap .card-body > div:first-child {
+  overflow: visible !important;
 }
 
 /* Make the "Room members" + "Online" row a stable 2-col grid */
-#roomMembersWrap .card-body>div:first-child {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto !important;
-    align-items: center !important;
-    gap: 0.75rem !important;
+#roomMembersWrap .card-body > div:first-child {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
 }
 
 /* Prevent the title from pushing the badge off / causing clipping */
-#roomMembersWrap .card-body>div:first-child h3 {
-    min-width: 0 !important;
-    margin: 0 !important;
+#roomMembersWrap .card-body > div:first-child h3 {
+  min-width: 0 !important;
+  margin: 0 !important;
 }
 
 /* Give the badge breathing room from the rounded edge */
 #roomOnlineCount {
-    margin-right: 0.35rem !important;
-    white-space: nowrap !important;
+  margin-right: 0.35rem !important;
+  white-space: nowrap !important;
 }
 
 /* Mobile: slightly tighter sizing so it never touches the edge */
 @media (max-width: 420px) {
-    #roomOnlineCount {
-        font-size: 0.7rem !important;
-        padding: 0.2rem 0.45rem !important;
-        margin-right: 0.25rem !important;
-    }
+  #roomOnlineCount {
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.45rem !important;
+    margin-right: 0.25rem !important;
+  }
 }
 
 /* =========================================================
@@ -1131,80 +1132,84 @@ html[data-theme="cupcake"] .btn-accent:hover {
    ========================================================= */
 
 @media (min-width: 1024px) {
+  /* 1) Remove the “boxed” 1200px feel and use full viewport width */
+  .max-w-5xl {
+    max-width: 100% !important;
+    /* your HTML uses max-w-5xl wrapper */
+    width: 100% !important;
+    padding-left: 1.75rem !important;
+    padding-right: 1.75rem !important;
+  }
 
-    /* 1) Remove the “boxed” 1200px feel and use full viewport width */
-    .max-w-5xl {
-        max-width: 100% !important;
-        /* your HTML uses max-w-5xl wrapper */
-        width: 100% !important;
-        padding-left: 1.75rem !important;
-        padding-right: 1.75rem !important;
-    }
+  /* 2) Make the main 2-column layout wider and more “desktop” */
+  main.grid {
+    grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr) !important;
+    /* override md:grid-cols-* */
+    gap: 1.5rem !important;
+    align-items: start !important;
+  }
 
-    /* 2) Make the main 2-column layout wider and more “desktop” */
-    main.grid {
-        grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr) !important;
-        /* override md:grid-cols-* */
-        gap: 1.5rem !important;
-        align-items: start !important;
-    }
+  /* 3) Results grid: more cards per row on desktop */
+  #results {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
+    gap: 1.75rem !important;
+  }
 
-    /* 3) Results grid: more cards per row on desktop */
-    #results {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
-        gap: 1.75rem !important;
-    }
-
-    /* 4) Make the right panel sticky on desktop (better UX) */
-    main.grid>section:last-child {
-        position: sticky;
-        top: 1.25rem;
-    }
+  /* 4) Make the right panel sticky on desktop (better UX) */
+  main.grid > section:last-child {
+    position: sticky;
+    top: 1.25rem;
+  }
 }
 
 /* Extra-wide monitors: even more comfortable spacing */
 @media (min-width: 1536px) {
-    .max-w-5xl {
-        padding-left: 2.25rem !important;
-        padding-right: 2.25rem !important;
-    }
+  .max-w-5xl {
+    padding-left: 2.25rem !important;
+    padding-right: 2.25rem !important;
+  }
 
-    main.grid {
-        grid-template-columns: minmax(0, 3.4fr) minmax(420px, 1fr) !important;
-        gap: 1.75rem !important;
-    }
+  main.grid {
+    grid-template-columns: minmax(0, 3.4fr) minmax(420px, 1fr) !important;
+    gap: 1.75rem !important;
+  }
 
-    #results {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
-    }
+  #results {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  }
 }
 
 /* ===== Watch filters UI (Step 1) ===== */
 #watchFilters {
-    padding: 0.75rem;
-    border-radius: 0.9rem;
-    border: 1px solid hsl(var(--b3));
-    background-color: color-mix(in oklab, hsl(var(--b2)) 30%, transparent);
+  padding: 0.75rem;
+  border-radius: 0.9rem;
+  border: 1px solid hsl(var(--b3));
+  background-color: color-mix(in oklab, hsl(var(--b2)) 30%, transparent);
+}
+
+.watch-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--b3));
+  background-color: color-mix(in oklab, hsl(var(--b1)) 70%, transparent);
+  cursor: pointer;
+  user-select: none;
+}
+
+#watchRegion {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  #watchRegion {
+    height: 2.9rem !important;
+    border-radius: 0.95rem !important;
   }
-  
-  .watch-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.6rem;
-    border-radius: 999px;
-    border: 1px solid hsl(var(--b3));
-    background-color: color-mix(in oklab, hsl(var(--b1)) 70%, transparent);
-    cursor: pointer;
-    user-select: none;
-  }
-  
-  #watchRegion { width: 100%; }
-  
-  @media (min-width: 1024px) {
-    #watchRegion {
-      height: 2.9rem !important;
-      border-radius: 0.95rem !important;
-    }
-  }
-  
+}
+
+.wp-pill span.opacity-70 {
+  margin-left: 0.25rem;
+}

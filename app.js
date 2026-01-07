@@ -296,8 +296,8 @@
         badgeWrap.className = "wp-badges";
         wrap.appendChild(badgeWrap);
 
-        // TMDB returns arrays like flatrate / rent / buy (and sometimes ads/free) [web:12]
-        const groups = [
+        // Collect unique providers across flatrate/rent/buy/free/ads
+        const buckets = [
             ["Stream", entry.flatrate],
             ["Rent", entry.rent],
             ["Buy", entry.buy],
@@ -305,39 +305,63 @@
             ["Ads", entry.ads],
         ];
 
-        let added = 0;
-
-        for (const [label, arr] of groups) {
-            if (!Array.isArray(arr) || !arr.length) continue;
-
-            // show up to 4 per group (keeps UI compact)
-            for (const p of arr.slice(0, 4)) {
-                const pill = document.createElement("a");
-                pill.className = "wp-pill";
-                pill.href = entry.link || "#";
-                pill.target = "_blank";
-                pill.rel = "noopener noreferrer";
-                pill.title = `${label}: ${p.provider_name}`;
-
-                const icon = document.createElement("img");
-                icon.alt = p.provider_name;
-                icon.loading = "lazy";
-                icon.src = p.logo_path ? `https://image.tmdb.org/t/p/w45${p.logo_path}` : "";
-                icon.onerror = () => (icon.style.display = "none");
-
-                const text = document.createElement("span");
-                text.textContent = p.provider_name;
-
-                pill.appendChild(icon);
-                pill.appendChild(text);
-                badgeWrap.appendChild(pill);
-                added++;
+        const byId = new Map(); // provider_id -> { provider, types:Set }
+        for (const [type, arr] of buckets) {
+            if (!Array.isArray(arr)) continue;
+            for (const p of arr) {
+                const id = p?.provider_id;
+                if (!id) continue;
+                if (!byId.has(id)) byId.set(id, { provider: p, types: new Set() });
+                byId.get(id).types.add(type);
             }
         }
 
-        if (!added) return null;
+        const providers = Array.from(byId.values());
+
+        // optional: prioritize Stream first, then others
+        providers.sort((a, b) => {
+            const aStream = a.types.has("Stream") ? 1 : 0;
+            const bStream = b.types.has("Stream") ? 1 : 0;
+            if (aStream !== bStream) return bStream - aStream;
+            return String(a.provider.provider_name || "").localeCompare(String(b.provider.provider_name || ""));
+        });
+
+        // Render unique pills (limit to avoid huge UI)
+        for (const item of providers.slice(0, 12)) {
+            const p = item.provider;
+            const types = Array.from(item.types);
+
+            const pill = document.createElement("a");
+            pill.className = "wp-pill";
+            pill.href = entry.link || "#";
+            pill.target = "_blank";
+            pill.rel = "noopener noreferrer";
+            pill.title = `${p.provider_name} • ${types.join(", ")}`;
+
+            const icon = document.createElement("img");
+            icon.alt = p.provider_name;
+            icon.loading = "lazy";
+            icon.src = p.logo_path ? `https://image.tmdb.org/t/p/w45${p.logo_path}` : "";
+            icon.onerror = () => (icon.style.display = "none");
+
+            const text = document.createElement("span");
+            text.textContent = p.provider_name;
+
+            const tag = document.createElement("span");
+            tag.className = "opacity-70";
+            tag.style.fontSize = "0.7rem";
+            tag.textContent = `(${types.join("/")})`;
+
+            pill.appendChild(icon);
+            pill.appendChild(text);
+            pill.appendChild(tag);
+            badgeWrap.appendChild(pill);
+        }
+
+        if (!providers.length) return null;
         return wrap;
     }
+
 
     function startMembersListener() {
         const fs = window.firebaseStore;
