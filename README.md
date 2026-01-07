@@ -60,6 +60,8 @@ git clone https://github.com/<your-username>/<your-repo>.git
 cd <your-repo>
 ```
 ### Configure API keys
+
+```bash
 Create/edit config.js:
   // config.js
   
@@ -81,131 +83,139 @@ Create/edit config.js:
     TMDBAPIKEY: window.APP_CONFIG.TMDB_API_KEY
   };
 Note: TMDB + Firebase web config are public client keys for frontend usage, but always secure access with Firebase rules, quotas, and sensible limits
+```
 
 ### Start a local server
-VS Code: Live Server
 
-or:
-```bash
-python -m http.server 5500
-```
-Open in browser
-```
-http://127.0.0.1:5500/index.html
-```
+  VS Code: Live Server
+  
+  or:
+  ```bash
+  python -m http.server 5500
+  ```
+  Open in browser
+  ```
+  http://127.0.0.1:5500/index.html
+  ```
+
 ## 🎛️ Features
+
 ### 🔍 Search, Discover, Trending
-Search mode: type a title and hit Search.
+- Search mode: type a title and hit Search.
 
-Discover mode: leave the search box empty and use:
+- Discover mode: leave the search box empty and use:
 
-Result sort: Popular / Rating / Newest
+- Result sort: Popular / Rating / Newest
 
-Genres: multi-select dropdown (shows how many you selected)
+- Genres: multi-select dropdown (shows how many you selected)
 
 ### Year
 
-Watch filters (right panel): region + OTT accounts
+- Watch filters (right panel): region + OTT accounts
 
-Trending: fetches TMDB daily trending movies with one click.
+- Trending: fetches TMDB daily trending movies with one click.
 
 ### 🎚️ Filters & Reset
-Reset filters restores defaults (media type, year, genres, watch filters, etc.) so you can quickly start a fresh discover/search session.
+- Reset filters restores defaults (media type, year, genres, watch filters, etc.) so you can quickly start a fresh discover/search session.
 
 ### 🎥 Pool & “Pick for Me”
-Add movies from results into your pool.
+- Add movies from results into your pool.
 
-Apply pool filters:
+### Apply pool filters:
 
-### Exclude watched
+- Exclude watched
 
-Min rating
+- Min rating
 
-Pick for me randomly selects from your filtered pool and highlights Tonight’s pick in the details dialog.
+- Pick for me randomly selects from your filtered pool and highlights Tonight’s pick in the details dialog.
 
 ### 📋 Details & Watched State
-Clicking Details opens a modal with poster/meta + overview.
+- Clicking Details opens a modal with poster/meta + overview.
 
-Mark watched updates:
+- Mark watched updates:
 
-Pool row status (Watched badge)
+- Pool row status (Watched badge)
 
-Future filtering when Exclude watched is enabled
+- Future filtering when Exclude watched is enabled
 
 ### 📺 Where to Watch (TMDB providers)
-Details modal can show Where to watch provider badges (based on region/provider data).
+
+- Details modal can show Where to watch provider badges (based on region/provider data).
 
 ### 🧑‍🤝‍🧑 Rooms (optional)
-Create room → share/copy link → others join to view and participate.
 
-Room members list shows who’s online.
+- Create room → share/copy link → others join to view and participate.
 
-“Tonight’s pick” can sync across the room.
+- Room members list shows who’s online.
+
+- “Tonight’s pick” can sync across the room.
 
 ### 📤 Sharing
-Share your pool as a link (useful for sending to friends or importing on another device).
+- Share your pool as a link (useful for sending to friends or importing on another device).
 
-Import shared list into your account after signing in.
+- Import shared list into your account after signing in.
 
 ## 🔐 Firebase Auth + Firestore
-Email/password sign-in and sign-up
+
+- Email/password sign-in and sign-up
 
 ### Google sign-in via popup
 
-When signed in, the app can sync data (pool/filters) using Firestore, and enables room features.
+- When signed in, the app can sync data (pool/filters) using Firestore, and enables room features.
 
 ### Setup notes
-Create a Firebase project and enable:
+- Create a Firebase project and enable:
 
-Email/Password
+- Email/Password
 
-(Optional) Google
+- (Optional) Google
 
-Add your Firebase web config to config.js.
+- Add your Firebase web config to config.js.
 
-Ensure your Firebase Auth domain matches your local/hosted URL.
+- Ensure your Firebase Auth domain matches your local/hosted URL.
 
 ### 🛠️ UI / Layout Notes
-The top filter toolbar is designed to keep controls consistently sized.
 
-Genres is implemented as a dropdown menu with checkbox rows for multi-select.
+- The top filter toolbar is designed to keep controls consistently sized.
+
+- Genres is implemented as a dropdown menu with checkbox rows for multi-select.
 
 ## 📌 Roadmap (Future Enhancements)
 
 ### 💾 Harden Firestore persistence:
 
-Clear separation between local (guest) and cloud (signed-in) state
+- Clear separation between local (guest) and cloud (signed-in) state
 
-Better merge/conflict handling for multi-device usage
+- Better merge/conflict handling for multi-device usage
 
 ### 🧑‍🤝‍🧑 Improve Rooms:
 
-Host controls / permissions
+- Host controls / permissions
 
-Room-level settings (region, OTT, min rating)
+- Room-level settings (region, OTT, min rating)
 
-Better “live activity” signals (who picked, when)
+- Better “live activity” signals (who picked, when)
 
 ### 🧠 Smarter suggestions:
 
-Recommend based on watch history + preferred genres
+- Recommend based on watch history + preferred genres
 
-“Surprise me” picks that avoid repeats
+- “Surprise me” picks that avoid repeats
 
 ### 📲 PWA improvements:
 
-Offline-friendly UI
+- Offline-friendly UI
 
-Installable app experience
+- Installable app experience
 
 ### 🎛️ Better filtering:
 
-More OTT providers
+- More OTT providers
 
-Language / runtime filters
+- Language / runtime filters
 
-Separate TV-only and movie-only tuning
+- Separate TV-only and movie-only tuning
 
 ## 🙌 Author
 
-Designed & developed by Arjun.
+- Designed & developed by Arjun.
