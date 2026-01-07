@@ -9,6 +9,7 @@
     let unsubUserDoc = null;
     let applyingRemote = false;
     let saveTimer = null;
+    let loadedSharedList = null;
 
     const state = {
         imgBase: "https://image.tmdb.org/t/p/",
@@ -888,6 +889,9 @@
             }
 
             const data = snap.data() || {};
+            loadedSharedList = data;
+            $("btnImportList")?.classList.remove("hidden");
+
             if (Array.isArray(data.pool)) state.pool = data.pool;
             if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
             if (data.filters && typeof data.filters === "object") state.filters = data.filters;
@@ -954,6 +958,31 @@
             } else {
                 openAuthDialog();
             }
+        });
+
+        $("btnImportList")?.addEventListener("click", async () => {
+            if (!authState.user) {
+                toast("Sign in to import this list.", "error");
+                return;
+            }
+            if (!loadedSharedList) {
+                toast("No shared list loaded.", "error");
+                return;
+            }
+
+            if (Array.isArray(loadedSharedList.pool)) state.pool = loadedSharedList.pool;
+            if (Array.isArray(loadedSharedList.watched)) state.watched = new Set(loadedSharedList.watched);
+            if (loadedSharedList.filters && typeof loadedSharedList.filters === "object") state.filters = loadedSharedList.filters;
+
+            saveJson(LS_POOL, state.pool);
+            saveJson(LS_WATCHED, Array.from(state.watched));
+            saveJson(LS_FILTERS, state.filters);
+
+            syncControls();
+            renderPool();
+            scheduleCloudSave();
+
+            toast("Imported to your pool.", "success");
         });
 
         $("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
