@@ -10,6 +10,7 @@
     let applyingRemote = false;
     let saveTimer = null;
     let loadedSharedList = null;
+    let lastAutoOpenedPickKey = null;
 
     const state = {
         imgBase: "https://image.tmdb.org/t/p/",
@@ -121,6 +122,26 @@
             (snap) => {
                 if (!snap.exists()) return;
                 const data = snap.data() || {};
+                const lp = data.lastPick;
+
+                if (lp && lp.movieId) {
+                    // Build a stable key so we open only once per pick
+                    const pickedAtMs =
+                        typeof lp.pickedAt?.toMillis === "function" ? lp.pickedAt.toMillis() : "";
+                    const key = `${lp.movieId}_${pickedAtMs}`;
+
+                    if (key !== lastAutoOpenedPickKey) {
+                        lastAutoOpenedPickKey = key;
+
+                        // Sync filters UI too (optional but recommended)
+                        syncControls();
+
+                        // Auto-open for everyone
+                        openDetails(lp.movieId, { highlight: true });
+                    }
+                }
+
+
 
                 applyingRemote = true;
                 try {
@@ -646,6 +667,7 @@
     }
 
     function addToPoolById(id) {
+        requireLoginForRoomWrite();
         const m = state.results.find((x) => x.id === id);
         if (!m) return;
 
@@ -664,6 +686,7 @@
     }
 
     function removeFromPool(id) {
+        requireLoginForRoomWrite();
         state.pool = state.pool.filter((x) => x.id !== id);
         saveJson(LS_POOL, state.pool);
         renderPool();
@@ -671,6 +694,7 @@
     }
 
     function toggleWatched(id) {
+        requireLoginForRoomWrite();
         if (state.watched.has(id)) state.watched.delete(id);
         else state.watched.add(id);
 
@@ -680,6 +704,7 @@
     }
 
     function clearPool() {
+        requireLoginForRoomWrite();
         state.pool = [];
         saveJson(LS_POOL, state.pool);
         renderPool();
@@ -698,7 +723,7 @@
         });
     }
 
-    function pickForMe() {
+    async function pickForMe() {
         let candidates = getPickCandidates();
 
         if (!candidates.length && state.pool.length) {
@@ -711,7 +736,29 @@
         }
 
         const chosen = candidates[Math.floor(Math.random() * candidates.length)];
+        if (inRoom()) {
+            if (!authState.user) {
+                toast("Login to pick in this room.", "info");
+                openAuthDialog();
+                return;
+            }
+
+            const fs = window.firebaseStore;
+            await fs.setDoc(activeDocRef(), {
+                lastPick: {
+                    movieId: chosen.id,
+                    title: chosen.title || "",
+                    pickedBy: authState.user.uid,
+                    pickedAt: fs.serverTimestamp()
+                },
+                updatedAt: fs.serverTimestamp()
+            }, { merge: true });
+
+            return; // room listener will handle UI/opening
+        }
+
         openDetails(chosen.id, { highlight: true });
+
     }
 
     // ---------- details ----------
@@ -1019,6 +1066,14 @@
                 startUserDocListener();
             });
 
+        }
+
+        function requireLoginForRoomWrite() {
+            if (!inRoom()) return true;          // normal (non-room) mode can stay local
+            if (authState.user) return true;     // logged-in user can edit room
+            toast("Login to edit this room.", "info");
+            openAuthDialog();
+            return false;
         }
 
         async function loadSharedListFromUrl() {
