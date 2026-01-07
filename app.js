@@ -1139,7 +1139,6 @@
         const fa = window.firebaseAuth;
         if (fa) {
             fa.onAuthStateChanged(fa.auth, async (user) => {
-                if (inRoom()) return;
                 authState.user = user || null;
                 const fs = window.firebaseStore;
                 if (user && fs) {
@@ -1151,7 +1150,12 @@
                 }
 
                 updateUserChip();
-                if (inRoom()) return;
+                if (inRoom()) {
+                    updateRoomUI();
+                    startMembersListener();
+                    startHeartbeat();   // now you’ll appear in the members list
+                    return;             // IMPORTANT: don’t start user-doc sync in room mode
+                }
                 updateRoomUI();
                 const url = new URL(window.location.href);
                 const roomId = url.searchParams.get("room");
@@ -1160,6 +1164,8 @@
                     updateRoomUI();
                     startRoomListener();
                 }
+                startMembersListener(); // show + live-update members list even for viewers
+                startHeartbeat();       // will do nothing if not logged in (your code checks auth)
 
 
                 if (!authState.user) {
