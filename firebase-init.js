@@ -12,6 +12,7 @@ import {
 
 import {
   getFirestore,
+  collection,
   doc,
   setDoc,
   getDoc,
@@ -40,8 +41,10 @@ if (!cfg) {
     signOut
   };
 
+  // Expose Firestore helpers app.js uses
   window.firebaseStore = {
     db,
+    collection,
     doc,
     setDoc,
     getDoc,
@@ -49,3 +52,4 @@ if (!cfg) {
     serverTimestamp
   };
 }
+

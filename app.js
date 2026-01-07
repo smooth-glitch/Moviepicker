@@ -159,6 +159,48 @@
         }
     }
 
+    function openWhatsAppShare(text) {
+        const url = "https://wa.me/?text=" + encodeURIComponent(text);
+        window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    async function createSharedList() {
+        const fs = window.firebaseStore;
+        if (!fs) throw new Error("Firestore not ready");
+
+        // auto-id doc: doc(collection(...))
+        const ref = fs.doc(fs.collection(fs.db, "sharedLists"));
+
+        await fs.setDoc(ref, {
+            pool: state.pool,
+            watched: Array.from(state.watched),
+            filters: state.filters,
+            createdAt: fs.serverTimestamp()
+        });
+
+        return ref.id;
+    }
+
+    async function sharePoolOnWhatsApp() {
+        if (!authState.user) {
+            toast("Sign in to share your list.", "error");
+            return;
+        }
+
+        try {
+            const id = await createSharedList();
+
+            const shareUrl = new URL(window.location.href);
+            shareUrl.searchParams.set("list", id);
+
+            const msg = `Movie Night list:\n${shareUrl.toString()}`;
+            openWhatsAppShare(msg);
+        } catch (e) {
+            console.warn(e);
+            toast(e?.message || "Failed to create share link.", "error");
+        }
+    }
+
     // init persisted state
     state.pool = loadJson(LS_POOL, []);
     state.watched = new Set(loadJson(LS_WATCHED, []));
@@ -800,9 +842,9 @@
     async function boot() {
         initTheme();
         syncControls();
-        renderPool();
         renderPager();
         updateUserChip();
+        await loadSharedListFromUrl();
 
         const fa = window.firebaseAuth;
         if (fa) {
@@ -831,6 +873,28 @@
 
         }
 
+        async function loadSharedListFromUrl() {
+            const fs = window.firebaseStore;
+            if (!fs) return;
+
+            const url = new URL(window.location.href);
+            const id = url.searchParams.get("list");
+            if (!id) return;
+
+            const snap = await fs.getDoc(fs.doc(fs.db, "sharedLists", id));
+            if (!snap.exists()) {
+                toast("Shared list not found.", "error");
+                return;
+            }
+
+            const data = snap.data() || {};
+            if (Array.isArray(data.pool)) state.pool = data.pool;
+            if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
+            if (data.filters && typeof data.filters === "object") state.filters = data.filters;
+
+            renderPool();
+        }
+
         $("excludeWatched")?.addEventListener("change", () => {
             state.filters.excludeWatched = $("excludeWatched").checked;
             saveJson(LS_FILTERS, state.filters);
@@ -851,6 +915,7 @@
         $("btnPick")?.addEventListener("click", pickForMe);
         $("btnClearPool")?.addEventListener("click", clearPool);
         $("btnWatched")?.addEventListener("click", markCurrentWatched);
+        $("btnShareList")?.addEventListener("click", sharePoolOnWhatsApp);
 
         $("q")?.addEventListener("keydown", (e) => {
             if (e.key === "Enter") doSearch(1);
