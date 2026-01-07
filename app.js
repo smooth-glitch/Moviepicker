@@ -5,7 +5,7 @@
     const LS_POOL = "mnp_pool_v1";
     const LS_WATCHED = "mnp_watched_v1";
     const LS_THEME = "mnp_theme_v1";
-    const LS_FILTERS = "mnp_filters_v1";
+    const LSFILTERS = "mnp_filters_v1";
     let unsubUserDoc = null;
     let applyingRemote = false;
     let saveTimer = null;
@@ -40,6 +40,21 @@
         user: null // firebase.User or null
     };
 
+    const DEFAULT_FILTERS = {
+        excludeWatched: true,
+        minRating: 6,
+        region: null, // auto-filled
+        ott: { netflix: false, prime: false, hotstar: false }
+    };
+
+    function normalizeFilters(f) {
+        const out = { ...DEFAULT_FILTERS, ...(f || {}) };
+        out.ott = { ...DEFAULT_FILTERS.ott, ...(f?.ott || {}) };
+        return out;
+    }
+
+    state.filters = normalizeFilters(loadJson(LSFILTERS, DEFAULT_FILTERS));
+
     // ---------- storage (sessionStorage + safe fallback) ----------
     const STORE = (() => {
         try {
@@ -60,6 +75,42 @@
         openAuthDialog();
         return false;
     }
+
+    // ===== Watch filters (Region auto + OTT multi) =====
+    function detectRegionFromBrowser() {
+        const loc =
+            Intl.DateTimeFormat().resolvedOptions().locale ||
+            navigator.language ||
+            "en-IN";
+
+        try {
+            const r = new Intl.Locale(loc).region;
+            if (r && /^[A-Z]{2}$/.test(r)) return r;
+        } catch { }
+
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+        if (tz === "Asia/Kolkata") return "IN";
+
+        const m = String(loc).match(/-([A-Za-z]{2})\b/);
+        if (m) return m[1].toUpperCase();
+
+        return "IN";
+    }
+
+
+
+    function ensureWatchFilterDefaults() {
+        if (!state.filters || typeof state.filters !== "object") state.filters = {};
+        if (state.filters.excludeWatched === undefined) state.filters.excludeWatched = true;
+        if (state.filters.minRating === undefined) state.filters.minRating = 6;
+
+        if (!state.filters.region) state.filters.region = detectRegionFromBrowser();
+        if (!state.filters.ott || typeof state.filters.ott !== "object") {
+            state.filters.ott = { netflix: false, prime: false, hotstar: false };
+        }
+    }
+
+
 
     function membersColRef() {
         const fs = window.firebaseStore;
@@ -104,6 +155,188 @@
         document.addEventListener("visibilitychange", () => {
             if (document.visibilityState === "visible") heartbeatOnce().catch(() => { });
         });
+    }
+
+    let providerIdsByKey = { netflix: null, prime: null, hotstar: null };
+
+    async function loadAvailableRegions() {
+        const data = await tmdb("/watch/providers/regions", { language: "en-US" }); // regions list [web:13]
+        return Array.isArray(data?.results) ? data.results : [];
+    }
+
+    async function loadProviderIdsForRegion(region) {
+        const data = await tmdb("/watch/providers/movie", { watch_region: region, language: "en-US" }); // provider list [web:29]
+        const list = Array.isArray(data?.results) ? data.results : [];
+
+        const findId = (patterns) => {
+            const hit = list.find(p =>
+                patterns.some(rx => rx.test(String(p.provider_name || "").toLowerCase()))
+            );
+            return hit?.provider_id ?? null;
+        };
+
+        providerIdsByKey.netflix = findId([/netflix/]);
+        providerIdsByKey.prime = findId([/prime video/, /amazon prime/]);
+        providerIdsByKey.hotstar = findId([/hotstar/, /disney\+ hotstar/, /disney plus hotstar/]);
+    }
+
+    function selectedProviderIds() {
+        const ids = [];
+        if (state.filters.ott?.netflix && providerIdsByKey.netflix) ids.push(providerIdsByKey.netflix);
+        if (state.filters.ott?.prime && providerIdsByKey.prime) ids.push(providerIdsByKey.prime);
+        if (state.filters.ott?.hotstar && providerIdsByKey.hotstar) ids.push(providerIdsByKey.hotstar);
+        return ids;
+    }
+
+    async function initWatchFiltersUI() {
+        const regionSel = document.getElementById("watchRegion");
+        const hint = document.getElementById("regionHint");
+        const cbNetflix = document.getElementById("ottNetflix");
+        const cbPrime = document.getElementById("ottPrime");
+        const cbHotstar = document.getElementById("ottHotstar");
+
+        if (!regionSel || !cbNetflix || !cbPrime || !cbHotstar) return;
+
+        // Ensure defaults exist
+        ensureWatchFilterDefaults();
+        saveJson(LSFILTERS, state.filters);
+
+        // Build the regions list (TMDB) [web:13]
+        const data = await tmdb("/watch/providers/regions", { language: "en-US" });
+        const regions = Array.isArray(data?.results) ? data.results : [];
+
+        regionSel.innerHTML = regions
+            .map(r => `<option value="${r.iso_3166_1}">${escapeHtml(r.english_name)} (${r.iso_3166_1})</option>`)
+            .join("");
+
+        // Auto-pick from browser
+        const detected = detectRegionFromBrowser();
+        state.filters.region = state.filters.region || detected;
+
+        const exists = regions.some(r => r.iso_3166_1 === state.filters.region);
+        regionSel.value = exists ? state.filters.region : "IN";
+        state.filters.region = regionSel.value;
+
+        if (hint) hint.textContent = `Auto: ${state.filters.region}`;
+
+        // Restore OTT checkbox state
+        cbNetflix.checked = !!state.filters.ott?.netflix;
+        cbPrime.checked = !!state.filters.ott?.prime;
+        cbHotstar.checked = !!state.filters.ott?.hotstar;
+
+        // Load provider IDs for the selected region [web:29]
+        await loadProviderIdsForRegion(state.filters.region);
+
+        regionSel.addEventListener("change", async () => {
+            state.filters.region = regionSel.value;
+            if (hint) hint.textContent = `Selected: ${state.filters.region}`;
+            saveJson(LSFILTERS, state.filters);
+
+            await loadProviderIdsForRegion(state.filters.region);
+            scheduleCloudSave();
+
+            if (state.lastMode !== "trending") doSearch(1);
+        });
+
+        const onOttChange = () => {
+            state.filters.ott = {
+                netflix: cbNetflix.checked,
+                prime: cbPrime.checked,
+                hotstar: cbHotstar.checked,
+            };
+            saveJson(LSFILTERS, state.filters);
+            scheduleCloudSave();
+
+            if (state.lastMode !== "trending") doSearch(1);
+        };
+
+        cbNetflix.addEventListener("change", onOttChange);
+        cbPrime.addEventListener("change", onOttChange);
+        cbHotstar.addEventListener("change", onOttChange);
+    }
+
+
+    function pickWatchCountry(wpResults) {
+        // Prefer saved region if present, else try browser locale, else fallback IN/US
+        const preferred = (state.filters?.region || "").toUpperCase();
+        if (preferred && wpResults?.[preferred]) return preferred;
+
+        const loc = Intl.DateTimeFormat().resolvedOptions().locale || navigator.language || "en-IN";
+        const m = String(loc).match(/-([A-Za-z]{2})\b/);
+        const fromLocale = m ? m[1].toUpperCase() : null;
+        if (fromLocale && wpResults?.[fromLocale]) return fromLocale;
+
+        if (wpResults?.IN) return "IN";
+        if (wpResults?.US) return "US";
+
+        // Any available country
+        const keys = wpResults ? Object.keys(wpResults) : [];
+        return keys[0] || null;
+    }
+
+    function renderWatchProvidersSection(wpData) {
+        const results = wpData?.results;
+        if (!results || typeof results !== "object") return null;
+
+        const country = pickWatchCountry(results);
+        if (!country) return null;
+
+        const entry = results[country];
+        if (!entry) return null;
+
+        const wrap = document.createElement("div");
+        wrap.className = "wp-section";
+
+        const title = document.createElement("div");
+        title.className = "wp-title";
+        title.textContent = `Where to watch (${country})`;
+        wrap.appendChild(title);
+
+        const badgeWrap = document.createElement("div");
+        badgeWrap.className = "wp-badges";
+        wrap.appendChild(badgeWrap);
+
+        // TMDB returns arrays like flatrate / rent / buy (and sometimes ads/free) [web:12]
+        const groups = [
+            ["Stream", entry.flatrate],
+            ["Rent", entry.rent],
+            ["Buy", entry.buy],
+            ["Free", entry.free],
+            ["Ads", entry.ads],
+        ];
+
+        let added = 0;
+
+        for (const [label, arr] of groups) {
+            if (!Array.isArray(arr) || !arr.length) continue;
+
+            // show up to 4 per group (keeps UI compact)
+            for (const p of arr.slice(0, 4)) {
+                const pill = document.createElement("a");
+                pill.className = "wp-pill";
+                pill.href = entry.link || "#";
+                pill.target = "_blank";
+                pill.rel = "noopener noreferrer";
+                pill.title = `${label}: ${p.provider_name}`;
+
+                const icon = document.createElement("img");
+                icon.alt = p.provider_name;
+                icon.loading = "lazy";
+                icon.src = p.logo_path ? `https://image.tmdb.org/t/p/w45${p.logo_path}` : "";
+                icon.onerror = () => (icon.style.display = "none");
+
+                const text = document.createElement("span");
+                text.textContent = p.provider_name;
+
+                pill.appendChild(icon);
+                pill.appendChild(text);
+                badgeWrap.appendChild(pill);
+                added++;
+            }
+        }
+
+        if (!added) return null;
+        return wrap;
     }
 
     function startMembersListener() {
@@ -246,7 +479,7 @@
                 try {
                     if (Array.isArray(data.pool)) state.pool = data.pool;
                     if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
-                    if (data.filters && typeof data.filters === "object") state.filters = data.filters;
+                    if (data.filters && typeof data.filters === "object") state.filters = normalizeFilters(data.filters);
 
                     renderPool();
                     renderResults(state.results);
@@ -317,7 +550,7 @@
         // go back to local view immediately
         state.pool = loadJson(LS_POOL, []);
         state.watched = new Set(loadJson(LS_WATCHED, []));
-        state.filters = loadJson(LS_FILTERS, { excludeWatched: true, minRating: 6 });
+        state.filters = loadJson(LSFILTERS, { excludeWatched: true, minRating: 6 });
         syncControls();
         renderPool();
 
@@ -383,11 +616,12 @@
                 try {
                     if (Array.isArray(data.pool)) state.pool = data.pool;
                     if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
-                    if (data.filters && typeof data.filters === "object") state.filters = data.filters;
+                    if (data.filters && typeof data.filters === "object") state.filters = normalizeFilters(data.filters);
+
 
                     saveJson(LS_POOL, state.pool);
                     saveJson(LS_WATCHED, Array.from(state.watched));
-                    saveJson(LS_FILTERS, state.filters);
+                    saveJson(LSFILTERS, state.filters);
 
                     syncControls();
                     renderPool();
@@ -468,7 +702,7 @@
     // init persisted state
     state.pool = loadJson(LS_POOL, []);
     state.watched = new Set(loadJson(LS_WATCHED, []));
-    state.filters = loadJson(LS_FILTERS, { excludeWatched: true, minRating: 6 });
+    state.filters = loadJson(LSFILTERS, { excludeWatched: true, minRating: 6 });
 
     // ---------- UI helpers ----------
     function escapeHtml(s) {
@@ -906,6 +1140,15 @@
             ov.textContent = data.overview || "No overview available.";
             right.appendChild(ov);
 
+            // Where to watch
+            try {
+                const wp = await tmdb(`/movie/${id}/watch/providers`, {}); // [web:12]
+                const wpSection = renderWatchProvidersSection(wp);
+                if (wpSection) right.appendChild(wpSection);
+            } catch {
+                // silent fail: details should still work
+            }
+
             if (opts.highlight) {
                 const hint = document.createElement("div");
                 hint.className = "mt-3 badge badge-primary badge-outline";
@@ -984,16 +1227,21 @@
                     page
                 });
             } else {
-                state.lastMode = "discover";
-                state.lastQuery = "";
+                ensureWatchFilterDefaults();
+                const region = state.filters.region || "IN";
+                const providerIds = selectedProviderIds();
 
                 data = await tmdb("/discover/movie", {
                     language: "en-US",
                     sort_by: sort,
                     "vote_average.gte": minVote,
                     "vote_count.gte": 100,
-                    page
+                    page,
+                    watch_region: providerIds.length ? region : undefined,
+                    with_watch_providers: providerIds.length ? providerIds.join("|") : undefined,
+                    with_watch_monetization_types: providerIds.length ? "flatrate" : undefined,
                 });
+
             }
 
             state.totalPages = data.total_pages || 1;
@@ -1132,6 +1380,7 @@
     async function boot() {
         initTheme();
         syncControls();
+        await initWatchFiltersUI();
         renderPager();
         updateUserChip();
         await loadSharedListFromUrl();
@@ -1200,14 +1449,16 @@
 
             if (Array.isArray(data.pool)) state.pool = data.pool;
             if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
-            if (data.filters && typeof data.filters === "object") state.filters = data.filters;
+            if (data.filters && typeof data.filters === "object") state.filters = normalizeFilters(data.filters);
+
+
 
             renderPool();
         }
 
         $("excludeWatched")?.addEventListener("change", () => {
             state.filters.excludeWatched = $("excludeWatched").checked;
-            saveJson(LS_FILTERS, state.filters);
+            saveJson(LSFILTERS, state.filters);
             renderPool();
             scheduleCloudSave();
         });
@@ -1215,7 +1466,7 @@
         $("minRating")?.addEventListener("input", () => {
             const v = Number($("minRating").value);
             state.filters.minRating = Number.isFinite(v) ? v : 0;
-            saveJson(LS_FILTERS, state.filters);
+            saveJson(LSFILTERS, state.filters);
             renderPool();
             scheduleCloudSave();
         });
@@ -1279,7 +1530,7 @@
             // Save current state (which came from the shared link) into user's doc
             saveJson(LS_POOL, state.pool);
             saveJson(LS_WATCHED, Array.from(state.watched));
-            saveJson(LS_FILTERS, state.filters);
+            saveJson(LSFILTERS, state.filters);
 
             syncControls();
             renderPool();

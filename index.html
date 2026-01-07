@@ -133,13 +133,51 @@
                             <div class="card-body gap-3">
                                 <div class="flex items-center justify-between">
                                     <h3 class="font-bold text-sm">Room members</h3>
-                                    
+
                                 </div>
                                 <div id="roomMembersList" class="space-y-2 text-sm"></div>
                             </div>
                         </div>
 
 
+                    </div>
+
+                    <!-- Watch filters (Region auto + OTT multi-select) -->
+                    <div id="watchFilters" class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-base-content/70">Watch filters</span>
+                            <span id="regionHint" class="text-xs text-base-content/60">Auto</span>
+                        </div>
+
+                        <label class="label py-0">
+                            <span class="label-text text-xs">Region</span>
+                        </label>
+                        <select id="watchRegion" class="select select-bordered select-sm w-full"></select>
+
+                        <label class="label py-0 mt-1">
+                            <span class="label-text text-xs">OTT accounts (multi)</span>
+                        </label>
+
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <label class="watch-chip">
+                                <input id="ottNetflix" type="checkbox" class="checkbox checkbox-xs" />
+                                <span>Netflix</span>
+                            </label>
+
+                            <label class="watch-chip">
+                                <input id="ottPrime" type="checkbox" class="checkbox checkbox-xs" />
+                                <span>Prime Video</span>
+                            </label>
+
+                            <label class="watch-chip">
+                                <input id="ottHotstar" type="checkbox" class="checkbox checkbox-xs" />
+                                <span>Disney+ Hotstar</span>
+                            </label>
+                        </div>
+
+                        <div class="text-xs text-base-content/60">
+                            OTT filters apply to Discover (empty search).
+                        </div>
                     </div>
 
                     <div class="flex items-center gap-3 text-xs">

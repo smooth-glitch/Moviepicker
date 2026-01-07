@@ -1178,3 +1178,33 @@ html[data-theme="cupcake"] .btn-accent:hover {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
     }
 }
+
+/* ===== Watch filters UI (Step 1) ===== */
+#watchFilters {
+    padding: 0.75rem;
+    border-radius: 0.9rem;
+    border: 1px solid hsl(var(--b3));
+    background-color: color-mix(in oklab, hsl(var(--b2)) 30%, transparent);
+  }
+  
+  .watch-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid hsl(var(--b3));
+    background-color: color-mix(in oklab, hsl(var(--b1)) 70%, transparent);
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  #watchRegion { width: 100%; }
+  
+  @media (min-width: 1024px) {
+    #watchRegion {
+      height: 2.9rem !important;
+      border-radius: 0.95rem !important;
+    }
+  }
+  
