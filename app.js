@@ -6,6 +6,9 @@
     const LS_WATCHED = "mnp_watched_v1";
     const LS_THEME = "mnp_theme_v1";
     const LS_FILTERS = "mnp_filters_v1";
+    let unsubUserDoc = null;
+    let applyingRemote = false;
+    let saveTimer = null;
 
     const state = {
         imgBase: "https://image.tmdb.org/t/p/",
@@ -39,6 +42,91 @@
             return null;
         }
     })();
+
+    function fsReady() {
+        return !!window.firebaseStore && !!authState.user;
+    }
+
+    function userDocRef() {
+        const fs = window.firebaseStore;
+        return fs.doc(fs.db, "users", authState.user.uid);
+    }
+
+    function scheduleCloudSave() {
+        if (!fsReady() || applyingRemote) return;
+
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(async () => {
+            try {
+                const fs = window.firebaseStore;
+                await fs.setDoc(
+                    userDocRef(),
+                    {
+                        pool: state.pool,
+                        watched: Array.from(state.watched),
+                        filters: state.filters,
+                        updatedAt: fs.serverTimestamp()
+                    },
+                    { merge: true }
+                );
+            } catch (e) {
+                // keep app working even if firestore fails
+                console.warn("Firestore save failed", e);
+            }
+        }, 400);
+    }
+
+    async function ensureUserDoc() {
+        if (!fsReady()) return;
+        const fs = window.firebaseStore;
+
+        const ref = userDocRef();
+        const snap = await fs.getDoc(ref);
+        if (!snap.exists()) {
+            await fs.setDoc(
+                ref,
+                {
+                    pool: state.pool,
+                    watched: Array.from(state.watched),
+                    filters: state.filters,
+                    createdAt: fs.serverTimestamp(),
+                    updatedAt: fs.serverTimestamp()
+                },
+                { merge: true }
+            );
+        }
+    }
+
+    function startUserDocListener() {
+        if (!fsReady()) return;
+        const fs = window.firebaseStore;
+
+        if (unsubUserDoc) unsubUserDoc();
+        const ref = userDocRef();
+
+        unsubUserDoc = fs.onSnapshot(ref, (snap) => {
+            if (!snap.exists()) return;
+            const data = snap.data() || {};
+
+            applyingRemote = true;
+            try {
+                if (Array.isArray(data.pool)) state.pool = data.pool;
+                if (Array.isArray(data.watched)) state.watched = new Set(data.watched);
+                if (data.filters && typeof data.filters === "object") state.filters = data.filters;
+
+                // persist locally too (keeps old behavior)
+                saveJson(LS_POOL, state.pool);
+                saveJson(LS_WATCHED, Array.from(state.watched));
+                saveJson(LS_FILTERS, state.filters);
+
+                syncControls();
+                renderPool();
+                renderResults(state.results);
+            } finally {
+                applyingRemote = false;
+            }
+        });
+    }
 
     function loadJson(key, fallback) {
         try {
@@ -380,6 +468,7 @@
 
         renderPool();
         renderResults(state.results);
+        scheduleCloudSave();
         toast("Added to pool", "success");
     }
 
@@ -387,6 +476,7 @@
         state.pool = state.pool.filter((x) => x.id !== id);
         saveJson(LS_POOL, state.pool);
         renderPool();
+        scheduleCloudSave();
     }
 
     function toggleWatched(id) {
@@ -395,12 +485,14 @@
 
         saveJson(LS_WATCHED, Array.from(state.watched));
         renderPool();
+        scheduleCloudSave();
     }
 
     function clearPool() {
         state.pool = [];
         saveJson(LS_POOL, state.pool);
         renderPool();
+        scheduleCloudSave();
         toast("Pool cleared", "info");
     }
 
@@ -702,16 +794,27 @@
 
         const fa = window.firebaseAuth;
         if (fa) {
-            fa.onAuthStateChanged(fa.auth, (user) => {
+            fa.onAuthStateChanged(fa.auth, async (user) => {
                 authState.user = user || null;
                 updateUserChip();
+
+                if (!authState.user) {
+                    if (unsubUserDoc) unsubUserDoc();
+                    unsubUserDoc = null;
+                    return;
+                }
+
+                await ensureUserDoc();
+                startUserDocListener();
             });
+
         }
 
         $("excludeWatched")?.addEventListener("change", () => {
             state.filters.excludeWatched = $("excludeWatched").checked;
             saveJson(LS_FILTERS, state.filters);
             renderPool();
+            scheduleCloudSave();
         });
 
         $("minRating")?.addEventListener("input", () => {
@@ -719,6 +822,7 @@
             state.filters.minRating = Number.isFinite(v) ? v : 0;
             saveJson(LS_FILTERS, state.filters);
             renderPool();
+            scheduleCloudSave();
         });
 
         $("btnSearch")?.addEventListener("click", () => doSearch(1));
