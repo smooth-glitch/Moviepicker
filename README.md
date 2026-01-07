@@ -1,17 +1,21 @@
 # 🎬 PickMe – Movie Night Picker
 
-A modern, responsive **movie night helper** built with **HTML**, **CSS (Tailwind + daisyUI)**, and **Vanilla JavaScript**, powered by **TMDB** and **Firebase Auth**. Pick, filter, and randomize movies for your next watch session from a clean, themeable UI.
+A modern, responsive **movie night helper** built with **HTML**, **CSS (Tailwind + daisyUI)**, and **Vanilla JavaScript**, powered by **TMDB** and **Firebase (Auth + Firestore)**. Build a pool, filter it, and hit **Pick for me** to get tonight’s movie in a clean, themeable UI.
 
 ***
 
 ## ✨ Highlights
 
-- 🔍 Search or discover movies by **title**, **rating**, and **sort order**
-- 📈 Smart filters for **minimum rating**, **exclude watched**, and **trending** mode
+- 🔍 Search or discover movies by **title**, **sort order**, **year**, and **genres**
+- 🎛️ **Genres multi-select dropdown** with live “N selected” count
+- 🧼 **Reset filters** button to instantly return to defaults
+- 📺 “Watch filters”: auto-detected **region** + **OTT accounts (multi)** to refine Discover results
 - 🎲 **Pick for me**: random “Tonight’s pick” from your curated pool
+- 👤 Firebase **authentication** (email/password + Google)
+- 🧑‍🤝‍🧑 Optional **Room mode**: share a link, see members, and sync “Tonight’s pick”
+- 📤 Share your pool as a link (easy import on another device/account)
 - 🎛️ Two themes (**Synthwave** & **Cupcake**) with a custom animated theme toggle
-- 👤 Firebase **authentication** with email/password and Google sign-in
-- 📱 Fully responsive layout with card-based grid and polished UI/UX
+- 📱 Responsive layout with a polished card grid and consistent control sizing
 
 ***
 
@@ -29,7 +33,10 @@ A modern, responsive **movie night helper** built with **HTML**, **CSS (Tailwind
 
   <!-- APIs -->
   <img src="https://img.shields.io/badge/TMDB-01D277?style=for-the-badge&logo=themoviedatabase&logoColor=white" alt="TMDB"/>
+
+  <!-- Firebase -->
   <img src="https://img.shields.io/badge/Firebase%20Auth-FFCA28?style=for-the-badge&logo=firebase&logoColor=000" alt="Firebase Auth"/>
+  <img src="https://img.shields.io/badge/Firestore-FFA000?style=for-the-badge&logo=firebase&logoColor=000" alt="Firestore"/>
 
   <!-- Storage -->
   <img src="https://img.shields.io/badge/SessionStorage-334155?style=for-the-badge" alt="SessionStorage"/>
@@ -48,130 +55,157 @@ A modern, responsive **movie night helper** built with **HTML**, **CSS (Tailwind
 ### ✅ Run locally
 
 1. **Clone the repo:**
-
 ```bash
 git clone https://github.com/<your-username>/<your-repo>.git
 cd <your-repo>
 ```
+### Configure API keys
+Create/edit config.js:
+  // config.js
+  
+  window.APP_CONFIG = {
+    TMDB_API_KEY: "YOUR_TMDB_API_KEY",
+    firebaseConfig: {
+      apiKey: "YOUR_FIREBASE_API_KEY",
+      authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+      projectId: "YOUR_FIREBASE_PROJECT_ID",
+      storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_FIREBASE_SENDER_ID",
+      appId: "YOUR_FIREBASE_APP_ID"
+    }
+  };
+  
+  // Compatibility shim (optional):
+  // If app.js expects window.APPCONFIG.TMDBAPIKEY, keep this so TMDB works.
+  window.APPCONFIG = {
+    TMDBAPIKEY: window.APP_CONFIG.TMDB_API_KEY
+  };
+Note: TMDB + Firebase web config are public client keys for frontend usage, but always secure access with Firebase rules, quotas, and sensible limits
 
-2. **Configure API keys**
+### Start a local server
+VS Code: Live Server
 
-Open `config.js` and set:
-
-```js
-window.APP_CONFIG = {
-  TMDB_API_KEY: "YOUR_TMDB_API_KEY",
-  firebaseConfig: {
-    apiKey: "YOUR_FIREBASE_API_KEY",
-    authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
-    projectId: "YOUR_FIREBASE_PROJECT_ID",
-    storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_FIREBASE_SENDER_ID",
-    appId: "YOUR_FIREBASE_APP_ID"
-  }
-};
-```
-
-> Note: TMDB + Firebase web config are **public client keys** and are safe to commit for frontend usage, but always secure access with TMDB/Firebase rules and quotas.
-
-3. **Start a local server** (any static server works):
-
-- VS Code: use the **Live Server** extension  
-- or:
-
+or:
 ```bash
 python -m http.server 5500
 ```
-
-4. **Open in browser:**
-
-- Live Server: usually `http://127.0.0.1:5500`  
-- Python: `http://127.0.0.1:5500/index.html`
-
-***
-
+Open in browser
+```
+http://127.0.0.1:5500/index.html
+```
 ## 🎛️ Features
-
 ### 🔍 Search, Discover, Trending
+Search mode: type a title and hit Search.
 
-- **Search mode**: type a movie title and hit **Search**.  
-- **Discover mode**: leave the search box empty and use:
-  - **Result sort**: Popular / Rating / Newest  
-  - **Min rating** filter (on the right panel)
-- **Trending**: fetches TMDB daily trending movies with one click.
+Discover mode: leave the search box empty and use:
 
-### 🎥 Pool, Filters & “Pick for Me”
+Result sort: Popular / Rating / Newest
 
-- **Add** movies from the left results into your **pool** on the right.  
-- **Filters**:
-  - `Exclude watched`  
-  - `Min rating`
-- **Pick for me**:
-  - Randomly selects a movie from your filtered pool  
-  - Opens the details dialog with a **“Tonight’s pick”** badge.
+Genres: multi-select dropdown (shows how many you selected)
+
+### Year
+
+Watch filters (right panel): region + OTT accounts
+
+Trending: fetches TMDB daily trending movies with one click.
+
+### 🎚️ Filters & Reset
+Reset filters restores defaults (media type, year, genres, watch filters, etc.) so you can quickly start a fresh discover/search session.
+
+### 🎥 Pool & “Pick for Me”
+Add movies from results into your pool.
+
+Apply pool filters:
+
+### Exclude watched
+
+Min rating
+
+Pick for me randomly selects from your filtered pool and highlights Tonight’s pick in the details dialog.
 
 ### 📋 Details & Watched State
+Clicking Details opens a modal with poster/meta + overview.
 
-- Clicking **Details** opens a modal with:
-  - Poster, year, runtime, genres, rating  
-  - Overview text
-- **Mark watched** updates:
-  - Pool row status (Watched badge)  
-  - Optional exclusion from future picks when `Exclude watched` is on.
+Mark watched updates:
 
-### 🎨 Themes & UI polish
+Pool row status (Watched badge)
 
-- Two themes controlled via `data-theme`:
-  - **synthwave** (dark neon)  
-  - **cupcake** (light pastel)
-- Custom **animated theme button** in the header:
-  - Rotates and recolors between purple and teal.
-- Responsive card grid:
-  - Auto-fills columns based on width  
-  - Bigger cards on desktop, 1–2 per row on mobile.
+Future filtering when Exclude watched is enabled
 
-***
+### 📺 Where to Watch (TMDB providers)
+Details modal can show Where to watch provider badges (based on region/provider data).
 
-## 🔐 Firebase Auth
+### 🧑‍🤝‍🧑 Rooms (optional)
+Create room → share/copy link → others join to view and participate.
 
-This project uses **Firebase Authentication** for simple user identity:
+Room members list shows who’s online.
 
-- Email/password sign-in and sign-up (auto-create on first try)  
-- Google sign-in via popup  
-- Signed-in state:
-  - Updates the chip text with display name or email  
-  - Shows a small **user icon** next to the name in the header
+“Tonight’s pick” can sync across the room.
 
-### Setup
+### 📤 Sharing
+Share your pool as a link (useful for sending to friends or importing on another device).
 
-1. Create a Firebase project and enable:
-   - **Email/Password** provider  
-   - (Optional) **Google** provider
-2. Copy your web app config into `config.js` as shown above.  
-3. Make sure the auth domain matches your local/hosted URL in Firebase console.
+Import shared list into your account after signing in.
 
-***
+## 🔐 Firebase Auth + Firestore
+Email/password sign-in and sign-up
 
-## 🛠️ Customization
+### Google sign-in via popup
 
-- 🎨 **Branding**
-  - Change app name (“PickMe”), header styles, and theme colors in `styles.css`.
-- 🔢 **Defaults & filters**
-  - Adjust min rating defaults, pagination, and discover sort in `app.js`.
-- 🧪 **Experiment**
-  - Swap themes, cards, and hover states by editing the Tailwind/daisyUI utility classes in `index.html` and the custom rules in `styles.css`.
+When signed in, the app can sync data (pool/filters) using Firestore, and enables room features.
 
-***
+### Setup notes
+Create a Firebase project and enable:
 
-## 📌 Roadmap (Ideas)
+Email/Password
 
-- 💾 Persist pool + watched list per user in Firestore  
-- 🧑‍🤝‍🧑 Add multi-user / “group pick” mode with shared pools  
-- 🧠 Smarter recommendations based on genres and history  
-- 📲 Add “share this pick” deep links for friends  
+(Optional) Google
 
-***
+Add your Firebase web config to config.js.
+
+Ensure your Firebase Auth domain matches your local/hosted URL.
+
+### 🛠️ UI / Layout Notes
+The top filter toolbar is designed to keep controls consistently sized.
+
+Genres is implemented as a dropdown menu with checkbox rows for multi-select.
+
+## 📌 Roadmap (Future Enhancements)
+
+### 💾 Harden Firestore persistence:
+
+Clear separation between local (guest) and cloud (signed-in) state
+
+Better merge/conflict handling for multi-device usage
+
+### 🧑‍🤝‍🧑 Improve Rooms:
+
+Host controls / permissions
+
+Room-level settings (region, OTT, min rating)
+
+Better “live activity” signals (who picked, when)
+
+### 🧠 Smarter suggestions:
+
+Recommend based on watch history + preferred genres
+
+“Surprise me” picks that avoid repeats
+
+### 📲 PWA improvements:
+
+Offline-friendly UI
+
+Installable app experience
+
+### 🎛️ Better filtering:
+
+More OTT providers
+
+Language / runtime filters
+
+Separate TV-only and movie-only tuning
 
 ## 🙌 Author
 
-Designed & developed by **Arjun**.
+Designed & developed by Arjun.
