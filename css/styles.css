@@ -301,15 +301,6 @@ html[data-theme="cupcake"] .modal-box {
     gap: 1.5rem;
 }
 
-
-/* On small screens: little extra padding consistency */
-@media (max-width: 768px) {
-    .card-body {
-        padding-inline: 0.9rem;
-    }
-}
-
-
 /* =========================================================
      Unified controls (buttons + inputs)
      ========================================================= */
@@ -885,12 +876,6 @@ html[data-theme="cupcake"] .btn-accent:hover {
     overflow: auto;
 }
 
-@media (min-width: 1024px) {
-    #roomMembersList {
-        max-height: 14rem;
-    }
-}
-
 /* Each row (app.js uses bg-base-20040 etc.) */
 #roomMembersList>div {
     width: 100% !important;
@@ -981,81 +966,10 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 
-/* =========================================================
-     ✅ Laptop safety: allow md:flex-row toolbars to wrap
-     (prevents overflow on 1366×768 when widths are fixed)
-     ========================================================= */
-@media (min-width: 768px) and (max-width: 1535px) {
-    .md\:flex-row {
-        flex-wrap: wrap !important;
-    }
-}
-
-
-/* =========================================================
-     Desktop layout expansion (PC) — keep mobile unchanged
-     ========================================================= */
-
-/* ✅ CHANGED: was 1024px; moved to 1536px so 1366×768 doesn’t get “big monitor” layout */
-@media (min-width: 1536px) {
-
-    /* Remove boxed feel and use more viewport width */
-    .max-w-5xl {
-        max-width: 100% !important;
-        width: 100% !important;
-        padding-left: 1.75rem !important;
-        padding-right: 1.75rem !important;
-    }
-
-    /* Wider 2-column layout */
-    main.grid {
-        grid-template-columns: minmax(0, 3fr) minmax(360px, 1fr) !important;
-        gap: 1.5rem !important;
-        align-items: start !important;
-    }
-
-    /* More cards per row */
-    #results {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important;
-        gap: 1.75rem !important;
-    }
-
-    /* Sticky right panel */
-    main.grid>section:last-child {
-        position: sticky;
-        top: 1.25rem;
-    }
-}
-
-/* Keep your existing ultra-wide tuning */
-@media (min-width: 1536px) {
-    .max-w-5xl {
-        padding-left: 2.25rem !important;
-        padding-right: 2.25rem !important;
-    }
-
-    main.grid {
-        grid-template-columns: minmax(0, 3.4fr) minmax(420px, 1fr) !important;
-        gap: 1.75rem !important;
-    }
-
-    #results {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
-    }
-}
-
-
 /* 2) Make the search bar less wide (your input is #q with w-full) */
 #q {
     max-width: 420px;
     width: 100%;
-}
-
-/* Optional: slightly smaller on very large screens */
-@media (min-width: 1280px) {
-    #q {
-        max-width: 380px;
-    }
 }
 
 /* 3) Result sort: prevent arrow overlapping text (your select is #resultSort) */
@@ -1297,32 +1211,6 @@ label:has(#excludeWatched:checked) span,
     /* change once to resize all filters/buttons */
 }
 
-/* Desktop: keep everything same width + prevent the Genres dropdown from expanding */
-@media (min-width: 768px) {
-
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: var(--filterW) !important;
-    }
-
-    /* Dropdown menu should match the button width (not w-full of the whole row) */
-    #genreDropdownMenu {
-        width: var(--filterW) !important;
-        min-width: var(--filterW) !important;
-        max-width: var(--filterW) !important;
-    }
-
-    /* Let the search input take remaining space without becoming tiny */
-    #q {
-        flex: 1 1 260px;
-        min-width: 260px;
-    }
-}
 
 :root {
     --ctrlW: 11.25rem;
@@ -1333,134 +1221,12 @@ label:has(#excludeWatched:checked) span,
     /* search bar maximum width */
 }
 
-@media (min-width: 768px) {
-
-    /* Search input: reasonably wide, flexible, but capped */
-    #q {
-        width: auto !important;
-        min-width: var(--searchMin) !important;
-        max-width: var(--searchMax) !important;
-        flex: 1 1 var(--searchMin) !important;
-    }
-
-    /* All other controls: identical width */
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: var(--ctrlW) !important;
-    }
-
-    /* Genres dropdown menu should match the Genres button */
-    #genreDropdownMenu {
-        width: var(--ctrlW) !important;
-        min-width: var(--ctrlW) !important;
-        max-width: var(--ctrlW) !important;
-    }
-}
 
 :root {
     --ctrlW: 11.25rem;
     /* fixed width for all non-search controls */
     --searchMin: 24rem;
     /* search bar minimum */
-}
-
-@media (min-width: 768px) {
-
-    /* allow the search control to shrink/grow without breaking layout */
-    #q {
-        min-width: var(--searchMin) !important;
-        width: auto !important;
-    }
-
-    /* keep everything else consistent */
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: var(--ctrlW) !important;
-    }
-
-    /* menu width must match the button */
-    #genreDropdownMenu {
-        width: var(--ctrlW) !important;
-        min-width: var(--ctrlW) !important;
-        max-width: var(--ctrlW) !important;
-    }
-}
-
-@media (min-width: 768px) {
-    :root {
-        --ctrlW: clamp(9rem, 11vw, 11.25rem);
-        --searchMin: clamp(14rem, 22vw, 24rem);
-    }
-
-    #q {
-        min-width: var(--searchMin) !important;
-        flex: 1 1 auto !important;
-        width: auto !important;
-    }
-
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: var(--ctrlW) !important;
-    }
-
-    #genreDropdownMenu {
-        width: var(--ctrlW) !important;
-        min-width: var(--ctrlW) !important;
-        max-width: var(--ctrlW) !important;
-    }
-}
-
-
-/* 14-inch friendly: controls shrink a bit at md, one-line only at lg */
-@media (min-width: 768px) {
-
-    :root {
-        /* ✅ Slightly smaller so 1366×768 fits without zoom */
-        --ctrlW: clamp(8.75rem, 10.5vw, 11.25rem);
-        --searchMin: clamp(14rem, 24vw, 24rem);
-    }
-
-    /* Critical for flex layouts: prevents content from forcing overflow */
-    .card-body * {
-        min-width: 0;
-    }
-
-    #q {
-        min-width: var(--searchMin) !important;
-        width: auto !important;
-        flex: 1 1 auto !important;
-    }
-
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: var(--ctrlW) !important;
-    }
-
-    #genreDropdownMenu {
-        width: var(--ctrlW) !important;
-        min-width: var(--ctrlW) !important;
-        max-width: var(--ctrlW) !important;
-    }
 }
 
 /* =========================================================
@@ -1516,39 +1282,6 @@ main.grid>section>.card-body {
     max-height: none !important;
 }
 
-/* Laptop widths: allow the top filter/action bar to wrap and shrink */
-@media (min-width: 768px) and (max-width: 1535px) {
-
-    /* The top toolbar in the left card */
-    main.grid>section:first-child .card-body>div.flex {
-        flex-wrap: wrap !important;
-    }
-
-    /* Override fixed-width control rules that can force overflow */
-    #mediaType,
-    #yearFilter,
-    #resultSort,
-    #genreDropdownBtn,
-    #btnSearch,
-    #btnResetFilters,
-    #btnTrending {
-        width: auto !important;
-        min-width: 8.5rem;
-    }
-
-    #q {
-        max-width: none !important;
-        min-width: 12rem !important;
-        flex: 1 1 12rem !important;
-    }
-
-    #genreDropdownMenu {
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: min(28rem, 92vw) !important;
-    }
-}
-
 /* Safety: prevent accidental horizontal overflow from long flex children */
 main.grid * {
     min-width: 0;
@@ -1592,34 +1325,6 @@ main.grid * {
 
 #ottDropdownMenu span {
     white-space: normal;
-}
-
-/* Desktop: keep all filter controls same width (include OTT) */
-@media (min-width: 768px) {
-    #ottDropdownBtn {
-        width: var(--ctrlW) !important;
-    }
-
-    /* dropdown menu should match the button width */
-    #ottDropdownMenu {
-        width: var(--ctrlW) !important;
-        min-width: var(--ctrlW) !important;
-        max-width: var(--ctrlW) !important;
-    }
-}
-
-/* Laptop widths: allow wrapping + prevent overflow (include OTT) */
-@media (min-width: 768px) and (max-width: 1535px) {
-    #ottDropdownBtn {
-        width: auto !important;
-        min-width: 8.5rem;
-    }
-
-    #ottDropdownMenu {
-        width: 100% !important;
-        min-width: 100% !important;
-        max-width: min(28rem, 92vw) !important;
-    }
 }
 
 /* =========================================================
@@ -1680,4 +1385,67 @@ main.grid * {
 #ottDropdownMenu label {
     width: 100%;
     cursor: pointer;
+}
+
+/* Small laptops: grid-based filters, full-width controls */
+@media (min-width: 1024px) and (max-width: 1535px) {
+
+    #filtersBar #mediaType,
+    #filtersBar #yearFilter,
+    #filtersBar #resultSort,
+    #filtersBar #genreDropdownBtn,
+    #filtersBar #ottDropdownBtn,
+    #filtersBar #btnResetFilters {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+    }
+
+    /* Keep Search input big */
+    #filtersBar #q {
+        max-width: none !important;
+    }
+}
+
+/* Make only Search + Trending slightly bigger than btn-sm (but not huge) */
+#btnSearch,
+#btnTrending {
+    min-height: 2.55rem;
+    /* between btn-sm (2.1) and default (2.4) / slightly above */
+    height: 2.55rem;
+    padding-inline: 1rem;
+    font-size: 0.9rem;
+}
+
+/* Big monitors / TVs: everything in ONE row */
+@media (min-width: 1536px) {
+    #filtersBar {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 0.75rem;
+        align-items: flex-end;
+    }
+
+    /* Flatten the two blocks so their children become direct flex items */
+    #searchRow,
+    #filtersGrid {
+        display: contents;
+    }
+
+    /* Let Search input take remaining space, keep other controls consistent */
+    #q {
+        flex: 1 1 28rem !important;
+        max-width: none !important;
+    }
+
+    #mediaType,
+    #yearFilter,
+    #resultSort,
+    #genreDropdownBtn,
+    #ottDropdownBtn,
+    #btnSearch,
+    #btnTrending,
+    #btnResetFilters {
+        width: var(--ctrlW) !important;
+    }
 }
