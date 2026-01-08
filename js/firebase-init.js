@@ -21,8 +21,7 @@ import {
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-const cfg = window.APPCONFIG?.firebaseConfig ?? window.APP_CONFIG?.firebaseConfig;
-
+const cfg = window.APPCONFIG?.firebaseConfig;
 
 if (!cfg) {
   console.error("Missing firebaseConfig in config.js (window.APPCONFIG).");
