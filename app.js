@@ -975,15 +975,13 @@
 
             const p = posterUrl(m.poster_path);
             const poster = p
-                ? `<figure class="px-3 pt-3">
-               <img class="rounded-xl aspect-[2/3] object-cover w-full"
-                    src="${p}"
-                    alt="${escapeHtml(m.title || "Poster")}"
-                    loading="lazy" />
-             </figure>`
-                : `<div class="m-3 rounded-xl bg-base-200 aspect-[2/3] grid place-items-center text-base-content/60">
-               No poster
-             </div>`;
+                ? `<figure class="px-3 pt-3 cursor-pointer" data-click="details">
+        <img class="rounded-xl aspect-23 object-cover w-full" src="${p}" alt="${escapeHtml(m.title)} Poster" loading="lazy" />
+     </figure>`
+                : `<div class="m-3 rounded-xl bg-base-200 aspect-23 grid place-items-center text-base-content60 cursor-pointer" data-click="details">
+        No poster
+     </div>`;
+
 
             card.innerHTML = `
              ${poster}
@@ -1013,7 +1011,13 @@
 
 
             card.addEventListener("click", (e) => {
-                const btn = e.target.closest("button[data-action]");
+                // NEW: clicking poster/placeholder opens details
+                if (e.target.closest('[data-click="details"]')) {
+                    openDetails(m.id);
+                    return;
+                }
+
+                const btn = e.target.closest('button[data-action]');
                 if (!btn) return;
 
                 const id = Number(btn.dataset.id);
@@ -1022,6 +1026,7 @@
                 if (action === "details") openDetails(id);
                 if (action === "add") addToPoolById(id);
             });
+
 
             wrap.appendChild(card);
         }
@@ -1219,6 +1224,32 @@
 
     }
 
+    function pickBestTrailer(videos) {
+        const list = Array.isArray(videos) ? videos : [];
+
+        // Prefer: YouTube official Trailer
+        const yt = list.filter(v => String(v.site).toLowerCase() === "youtube");
+        const best =
+            yt.find(v => v.type === "Trailer" && v.official) ||
+            yt.find(v => v.type === "Trailer") ||
+            yt.find(v => v.type === "Teaser" && v.official) ||
+            yt.find(v => v.type === "Teaser") ||
+            yt[0] ||
+            list[0];
+
+        return best || null;
+    }
+
+    function trailerUrl(v) {
+        if (!v || !v.key) return null;
+        const site = String(v.site || "").toLowerCase();
+
+        if (site === "youtube") return `https://www.youtube.com/watch?v=${encodeURIComponent(v.key)}`;
+        if (site === "vimeo") return `https://vimeo.com/${encodeURIComponent(v.key)}`;
+
+        return null;
+    }
+
     // ---------- details ----------
     async function openDetails(id, opts = {}) {
         try {
@@ -1281,6 +1312,35 @@
             ov.className = "leading-relaxed";
             ov.textContent = data.overview || "No overview available.";
             right.appendChild(ov);
+
+            // Trailer (movie/tv)
+            try {
+                const vids = await tmdb(`${kind}/${id}/videos`, { language: "en-US" });
+                const best = pickBestTrailer(vids?.results);
+                const url = trailerUrl(best);
+
+                if (url) {
+                    const trailerWrap = document.createElement("div");
+                    trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
+
+                    const label = document.createElement("div");
+                    label.className = "text-sm opacity-70";
+                    label.textContent = "Trailer";
+
+                    const btn = document.createElement("a");
+                    btn.className = "btn btn-sm btn-primary";
+                    btn.href = url;
+                    btn.target = "_blank";
+                    btn.rel = "noopener noreferrer";
+                    btn.textContent = "Watch on YouTube";
+
+                    trailerWrap.appendChild(label);
+                    trailerWrap.appendChild(btn);
+                    right.appendChild(trailerWrap);
+                }
+            } catch {
+                // ignore: details should still open even if videos endpoint fails
+            }
 
             // Where to watch (movie vs tv endpoint)
             try {

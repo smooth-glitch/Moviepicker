@@ -18,7 +18,7 @@
 </head>
 
 <body class="min-h-screen text-base-content">
-    <div class="max-w-5xl mx-auto px-3 py-6 md:py-8 space-y-4">
+    <div class="max-w-5xl mx-auto px-3 py-6 md:py-8 space-y-4 flex flex-col min-h-screen">
         <header class="header-shell flex items-center justify-between px-3 py-3 md:py-4 rounded-2xl border">
             <div class="flex items-center gap-2">
                 <span class="text-2xl font-black tracking-tight">PickMe</span>
@@ -63,11 +63,11 @@
             <button id="btnOpenPicked" class="btn btn-xs btn-ghost">Open</button>
         </div>
 
-        <main class="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)] items-start">
+        <main class="grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,1.1fr)] items-start flex-1 min-h-0">
             <!-- Left: search/results -->
             <section class="card bg-base-100 shadow-xl border border-base-300">
                 <div class="card-body gap-4">
-                    <div class="flex flex-col md:flex-row gap-3 md:items-end">
+                    <div class="flex flex-col md:flex-row md:flex-wrap lg:flex-nowrap gap-3 md:items-end">
                         <div class="flex-1">
                             <label class="label">
                                 <span class="label-text">Search movie</span>
@@ -106,10 +106,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
 
                         <div class="flex flex-col gap-2">
                             <label class="label">
@@ -166,17 +162,15 @@
                             <button id="btnShareList" class="btn btn-xs btn-outline">Share</button>
                             <button id="btnClearPool" class="btn btn-xs btn-ghost">Clear</button>
                         </div>
-                        <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
-                            <div class="card-body gap-3">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="font-bold text-sm">Room members</h3>
+                    </div>
 
-                                </div>
-                                <div id="roomMembersList" class="space-y-2 text-sm"></div>
+                    <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
+                        <div class="card-body gap-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-bold text-sm">Room members</h3>
                             </div>
+                            <div id="roomMembersList" class="space-y-2 text-sm"></div>
                         </div>
-
-
                     </div>
 
                     <!-- Watch filters (Region auto + OTT multi-select) -->
