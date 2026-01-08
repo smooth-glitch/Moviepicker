@@ -326,60 +326,6 @@ export function startRoomListener() {
     );
 }
 
-export function stopMembersListener() {
-    if (unsubMembers) unsubMembers();
-    unsubMembers = null;
-}
-
-export function startMembersListener() {
-    const fs = window.firebaseStore;
-    if (!fs || !inRoom()) return;
-
-    stopMembersListener();
-
-    const roomMembersWrap = id("roomMembersWrap");
-    const roomMembersList = id("roomMembersList");
-    const roomOnlineCount = id("roomOnlineCount");
-
-    roomMembersWrap?.classList.remove("hidden");
-
-    unsubMembers = fs.onSnapshot(membersColRef(), (snap) => {
-        const now = Date.now();
-
-        const members = snap.docs
-            .map((d) => {
-                const m = d.data();
-                const ms = typeof m.lastSeenAt?.toMillis === "function" ? m.lastSeenAt.toMillis() : 0;
-                return {
-                    id: d.id,
-                    name: m.name,
-                    email: m.email,
-                    lastSeenMs: ms,
-                    online: ms && now - ms < ONLINEWINDOWMS,
-                };
-            })
-            .sort((a, b) => (b.lastSeenMs || 0) - (a.lastSeenMs || 0));
-
-        const onlineCount = members.filter((x) => x.online).length;
-        if (roomOnlineCount) roomOnlineCount.textContent = `Online ${onlineCount}`;
-
-        if (!roomMembersList) return;
-        roomMembersList.innerHTML = members
-            .map((m) => {
-                const label = m.name || m.email || m.id;
-                const badge = m.online ? "badge-success" : "badge-ghost";
-                const status = m.online ? "online" : "offline";
-                return `
-          <div class="flex items-center justify-between p-2 rounded-xl bg-base-200/40 border border-base-300">
-            <div class="truncate">${label}</div>
-            <span class="badge badge-sm ${badge}">${status}</span>
-          </div>
-        `;
-            })
-            .join("");
-    });
-}
-
 export async function heartbeatOnce() {
     if (!inRoom() || !authState.user) return;
 
