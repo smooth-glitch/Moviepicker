@@ -87,7 +87,7 @@
 
 
                         <!-- Row 2: 3 left + 3 right -->
-                        <div id= "filtersGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        <div id="filtersGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
 
                             <!-- Left column (1/3) -->
                             <div class="flex flex-col gap-2">
@@ -100,13 +100,13 @@
                             <!-- Right column (1/3) -->
                             <div class="flex flex-col gap-2">
                                 <div class="dropdown w-full">
-                                    <button id="ottDropdownBtn" type="button"
+                                    <div id="ottDropdownBtn" tabindex="0" role="button"
                                         class="btn btn-outline btn-sm w-full justify-between">
                                         OTT
                                         <span class="opacity-60 text-xs" id="ottDropdownCount"></span>
-                                    </button>
+                                    </div>
 
-                                    <div id="ottDropdownMenu"
+                                    <div id="ottDropdownMenu" tabindex="0"
                                         class="dropdown-content z-50 mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
                                         <label
                                             class="flex items-center gap-2 p-2 rounded-lg hover:bg-base-200/40 cursor-pointer">
@@ -127,6 +127,8 @@
                                 </div>
                             </div>
 
+
+
                             <!-- Left column (2/3) -->
                             <div class="flex flex-col gap-2">
                                 <input id="yearFilter" type="number" class="input input-bordered input-sm w-full"
@@ -145,100 +147,102 @@
                             <!-- Left column (3/3) -->
                             <div class="flex flex-col gap-2">
                                 <div class="dropdown w-full">
-                                    <button id="genreDropdownBtn" type="button"
+                                    <div id="genreDropdownBtn" tabindex="0" role="button"
                                         class="btn btn-outline btn-sm w-full justify-between">
                                         Genres
                                         <span class="opacity-60 text-xs" id="genreDropdownCount"></span>
-                                    </button>
+                                    </div>
 
-                                    <div id="genreDropdownMenu"
+                                    <div id="genreDropdownMenu" tabindex="0"
                                         class="dropdown-content z-[50] mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
                                         <!-- checkboxes injected here -->
                                     </div>
                                 </div>
+
                             </div>
-
-                            <!-- Right column (3/3) -->
-                            <div class="flex flex-col gap-2">
-                                <button id="btnResetFilters" class="btn btn-outline btn-sm w-full">
-                                    Reset filters
-                                </button>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <div id="resultsEmpty" class="text-base-content/60 hidden text-sm">
-                        No results yet. Try Trending.
-                    </div>
-
-                    <div id="results" class="grid gap-5"></div>
-
-                    <div class="mt-3 flex items-center justify-between gap-2" id="pagerWrap">
-                        <button id="btnPrevPage" class="btn btn-sm btn-outline">
-                            « Prev
-                        </button>
-
-                        <div class="text-xs text-base-content/70">
-                            Page <span id="pageCurrent">1</span>
-                            of <span id="pageTotal">1</span>
                         </div>
 
-                        <button id="btnNextPage" class="btn btn-sm btn-outline">
-                            Next »
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Right: pool/filters -->
-            <section class="card bg-base-100 shadow-xl border border-base-300">
-                <div class="card-body gap-4">
-                    <div class="flex items-center justify-between gap-2">
-                        <h2 class="card-title text-base">Your pool</h2>
-
-                        <div class="flex items-center gap-2">
-                            <button id="btnImportList" class="btn btn-xs btn-primary hidden">Import</button>
-                            <button id="btnShareList" class="btn btn-xs btn-outline">Share</button>
-                            <button id="btnClearPool" class="btn btn-xs btn-ghost">Clear</button>
+                        <!-- Right column (3/3) -->
+                        <div class="flex flex-col gap-2">
+                            <button id="btnResetFilters" class="btn btn-outline btn-sm w-full">
+                                Reset filters
+                            </button>
                         </div>
-                    </div>
 
-                    <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
-                        <div class="card-body gap-3">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-sm">Room members</h3>
-                            </div>
-                            <div id="roomMembersList" class="space-y-2 text-sm"></div>
-                        </div>
-                    </div>
-
-
-                    <div class="text-xs text-base-content/60">
-                        OTT filters apply to Discover (empty search).
                     </div>
                 </div>
 
-                <div class="flex items-center gap-3 text-xs">
-                    <label class="flex items-center gap-2 cursor-pointer">
-                        <input id="excludeWatched" type="checkbox" class="checkbox checkbox-xs" checked />
-                        <span>Exclude watched</span>
-                    </label>
 
-                    <div class="flex items-center gap-2">
-                        <span>Min rating</span>
-                        <input id="minRating" type="number" min="0" max="10" step="0.5"
-                            class="input input-bordered input-xs w-16" value="6" />
+                <div id="resultsEmpty" class="text-base-content/60 hidden text-sm">
+                    No results yet. Try Trending.
+                </div>
+
+                <div id="results" class="grid gap-5"></div>
+
+                <div class="mt-3 flex items-center justify-between gap-2" id="pagerWrap">
+                    <button id="btnPrevPage" class="btn btn-sm btn-outline">
+                        « Prev
+                    </button>
+
+                    <div class="text-xs text-base-content/70">
+                        Page <span id="pageCurrent">1</span>
+                        of <span id="pageTotal">1</span>
                     </div>
-                </div>
 
-                <div id="poolEmpty" class="text-xs text-base-content/60">
-                    Add movies from results to build your pool.
+                    <button id="btnNextPage" class="btn btn-sm btn-outline">
+                        Next »
+                    </button>
                 </div>
-
-                <div id="pool" class="space-y-2"></div>
     </div>
+    </section>
+
+    <!-- Right: pool/filters -->
+    <section class="card bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body gap-4">
+            <div class="flex items-center justify-between gap-2">
+                <h2 class="card-title text-base">Your pool</h2>
+
+                <div class="flex items-center gap-2">
+                    <button id="btnImportList" class="btn btn-xs btn-primary hidden">Import</button>
+                    <button id="btnShareList" class="btn btn-xs btn-outline">Share</button>
+                    <button id="btnClearPool" class="btn btn-xs btn-ghost">Clear</button>
+                </div>
+            </div>
+
+            <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
+                <div class="card-body gap-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm">Room members</h3>
+                    </div>
+                    <div id="roomMembersList" class="space-y-2 text-sm"></div>
+                </div>
+            </div>
+
+
+            <div class="text-xs text-base-content/60">
+                OTT filters apply to Discover (empty search).
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input id="excludeWatched" type="checkbox" class="checkbox checkbox-xs" checked />
+                <span>Exclude watched</span>
+            </label>
+
+            <div class="flex items-center gap-2">
+                <span>Min rating</span>
+                <input id="minRating" type="number" min="0" max="10" step="0.5"
+                    class="input input-bordered input-xs w-16" value="6" />
+            </div>
+        </div>
+
+        <div id="poolEmpty" class="text-xs text-base-content/60">
+            Add movies from results to build your pool.
+        </div>
+
+        <div id="pool" class="space-y-2"></div>
+        </div>
     </section>
     </main>
     </div>
