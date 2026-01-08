@@ -10,11 +10,11 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet" href="styles.css" />
-    <script src="config.js"></script>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="js/config.js"></script>
 
     <!-- Firebase (module) -->
-    <script type="module" src="firebase-init.js"></script>
+    <script type="module" src="js/firebase-init.js"></script>
 </head>
 
 <body class="min-h-screen text-base-content">
@@ -207,33 +207,33 @@
                         </div>
                     </div>
 
-                    
-                        <div class="text-xs text-base-content/60">
-                            OTT filters apply to Discover (empty search).
-                        </div>
+
+                    <div class="text-xs text-base-content/60">
+                        OTT filters apply to Discover (empty search).
                     </div>
-
-                    <div class="flex items-center gap-3 text-xs">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input id="excludeWatched" type="checkbox" class="checkbox checkbox-xs" checked />
-                            <span>Exclude watched</span>
-                        </label>
-
-                        <div class="flex items-center gap-2">
-                            <span>Min rating</span>
-                            <input id="minRating" type="number" min="0" max="10" step="0.5"
-                                class="input input-bordered input-xs w-16" value="6" />
-                        </div>
-                    </div>
-
-                    <div id="poolEmpty" class="text-xs text-base-content/60">
-                        Add movies from results to build your pool.
-                    </div>
-
-                    <div id="pool" class="space-y-2"></div>
                 </div>
-            </section>
-        </main>
+
+                <div class="flex items-center gap-3 text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input id="excludeWatched" type="checkbox" class="checkbox checkbox-xs" checked />
+                        <span>Exclude watched</span>
+                    </label>
+
+                    <div class="flex items-center gap-2">
+                        <span>Min rating</span>
+                        <input id="minRating" type="number" min="0" max="10" step="0.5"
+                            class="input input-bordered input-xs w-16" value="6" />
+                    </div>
+                </div>
+
+                <div id="poolEmpty" class="text-xs text-base-content/60">
+                    Add movies from results to build your pool.
+                </div>
+
+                <div id="pool" class="space-y-2"></div>
+    </div>
+    </section>
+    </main>
     </div>
 
     <!-- Details dialog -->
@@ -300,7 +300,7 @@
         </div>
     </dialog>
 
-    <script src="app.js"></script>
+    <script type="module" src="./js/main.js"></script>
 </body>
 
 </html>
