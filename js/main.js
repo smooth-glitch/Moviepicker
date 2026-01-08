@@ -259,6 +259,8 @@ async function boot() {
     id("btnTrending")?.addEventListener("click", () => loadTrending(1));
 
     id("btnPick")?.addEventListener("click", () => pickForMe());
+    id("btnPickPool")?.addEventListener("click", pickForMe);
+
     id("btnReroll")?.addEventListener("click", rerollPick);
     id("btnWatched")?.addEventListener("click", markCurrentWatched);
 
