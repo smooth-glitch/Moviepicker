@@ -32,6 +32,7 @@ import {
     copyRoomLink,
 } from "./rooms.js";
 import { setSyncControls } from "./rooms.js";
+let liveSearchTimer = null;
 
 function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
@@ -241,6 +242,9 @@ async function boot() {
         });
     }
 
+    const qEl = id("q");
+
+
     // UI wiring
     id("excludeWatched")?.addEventListener("change", () => {
         state.filters.excludeWatched = id("excludeWatched").checked;
@@ -283,6 +287,19 @@ async function boot() {
 
     id("q")?.addEventListener("keydown", (e) => {
         if (e.key === "Enter") doSearch(1);
+    });
+
+    id("q")?.addEventListener("input", () => {
+        if (liveSearchTimer) clearTimeout(liveSearchTimer);
+
+        liveSearchTimer = setTimeout(() => {
+            const query = id("q")?.value.trim() || "";
+
+            if (!query) return loadTrending(1);
+            if (query.length < 2) return;
+
+            doSearch(1);
+        }, 350);
     });
 
     id("resultSort")?.addEventListener("change", () => {
