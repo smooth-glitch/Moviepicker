@@ -1224,31 +1224,45 @@
 
     }
 
+    async function loadBestVideos(kind, id) {
+        const attempts = [{ language: "en-US" }, {}];
+
+        for (const params of attempts) {
+            try {
+                const data = await tmdb(`/${kind}/${id}/videos`, params); // ✅ leading /
+                const list = Array.isArray(data?.results) ? data.results : [];
+                if (list.length) return list;
+            } catch {
+                // try next
+            }
+        }
+        return [];
+    }
+
+
     function pickBestTrailer(videos) {
         const list = Array.isArray(videos) ? videos : [];
-
-        // Prefer: YouTube official Trailer
         const yt = list.filter(v => String(v.site).toLowerCase() === "youtube");
-        const best =
+
+        return (
             yt.find(v => v.type === "Trailer" && v.official) ||
             yt.find(v => v.type === "Trailer") ||
             yt.find(v => v.type === "Teaser" && v.official) ||
             yt.find(v => v.type === "Teaser") ||
             yt[0] ||
-            list[0];
-
-        return best || null;
+            list[0] ||
+            null
+        );
     }
 
     function trailerUrl(v) {
         if (!v || !v.key) return null;
         const site = String(v.site || "").toLowerCase();
-
         if (site === "youtube") return `https://www.youtube.com/watch?v=${encodeURIComponent(v.key)}`;
         if (site === "vimeo") return `https://vimeo.com/${encodeURIComponent(v.key)}`;
-
         return null;
     }
+
 
     // ---------- details ----------
     async function openDetails(id, opts = {}) {
@@ -1313,34 +1327,41 @@
             ov.textContent = data.overview || "No overview available.";
             right.appendChild(ov);
 
-            // Trailer (movie/tv)
+            // Trailer button (with fallback fetch so non-English titles still work)
             try {
-                const vids = await tmdb(`${kind}/${id}/videos`, { language: "en-US" });
-                const best = pickBestTrailer(vids?.results);
+                const videos = await loadBestVideos(kind, id);
+                const best = pickBestTrailer(videos);
                 const url = trailerUrl(best);
 
+                const trailerWrap = document.createElement("div");
+                trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
+
+                const label = document.createElement("div");
+                label.className = "text-sm opacity-70";
+                label.textContent = "Trailer";
+
+                trailerWrap.appendChild(label);
+
                 if (url) {
-                    const trailerWrap = document.createElement("div");
-                    trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
-
-                    const label = document.createElement("div");
-                    label.className = "text-sm opacity-70";
-                    label.textContent = "Trailer";
-
                     const btn = document.createElement("a");
                     btn.className = "btn btn-sm btn-primary";
                     btn.href = url;
                     btn.target = "_blank";
                     btn.rel = "noopener noreferrer";
-                    btn.textContent = "Watch on YouTube";
-
-                    trailerWrap.appendChild(label);
+                    btn.textContent = "Watch trailer";
                     trailerWrap.appendChild(btn);
-                    right.appendChild(trailerWrap);
+                } else {
+                    const none = document.createElement("div");
+                    none.className = "text-sm opacity-60";
+                    none.textContent = "Not available";
+                    trailerWrap.appendChild(none);
                 }
+
+                right.appendChild(trailerWrap);
             } catch {
-                // ignore: details should still open even if videos endpoint fails
+                // ignore
             }
+
 
             // Where to watch (movie vs tv endpoint)
             try {
