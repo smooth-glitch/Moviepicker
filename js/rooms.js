@@ -228,18 +228,15 @@ export function startUserDocListener() {
             if (!snap.exists()) return;
 
             const data = snap.data();
-            // Apply synced settings (theme/accessibility)
             if (data.settings && typeof data.settings === "object") {
                 const s = data.settings;
-
-                if (s.theme) {
-                    document.documentElement.setAttribute("data-theme", s.theme);
-                }
+                if (s.theme) document.documentElement.setAttribute("data-theme", s.theme);
                 if (typeof s.textScale === "number") {
                     document.documentElement.style.fontSize = `${s.textScale * 100}%`;
                 }
                 document.documentElement.toggleAttribute("data-reduce-motion", !!s.reduceMotion);
             }
+
 
             applyingRemote = true;
             try {

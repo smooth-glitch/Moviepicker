@@ -3,19 +3,22 @@ import { authState } from "./state.js";
 import { toast } from "./ui.js";
 
 export function updateUserChip() {
-    const chip = id("userChip");
-    const icon = id("userStatusIcon");
-    if (!chip) return;
+    const label = id("userChipLabel");
+    const btn = id("btnUser");
+
+    if (!label) return;
 
     if (authState.user) {
         const u = authState.user;
-        chip.textContent = u.displayName || u.email || "Signed in";
-        if (icon) icon.classList.remove("hidden");
+        const text = u.displayName || u.email || "Signed in";
+        label.textContent = text;
+        if (btn) btn.title = text;
     } else {
-        chip.textContent = "Sign in";
-        if (icon) icon.classList.add("hidden");
+        label.textContent = "Sign in";
+        if (btn) btn.title = "Sign in";
     }
 }
+
 
 export function openAuthDialog() {
     const dlg = id("dlgAuth");

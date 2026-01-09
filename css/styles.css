@@ -1537,3 +1537,11 @@ dialog.modal::backdrop {
     flex: 0 0 auto;
     opacity: 0.9;
 }
+
+html[data-reduce-motion] *,
+html[data-reduce-motion] *::before,
+html[data-reduce-motion] *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+}

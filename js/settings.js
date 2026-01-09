@@ -2,14 +2,12 @@ import { id } from "./dom.js";
 import { loadJson, saveJson, LSTHEME, LSFILTERS } from "./storage.js";
 import { normalizeFilters } from "./state.js";
 
-// Dedicated settings key (separate from filters/theme)
 const LSSETTINGS = "mnp_settings_v1";
 
 const DEFAULT_SETTINGS = {
     theme: "synthwave",
     textScale: 1,
     reduceMotion: false,
-
     defaultExcludeWatched: true,
     defaultMinRating: 6,
 };
@@ -18,8 +16,12 @@ function getAuthUser() {
     return window.firebaseAuth?.auth?.currentUser ?? null;
 }
 
+function getFs() {
+    return window.firebaseStore ?? null;
+}
+
 function getUserDocRef(uid) {
-    const fs = window.firebaseStore;
+    const fs = getFs();
     return fs.doc(fs.db, "users", uid);
 }
 
@@ -36,7 +38,6 @@ function applyReduceMotion(on) {
     document.documentElement.toggleAttribute("data-reduce-motion", !!on);
 }
 
-// Optional: push defaults into existing filters storage so the main app starts with them
 function applyDefaultFiltersToStorage(settings) {
     const cur = loadJson(LSFILTERS, {});
     const next = normalizeFilters({
@@ -45,46 +46,69 @@ function applyDefaultFiltersToStorage(settings) {
         minRating: Number(settings.defaultMinRating ?? 6),
     });
     saveJson(LSFILTERS, next);
+    return next;
 }
 
-
 async function loadSettingsFromCloudOrLocal() {
-    const user = getAuthUser();
     const local = loadJson(LSSETTINGS, {});
     const mergedLocal = { ...DEFAULT_SETTINGS, ...local };
 
-    // Not signed in → local-only behavior (current)
-    if (!user || !window.firebaseStore) return mergedLocal;
+    const fs = getFs();
+    const user = getAuthUser();
+    if (!fs || !user) return mergedLocal;
 
-    const fs = window.firebaseStore;
     const snap = await fs.getDoc(getUserDocRef(user.uid));
     const data = snap.exists() ? snap.data() : null;
-
     const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
+
     return { ...DEFAULT_SETTINGS, ...mergedLocal, ...cloud };
 }
 
 async function saveSettingsEverywhere(s) {
-    // Always cache locally too (fast startup / offline)
+    // Local cache (fast startup / offline)
     saveJson(LSSETTINGS, s);
 
-    const user = getAuthUser();
-    if (!user || !window.firebaseStore) return;
+    // Apply immediately on this page
+    applyTheme(s.theme);
+    applyTextScale(s.textScale);
+    applyReduceMotion(s.reduceMotion);
 
-    const fs = window.firebaseStore;
+    // Update local filters defaults
+    const nextFilters = applyDefaultFiltersToStorage(s);
+
+    // Signed-out → done
+    const fs = getFs();
+    const user = getAuthUser();
+    if (!fs || !user) return;
+
+    // IMPORTANT: also update Firestore filters so index.html picks it up when signed in
+    const snap = await fs.getDoc(getUserDocRef(user.uid));
+    const data = snap.exists() ? snap.data() : null;
+    const curCloudFilters =
+        data?.filters && typeof data.filters === "object" ? data.filters : {};
+
+    const mergedFilters = normalizeFilters({
+        ...curCloudFilters,
+        excludeWatched: nextFilters.excludeWatched,
+        minRating: nextFilters.minRating,
+    });
+
     await fs.setDoc(
         getUserDocRef(user.uid),
-        { settings: s, settingsUpdatedAt: fs.serverTimestamp() },
+        {
+            settings: s,
+            settingsUpdatedAt: fs.serverTimestamp(),
+            filters: mergedFilters,
+            updatedAt: fs.serverTimestamp(),
+        },
         { merge: true }
     );
 }
-
 
 function syncUI(s) {
     id("setTheme").value = s.theme;
     id("setTextScale").value = String(s.textScale);
     id("setReduceMotion").checked = !!s.reduceMotion;
-
     id("setDefaultExcludeWatched").checked = !!s.defaultExcludeWatched;
     id("setDefaultMinRating").value = String(s.defaultMinRating ?? 6);
 }
@@ -94,44 +118,31 @@ function readUI() {
         theme: id("setTheme").value,
         textScale: Number(id("setTextScale").value || 1),
         reduceMotion: !!id("setReduceMotion").checked,
-
         defaultExcludeWatched: !!id("setDefaultExcludeWatched").checked,
         defaultMinRating: Number(id("setDefaultMinRating").value || 6),
     };
 }
 
-function applyAll(s) {
-    applyTheme(s.theme);
-    applyTextScale(s.textScale);
-    applyReduceMotion(s.reduceMotion);
-
-    applyDefaultFiltersToStorage(s);
-}
-
-
 async function boot() {
     const s = await loadSettingsFromCloudOrLocal();
-
-    // Keep your existing theme override behavior if you want,
-    // but make cloud win overall (cloud is already merged in above).
     syncUI(s);
-    applyAll(s);
+
+    // Apply on load (preview)
+    await saveSettingsEverywhere(s);
+
+    // Live preview when toggling/changing values
+    ["setTheme", "setTextScale", "setReduceMotion", "setDefaultExcludeWatched", "setDefaultMinRating"]
+        .forEach((key) => id(key)?.addEventListener("change", () => saveSettingsEverywhere(readUI())));
 
     id("btnSaveSettings")?.addEventListener("click", async () => {
-        const next = readUI();
-        await saveSettingsEverywhere(next);
-        applyAll(next);
+        await saveSettingsEverywhere(readUI());
         window.location.href = "index.html";
     });
 
     id("btnResetSettings")?.addEventListener("click", async () => {
-        await saveSettingsEverywhere(DEFAULT_SETTINGS);
         syncUI(DEFAULT_SETTINGS);
-        applyAll(DEFAULT_SETTINGS);
+        await saveSettingsEverywhere(DEFAULT_SETTINGS);
     });
 }
-
-boot();
-
 
 boot();
