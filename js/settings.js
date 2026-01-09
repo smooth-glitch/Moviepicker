@@ -51,7 +51,7 @@ function applyDefaultFiltersToStorage(settings) {
 async function loadSettingsFromCloudOrLocal() {
     const user = getAuthUser();
     const local = loadJson(LSSETTINGS, {});
-    const mergedLocal = { ...DEFAULTSETTINGS, ...local };
+    const mergedLocal = { ...DEFAULT_SETTINGS, ...local };
 
     // Not signed in → local-only behavior (current)
     if (!user || !window.firebaseStore) return mergedLocal;
@@ -61,7 +61,7 @@ async function loadSettingsFromCloudOrLocal() {
     const data = snap.exists() ? snap.data() : null;
 
     const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
-    return { ...DEFAULTSETTINGS, ...mergedLocal, ...cloud };
+    return { ...DEFAULT_SETTINGS, ...mergedLocal, ...cloud };
 }
 
 async function saveSettingsEverywhere(s) {
@@ -125,9 +125,9 @@ async function boot() {
     });
 
     id("btnResetSettings")?.addEventListener("click", async () => {
-        await saveSettingsEverywhere(DEFAULTSETTINGS);
-        syncUI(DEFAULTSETTINGS);
-        applyAll(DEFAULTSETTINGS);
+        await saveSettingsEverywhere(DEFAULT_SETTINGS);
+        syncUI(DEFAULT_SETTINGS);
+        applyAll(DEFAULT_SETTINGS);
     });
 }
 
