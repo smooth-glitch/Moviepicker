@@ -224,7 +224,7 @@ export async function openDetails(idNum, opts = {}) {
         // TV seasons (prequel/sequel as previous/next season)
         if (kind === "tv" && Array.isArray(data.seasons)) {
             const seasonsSection = renderTvSeasonsSection(data);
-            if (seasonsSection) right.appendChild(seasonsSection);
+            if (seasonsSection) right.appendChild(wrapInCollapse("Seasons", seasonsSection));
         }
 
         if (kind === "movie" && data.belongs_to_collection?.id) {
@@ -233,7 +233,7 @@ export async function openDetails(idNum, opts = {}) {
                     language: "en-US",
                 });
                 const colSection = renderMovieCollectionSection(data, col);
-                if (colSection) right.appendChild(colSection);
+                if (colSection) right.appendChild(wrapInCollapse("Collection", colSection));
             } catch {
                 // ignore collection errors
             }
@@ -241,42 +241,45 @@ export async function openDetails(idNum, opts = {}) {
 
         // TV recommendations/similar
         if (kind === "tv") {
-            if (
-                Array.isArray(data.recommendations?.results) &&
-                data.recommendations.results.length
-            ) {
-                const recSection = renderMiniList(
+            if (Array.isArray(data.recommendations?.results) && data.recommendations.results.length) {
+                const recInner = renderMiniList(
                     "Recommended shows",
                     data.recommendations.results,
                     "tv"
                 );
-                right.appendChild(recSection);
+                if (recInner) {
+                    right.appendChild(wrapInCollapse("Recommended shows", recInner));
+                }
             }
 
-            if (
-                Array.isArray(data.similar?.results) &&
-                data.similar.results.length
-            ) {
-                const simSection = renderMiniList(
+            if (Array.isArray(data.similar?.results) && data.similar.results.length) {
+                const simInner = renderMiniList(
                     "Similar shows",
                     data.similar.results,
                     "tv"
                 );
-                right.appendChild(simSection);
+                if (simInner) {
+                    right.appendChild(wrapInCollapse("Similar shows", simInner));
+                }
             }
         }
+
 
         if (kind === "movie") {
             const rec = await tmdb(`movie/${idNum}/recommendations`, { language: "en-US" });
             if (Array.isArray(rec.results) && rec.results.length) {
-                const recSection = renderMiniList("Recommended movies", rec.results, "movie");
-                right.appendChild(recSection);
+                const recInner = renderMiniList("Recommended movies", rec.results, "movie");
+                if (recInner) {
+                    right.appendChild(wrapInCollapse("Recommended movies", recInner));
+                }
             }
 
             const sim = await tmdb(`movie/${idNum}/similar`, { language: "en-US" });
             if (Array.isArray(sim.results) && sim.results.length) {
-                const simSection = renderMiniList("Similar movies", sim.results, "movie");
-                right.appendChild(simSection);
+                const simInner = renderMiniList("Similar movies", sim.results, "movie");
+                if (simInner) {
+                    right.appendChild(wrapInCollapse("Similar movies", simInner));
+                }
             }
         }
 
@@ -304,11 +307,11 @@ export async function openDetails(idNum, opts = {}) {
 
 // Mini horizontal list for recommendations/similar
 function renderMiniList(title, items, kind) {
-    const list = Array.isArray(items) ? items.slice(0, 10) : [];
+    const list = Array.isArray(items) ? items.slice(0, 3) : [];
     if (!list.length) return null;
 
     const wrap = document.createElement("div");
-    wrap.className = "mt-4 space-y-2";
+    wrap.className = "space-y-2";
 
     const heading = document.createElement("div");
     heading.className = "text-sm font-semibold";
@@ -316,7 +319,7 @@ function renderMiniList(title, items, kind) {
     wrap.appendChild(heading);
 
     const row = document.createElement("div");
-    row.className = "flex gap-3 overflow-x-auto pb-1";
+    row.className = "space-y-2";
     wrap.appendChild(row);
 
     for (const raw of list) {
@@ -326,12 +329,12 @@ function renderMiniList(title, items, kind) {
         const card = document.createElement("button");
         card.type = "button";
         card.className =
-            "shrink-0 w-28 text-left text-xs bg-base-200/40 rounded-xl border border-base-300 overflow-hidden hover:shadow-md transition-shadow";
+            "w-full flex items-center gap-2 p-2 rounded-lg bg-base-200/40 border border-base-300 hover:bg-base-200 transition-colors";
 
         const p = posterUrl(raw.poster_path);
         const posterHtml = p
-            ? `<img src="${p}" alt="" class="w-full aspect-[2/3] object-cover" loading="lazy" />`
-            : `<div class="w-full aspect-[2/3] bg-base-300 grid place-items-center text-[0.6rem] opacity-70">No poster</div>`;
+            ? `<img src="${p}" alt="" class="w-10 h-14 rounded object-cover" loading="lazy" />`
+            : `<div class="w-10 h-14 rounded bg-base-300 grid place-items-center text-[0.6rem] opacity-70">No</div>`;
 
         const titleText =
             kind === "tv"
@@ -344,15 +347,13 @@ function renderMiniList(title, items, kind) {
         const rating = Number(raw.vote_average ?? 0).toFixed(1);
 
         card.innerHTML = `
-      ${posterHtml}
-      <div class="p-1.5 space-y-0.5">
-        <div class="font-semibold line-clamp-2">${titleText}</div>
-        <div class="flex items-center justify-between text-[0.65rem] opacity-70">
-          <span>${yearStr || ""}</span>
-          <span>${rating}</span>
-        </div>
-      </div>
-    `;
+  ${posterHtml}
+  <div class="flex-1 min-w-0">
+    <div class="text-xs font-semibold line-clamp-1">${titleText}</div>
+    <div class="text-[0.65rem] opacity-70">${yearStr || ""}</div>
+  </div>
+  <div class="text-[0.7rem] opacity-80">${rating}</div>
+`;
 
         card.addEventListener("click", () => {
             openDetails(id, { mediaType: kind });
@@ -364,12 +365,42 @@ function renderMiniList(title, items, kind) {
     return wrap;
 }
 
+
+function wrapInCollapse(titleText, inner) {
+    const root = document.createElement("div");
+    root.className = "mt-3 join join-vertical bg-base-100";
+
+    const item = document.createElement("div");
+    item.className =
+        "collapse collapse-arrow join-item border border-base-300 bg-base-100";
+
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.className = "peer";
+    // Optionally default open for Recommended only
+
+    const head = document.createElement("div");
+    head.className = "collapse-title text-xs font-semibold";
+    head.textContent = titleText;
+
+    const content = document.createElement("div");
+    content.className = "collapse-content pt-0 pb-2 px-4";
+    content.appendChild(inner);
+
+    item.appendChild(input);
+    item.appendChild(head);
+    item.appendChild(content);
+    root.appendChild(item);
+    return root;
+}
+
+
 function renderTvSeasonsSection(tv) {
     const seasons = Array.isArray(tv.seasons) ? tv.seasons : [];
     if (!seasons.length) return null;
 
     const wrap = document.createElement("div");
-    wrap.className = "mt-4 space-y-2";
+    wrap.className = "space-y-2";
 
     const title = document.createElement("div");
     title.className = "text-sm font-semibold";
@@ -480,7 +511,7 @@ function renderMovieCollectionSection(currentMovie, collection) {
     const next = idx >= 0 && idx < parts.length - 1 ? parts[idx + 1] : null;
 
     const wrap = document.createElement("div");
-    wrap.className = "mt-4 space-y-2";
+    wrap.className = "space-y-2";
 
     const title = document.createElement("div");
     title.className = "text-sm font-semibold";
