@@ -316,25 +316,29 @@
                                 </button>
                             </div>
 
-                            <!-- Input row -->
-                            <form id="roomChatForm" class="flex items-center gap-2">
-                                <button id="roomGifBtn" type="button" class="btn btn-xs btn-ghost">
-                                    GIF
-                                </button>
-                                <input id="roomChatInput" type="text" class="input input-bordered input-xs flex-1"
-                                    placeholder="Message everyone…" autocomplete="off" />
-                                <button type="submit" class="btn btn-xs btn-primary">
-                                    Send
-                                </button>
-                                <div class="relative w-full">
-                                    <input id="roomChatInput" type="text" class="input input-bordered input-sm w-full"
-                                        placeholder="Type a message" />
-                                    <div id="mentionSuggestions"
-                                        class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
-                                    </div>
-                                </div>
+                            <form id="roomChatForm" class="flex flex-col gap-2 mt-2">
+                                <div class="flex items-center gap-2">
+                                    <button id="roomGifBtn" type="button" class="btn btn-xs btn-ghost">
+                                        GIF
+                                    </button>
+                                    <button id="roomStickerBtn" type="button" class="btn btn-xs btn-ghost">
+                                        Sticker
+                                    </button>
 
+                                    <div class="flex-1 relative">
+                                        <input id="roomChatInput" type="text"
+                                            class="input input-bordered input-sm w-full" placeholder="Type a message" />
+                                        <div id="mentionSuggestions"
+                                            class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        Send
+                                    </button>
+                                </div>
                             </form>
+
 
                             <!-- GIF picker -->
                             <dialog id="dlgGifPicker" class="modal">
@@ -360,13 +364,6 @@
                                     </div>
                                 </div>
                             </dialog>
-
-                            <div class="flex items-center gap-2 mt-2">
-                                <button id="roomGifBtn" class="btn btn-xs btn-ghost">GIF</button>
-                                <button id="roomStickerBtn" class="btn btn-xs btn-ghost">Sticker</button>
-                                <button class="btn btn-xs btn-primary ml-auto" type="submit">Send</button>
-                            </div>
-
                         </div>
                     </div>
                 </div>
