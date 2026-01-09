@@ -388,7 +388,7 @@ export function startUserDocListener() {
     );
 }
 
-function updateRoomUI() {
+export function updateRoomUI() {
     const badge = roomBadge;
     const btnCreate = btnCreateRoom;
     const btnCopy = btnCopyRoomLink;
