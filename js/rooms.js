@@ -165,6 +165,22 @@ export async function toggleReaction(messageId, emoji) {
     await fs.setDoc(ref, { reactions }, { merge: true });
 }
 
+function positionPopupUnderChat(el) {
+    const form = document.getElementById("roomChatForm");
+    if (!form) return;
+    const rect = form.getBoundingClientRect();
+    const margin = 6;
+
+    el.style.left = `${rect.left}px`;
+    el.style.top = `${rect.top - el.offsetHeight - margin + window.scrollY}px`;
+
+    const maxRight = window.innerWidth - 8;
+    const right = rect.left + el.offsetWidth;
+    if (right > maxRight) {
+        const shift = right - maxRight;
+        el.style.left = `${rect.left - shift}px`;
+    }
+}
 
 function removeEmojiPicker() {
     const existing = document.getElementById("msgEmojiPicker");
@@ -223,7 +239,8 @@ export function renderRoomMessages(list) {
             picker.id = "msgEmojiPicker";
             picker.className =
                 "fixed z-[9999] flex items-center gap-1 px-2 py-1 rounded-full " +
-                "bg-base-100 border border-base-300 shadow-lg";
+                "bg-base-100 border border-base-300 shadow-xl";
+
 
             const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢", "🔥"];
 
@@ -243,8 +260,8 @@ export function renderRoomMessages(list) {
             }
 
             document.body.appendChild(picker);
-            picker.style.left = `${ev.clientX}px`;
-            picker.style.top = `${ev.clientY}px`;
+            positionPopupUnderChat(picker);
+
         });
 
 

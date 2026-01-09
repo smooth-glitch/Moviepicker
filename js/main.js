@@ -61,6 +61,27 @@ let liveSearchTimer = null;
 // reply draft for chat
 let currentReplyTarget = null;
 
+
+function positionPopupUnderChat(el) {
+    const form = document.getElementById("roomChatForm");
+    if (!form) return;
+
+    const rect = form.getBoundingClientRect();
+    const margin = 6;
+
+    // Left align with GIF button area
+    el.style.left = `${rect.left}px`;
+    el.style.top = `${rect.top - el.offsetHeight - margin + window.scrollY}px`;
+
+    // Clamp horizontally inside viewport
+    const maxRight = window.innerWidth - 8;
+    const right = rect.left + el.offsetWidth;
+    if (right > maxRight) {
+        const shift = right - maxRight;
+        el.style.left = `${rect.left - shift}px`;
+    }
+}
+
 function setPageLoading(on) {
     const el = document.getElementById("pageLoader");
     if (!el) return;
@@ -868,7 +889,9 @@ async function boot() {
             menu.id = menuId;
             menu.className =
                 "fixed z-[9999] grid grid-cols-8 gap-1 px-2 py-2 rounded-xl " +
-                "bg-base-100 border border-base-300 shadow-xl text-lg max-h-64 overflow-y-auto";
+                "bg-base-100 border border-base-300 shadow-xl text-lg " +
+                "max-h-64 overflow-y-auto";
+
 
             subset.forEach((e) => {
                 const btn = document.createElement("button");
@@ -892,10 +915,7 @@ async function boot() {
             });
 
             document.body.appendChild(menu);
-            const rect = emojiBtn.getBoundingClientRect();
-            menu.style.left = `${Math.max(8, rect.left)}px`;
-            menu.style.bottom = `${window.innerHeight - rect.top + 8}px`;
-
+            positionPopupUnderChat(menu);
             const close = () => menu.remove();
             setTimeout(() => {
                 document.addEventListener("click", close, { once: true });

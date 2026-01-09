@@ -1547,21 +1547,24 @@ html[data-reduce-motion] *::after {
 
 /* Chat toolbar icon buttons */
 #roomGifBtn,
-#roomStickerBtn {
+#roomStickerBtn,
+#roomEmojiBtn {
   transition: transform 140ms ease, background-color 140ms ease,
     box-shadow 140ms ease;
   border-radius: 999px;
 }
 
 #roomGifBtn:hover,
-#roomStickerBtn:hover {
+#roomStickerBtn:hover,
+#roomEmojiBtn {
   transform: translateY(-1px) scale(1.04);
   background-color: color-mix(in oklab, hsl(var(--b3)) 60%, transparent);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
 #roomGifBtn:active,
-#roomStickerBtn:active {
+#roomStickerBtn:active,
+#roomEmojiBtn {
   transform: translateY(0) scale(0.97);
   box-shadow: none;
 }
@@ -1624,4 +1627,17 @@ html[data-theme="cupcake"] .chat-bubble-primary {
 html[data-theme="cupcake"] .chat-bubble-neutral {
   background-color: #fff; /* white bubble */
   color: hsl(222 18% 12%);
+}
+
+/* Position GIF dialog like a tray near chat input (desktop only) */
+@media (min-width: 768px) {
+  #dlgGifPicker .modal-box {
+    margin: 0;
+    position: fixed;
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 5.5rem; /* roughly just above the chat form */
+    max-width: 480px;
+    margin-inline: auto;
+  }
 }
