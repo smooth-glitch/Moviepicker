@@ -156,6 +156,9 @@ export function renderPool() {
   const btnHidden = id("btnToggleHiddenPool");
   const ex = id("excludeWatched");
   const exBtn = id("btnExcludeWatchedPool");
+  const mr = id("minRatingPool");
+  const mrBtn = id("btnMinRatingPool");
+
 
   const wrap = id("pool");
   const empty = id("poolEmpty");
@@ -175,6 +178,13 @@ export function renderPool() {
     exBtn.classList.toggle("btn-outline", !excludeWatched);
   }
 
+  if (mr) mr.value = String(state.filters.minRating ?? 6);
+
+  const isDefaultMin = Number(state.filters.minRating ?? 6) === 6;
+  if (mrBtn) {
+    mrBtn.classList.toggle("btn-outline", isDefaultMin);
+    mrBtn.classList.toggle("btn-primary", !isDefaultMin);
+  }
   // Split pool into visible vs hidden-by-filters
   const hidden = [];
   const visible = [];

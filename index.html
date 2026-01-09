@@ -249,6 +249,14 @@
                     <button id="btnImportList" class="btn btn-xs btn-primary hidden">Import</button>
 
                     <!-- New: Pick button inside pool -->
+                    <!-- Min rating (styled like Exclude watched) -->
+                    <div id="minRatingChip"
+                        class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-base-200 text-xs text-base-content/80 border border-base-300">
+                        <span class="opacity-80">Min</span>
+                        <input id="minRatingPool" type="number" min="0" max="10" step="0.5"
+                            class="w-12 bg-transparent border-none focus:outline-none text-xs text-right" value="6" />
+                    </div>
+
                     <label id="btnExcludeWatchedPool" class="btn btn-xs btn-primary">
                         <input id="excludeWatched" type="checkbox" class="sr-only" checked />
                         <span>Exclude watched</span>
@@ -273,19 +281,6 @@
                     <div id="roomMembersList" class="space-y-2 text-sm"></div>
                 </div>
             </div>
-        </div>
-
-        <div class="flex items-center gap-3 text-xs">
-
-            <div class="flex items-center gap-2">
-                <span>Min rating</span>
-                <input id="minRating" type="number" min="0" max="10" step="0.5"
-                    class="input input-bordered input-xs w-16" value="6" />
-            </div>
-        </div>
-
-        <div id="poolEmpty" class="text-xs text-base-content/60">
-            Add movies from results to build your pool.
         </div>
 
         <div id="pool" class="space-y-2"></div>

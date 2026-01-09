@@ -100,7 +100,8 @@ async function populateGenreSelect(kind) {
 
 function syncControls() {
     const ex = id("excludeWatched");
-    const mr = id("minRating");
+    const mr = id("minRatingPool");
+
     const mediaType = id("mediaType");
     const yearFilter = id("yearFilter");
 
@@ -274,12 +275,14 @@ async function boot() {
         renderPool();
     });
 
-    id("minRating")?.addEventListener("input", () => {
-        const v = Number(id("minRating").value);
+    id("minRatingPool")?.addEventListener("input", () => {
+        const v = Number(id("minRatingPool").value);
         state.filters.minRating = Number.isFinite(v) ? v : 0;
         saveJson(LSFILTERS, state.filters);
         renderPool();
+        scheduleCloudSave?.(); // if you’re calling it in this module
     });
+
 
     id("btnSearch")?.addEventListener("click", () => doSearch(1));
     id("btnTrending")?.addEventListener("click", () => loadTrending(1));
