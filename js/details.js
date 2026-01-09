@@ -111,10 +111,7 @@ export async function openDetails(idNum, opts = {}) {
 
             const trailerWrap = document.createElement("div");
             trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
-            const label = document.createElement("div");
-            label.className = "text-sm opacity-70";
-            label.textContent = "Trailer";
-            trailerWrap.appendChild(label);
+
 
             if (url) {
                 const btn = document.createElement("a");
@@ -133,17 +130,25 @@ export async function openDetails(idNum, opts = {}) {
 
             // NEW: Watch together (Teleparty help) — only in rooms
             if (inRoom()) {
-                const sep = document.createElement("span");
-                sep.className = "opacity-40 text-xs";
-                sep.textContent = "·";
-                trailerWrap.appendChild(sep);
+                // Teleparty icon button, same style as Watch trailer
+                const btnTeleparty = document.createElement("button");
+                btnTeleparty.className = "btn btn-sm btn-primary flex items-center gap-2";
+                btnTeleparty.type = "button";
 
-                const wtBtn = document.createElement("button");
-                wtBtn.className = "btn btn-sm btn-outline";
-                wtBtn.textContent = "Watch together";
-                wtBtn.addEventListener("click", async () => {
+                // Icon – simple 'TP' pill, replace with SVG/logo later
+                const icon = document.createElement("span");
+                icon.className = "inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-100 text-xs font-semibold";
+                icon.textContent = "TP";
+
+                const text = document.createElement("span");
+                text.textContent = "Teleparty";
+
+                btnTeleparty.appendChild(icon);
+                btnTeleparty.appendChild(text);
+
+                btnTeleparty.addEventListener("click", async () => {
                     const existing = prompt(
-                        "Paste your Teleparty link here (or install the Teleparty extension, start a party on Netflix/Disney+, then paste the link):",
+                        "Paste your Teleparty link here (install the Teleparty extension, start a party on Netflix/Disney+/etc, then paste the link):",
                         ""
                     );
                     if (!existing) return;
@@ -154,8 +159,29 @@ export async function openDetails(idNum, opts = {}) {
                         toast("Failed to save Teleparty link.", "error");
                     }
                 });
-                trailerWrap.appendChild(wtBtn);
+
+                trailerWrap.appendChild(btnTeleparty);
+
+                // Optional: Play together button in the same row
+                const btnPlayTogether = document.createElement("button");
+                btnPlayTogether.className = "btn btn-sm btn-outline";
+                btnPlayTogether.type = "button";
+                btnPlayTogether.textContent = "Play together";
+                btnPlayTogether.addEventListener("click", () => {
+                    const cur = state.currentDetails;
+                    if (!cur) return;
+                    const mediaId = cur.id;
+                    const mediaType = cur.mediaType || state.filters.mediaType || "movie";
+                    updatePlaybackFromLocal({
+                        mediaId,
+                        mediaType,
+                        position: 0,
+                        isPlaying: true,
+                    });
+                });
+                trailerWrap.appendChild(btnPlayTogether);
             }
+
             right.appendChild(trailerWrap);
         } catch { }
 
