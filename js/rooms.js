@@ -49,16 +49,14 @@ export function startMessagesListener() {
     if (!fs || !inRoom()) return stopMessagesListener();
 
     const colRef = fs.collection(fs.db, "rooms", roomState.id, "messages");
+    const q = fs.query(colRef, fs.orderBy("createdAt", "asc"), fs.limit(200));
 
-    const q = fs.query(
-        colRef,
-        fs.orderBy("createdAt", "asc"),
-        fs.limit(200)
-    );
+    console.log("Starting messages listener for room", roomState.id);
 
     unsubMessages = fs.onSnapshot(
         q,
         (snap) => {
+            console.log("Messages snapshot size:", snap.size);
             const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
             renderRoomMessages(msgs);
         },
@@ -67,6 +65,7 @@ export function startMessagesListener() {
         }
     );
 }
+
 
 
 export function renderRoomMessages(list) {
