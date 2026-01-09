@@ -46,8 +46,10 @@ export function markCurrentWatched() {
 export function trailerUrl(v) {
     if (!v || !v.key) return null;
     const site = String(v.site).toLowerCase();
-    if (site === "youtube") return `https://www.youtube.com/watch?v=${encodeURIComponent(v.key)}`;
-    if (site === "vimeo") return `https://vimeo.com/${encodeURIComponent(v.key)}`;
+    if (site === "youtube")
+        return `https://www.youtube.com/watch?v=${encodeURIComponent(v.key)}`;
+    if (site === "vimeo")
+        return `https://vimeo.com/${encodeURIComponent(v.key)}`;
     return null;
 }
 
@@ -61,15 +63,23 @@ export async function openDetails(idNum, opts = {}) {
     try {
         setBusy(true);
 
-        const kind = opts.mediaType || state.filters?.mediaType || "movie";
-        const data = await tmdb(`${kind}/${idNum}`, { language: "en-US" });
+        const kind = opts?.mediaType || state.filters?.mediaType || "movie";
+
+        const data = await tmdb(`${kind}/${idNum}`, {
+            language: "en-US",
+            ...(kind === "tv"
+                ? { append_to_response: "recommendations,similar" }
+                : {}),
+        });
+
         state.currentDetails = { ...data, mediaType: kind };
 
         const title =
             kind === "tv"
                 ? data.name || data.original_name || "Untitled"
                 : data.title || data.original_title || "Untitled";
-        const dateStr = kind === "tv" ? data.first_air_date : data.release_date;
+        const dateStr =
+            kind === "tv" ? data.first_air_date : data.release_date;
 
         dlgTitle.textContent = title;
 
@@ -124,9 +134,7 @@ export async function openDetails(idNum, opts = {}) {
 
             const trailerWrap = document.createElement("div");
             trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
-            
 
-            // Watch trailer button
             if (url) {
                 const btnTrailer = document.createElement("a");
                 btnTrailer.className = "btn btn-sm btn-primary";
@@ -142,9 +150,7 @@ export async function openDetails(idNum, opts = {}) {
                 trailerWrap.appendChild(none);
             }
 
-            // Teleparty + Play together (room only)
             if (inRoom()) {
-                // Teleparty icon button, same base style as Watch trailer
                 const btnTeleparty = document.createElement("button");
                 btnTeleparty.type = "button";
                 btnTeleparty.className =
@@ -163,7 +169,7 @@ export async function openDetails(idNum, opts = {}) {
 
                 btnTeleparty.addEventListener("click", async () => {
                     const existing = prompt(
-                        "Paste your Teleparty link here (install the Teleparty extension, start a party on Netflix/Disney+/etc, then paste the link):",
+                        "Paste your Teleparty link here (install the Teleparty extension, start a party, then paste the link):",
                         ""
                     );
                     if (!existing) return;
@@ -177,7 +183,6 @@ export async function openDetails(idNum, opts = {}) {
 
                 trailerWrap.appendChild(btnTeleparty);
 
-                // Play together button, same size + primary style
                 const btnPlayTogether = document.createElement("button");
                 btnPlayTogether.type = "button";
                 btnPlayTogether.className = "btn btn-sm btn-primary";
@@ -204,17 +209,77 @@ export async function openDetails(idNum, opts = {}) {
 
             right.appendChild(trailerWrap);
         } catch {
-            // ignore trailer errors, details still show
+            // ignore trailer errors
         }
 
-        // Where to watch section
+        // Where to watch
         try {
             const wp = await tmdb(`${kind}/${idNum}/watch/providers`, {});
             const wpSection = renderWatchProvidersSection(wp);
             if (wpSection) right.appendChild(wpSection);
         } catch {
-            // ignore provider errors
+            // ignore
         }
+
+        // TV seasons (prequel/sequel as previous/next season)
+        if (kind === "tv" && Array.isArray(data.seasons)) {
+            const seasonsSection = renderTvSeasonsSection(data);
+            if (seasonsSection) right.appendChild(seasonsSection);
+        }
+
+        if (kind === "movie" && data.belongs_to_collection?.id) {
+            try {
+                const col = await tmdb(`collection/${data.belongs_to_collection.id}`, {
+                    language: "en-US",
+                });
+                const colSection = renderMovieCollectionSection(data, col);
+                if (colSection) right.appendChild(colSection);
+            } catch {
+                // ignore collection errors
+            }
+        }
+
+        // TV recommendations/similar
+        if (kind === "tv") {
+            if (
+                Array.isArray(data.recommendations?.results) &&
+                data.recommendations.results.length
+            ) {
+                const recSection = renderMiniList(
+                    "Recommended shows",
+                    data.recommendations.results,
+                    "tv"
+                );
+                right.appendChild(recSection);
+            }
+
+            if (
+                Array.isArray(data.similar?.results) &&
+                data.similar.results.length
+            ) {
+                const simSection = renderMiniList(
+                    "Similar shows",
+                    data.similar.results,
+                    "tv"
+                );
+                right.appendChild(simSection);
+            }
+        }
+
+        if (kind === "movie") {
+            const rec = await tmdb(`movie/${idNum}/recommendations`, { language: "en-US" });
+            if (Array.isArray(rec.results) && rec.results.length) {
+                const recSection = renderMiniList("Recommended movies", rec.results, "movie");
+                right.appendChild(recSection);
+            }
+
+            const sim = await tmdb(`movie/${idNum}/similar`, { language: "en-US" });
+            if (Array.isArray(sim.results) && sim.results.length) {
+                const simSection = renderMiniList("Similar movies", sim.results, "movie");
+                right.appendChild(simSection);
+            }
+        }
+
 
         if (opts.highlight) {
             const hint = document.createElement("div");
@@ -222,8 +287,6 @@ export async function openDetails(idNum, opts = {}) {
             hint.textContent = "Tonight’s pick";
             right.appendChild(hint);
         }
-
-        // NO extra Play-together block here anymore
 
         wrap.appendChild(left);
         wrap.appendChild(right);
@@ -237,4 +300,226 @@ export async function openDetails(idNum, opts = {}) {
     } finally {
         setBusy(false);
     }
+}
+
+// Mini horizontal list for recommendations/similar
+function renderMiniList(title, items, kind) {
+    const list = Array.isArray(items) ? items.slice(0, 10) : [];
+    if (!list.length) return null;
+
+    const wrap = document.createElement("div");
+    wrap.className = "mt-4 space-y-2";
+
+    const heading = document.createElement("div");
+    heading.className = "text-sm font-semibold";
+    heading.textContent = title;
+    wrap.appendChild(heading);
+
+    const row = document.createElement("div");
+    row.className = "flex gap-3 overflow-x-auto pb-1";
+    wrap.appendChild(row);
+
+    for (const raw of list) {
+        const id = raw.id;
+        if (!id) continue;
+
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className =
+            "shrink-0 w-28 text-left text-xs bg-base-200/40 rounded-xl border border-base-300 overflow-hidden hover:shadow-md transition-shadow";
+
+        const p = posterUrl(raw.poster_path);
+        const posterHtml = p
+            ? `<img src="${p}" alt="" class="w-full aspect-[2/3] object-cover" loading="lazy" />`
+            : `<div class="w-full aspect-[2/3] bg-base-300 grid place-items-center text-[0.6rem] opacity-70">No poster</div>`;
+
+        const titleText =
+            kind === "tv"
+                ? raw.name || raw.original_name || "Untitled"
+                : raw.title || raw.original_title || "Untitled";
+
+        const yearStr = year(
+            kind === "tv" ? raw.first_air_date : raw.release_date
+        );
+        const rating = Number(raw.vote_average ?? 0).toFixed(1);
+
+        card.innerHTML = `
+      ${posterHtml}
+      <div class="p-1.5 space-y-0.5">
+        <div class="font-semibold line-clamp-2">${titleText}</div>
+        <div class="flex items-center justify-between text-[0.65rem] opacity-70">
+          <span>${yearStr || ""}</span>
+          <span>${rating}</span>
+        </div>
+      </div>
+    `;
+
+        card.addEventListener("click", () => {
+            openDetails(id, { mediaType: kind });
+        });
+
+        row.appendChild(card);
+    }
+
+    return wrap;
+}
+
+function renderTvSeasonsSection(tv) {
+    const seasons = Array.isArray(tv.seasons) ? tv.seasons : [];
+    if (!seasons.length) return null;
+
+    const wrap = document.createElement("div");
+    wrap.className = "mt-4 space-y-2";
+
+    const title = document.createElement("div");
+    title.className = "text-sm font-semibold";
+    title.textContent = "Seasons";
+    wrap.appendChild(title);
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "flex flex-wrap gap-2";
+    wrap.appendChild(btnRow);
+
+    const currentSeasonNumber =
+        typeof tv.last_air_date === "string"
+            ? tv.seasons
+                .filter((s) => s.air_date)
+                .sort(
+                    (a, b) =>
+                        new Date(b.air_date).getTime() -
+                        new Date(a.air_date).getTime()
+                )[0]?.season_number ?? null
+            : null;
+
+    const fallbackSeasonNumber =
+        seasons
+            .map((s) => s.season_number)
+            .filter((n) => typeof n === "number")
+            .sort((a, b) => a - b)
+            .pop() ?? null;
+
+    const selectedSeasonNumber = currentSeasonNumber ?? fallbackSeasonNumber;
+
+    for (const s of seasons) {
+        const n = s.season_number;
+        if (typeof n !== "number") continue;
+
+        const btn = document.createElement("button");
+        const isSelected = n === selectedSeasonNumber;
+
+        btn.className =
+            "btn btn-xs " +
+            (isSelected ? "btn-primary" : "btn-ghost border border-base-300");
+        btn.textContent = s.name || `Season ${n}`;
+
+        btn.addEventListener("click", () => {
+            toast(`Selected ${s.name || "Season " + n}`, "info");
+        });
+
+        btnRow.appendChild(btn);
+    }
+
+    const nums = seasons
+        .map((s) => s.season_number)
+        .filter((n) => typeof n === "number")
+        .sort((a, b) => a - b);
+
+    const idx = nums.indexOf(selectedSeasonNumber);
+    const prevSeasonNum = idx > 0 ? nums[idx - 1] : null;
+    const nextSeasonNum =
+        idx >= 0 && idx < nums.length - 1 ? nums[idx + 1] : null;
+
+    const controls = document.createElement("div");
+    controls.className = "flex gap-2 text-[0.7rem] text-base-content/70";
+    wrap.appendChild(controls);
+
+    const prevBtn = document.createElement("button");
+    prevBtn.className =
+        "btn btn-ghost btn-xs px-2 border border-base-300" +
+        (prevSeasonNum == null ? " btn-disabled opacity-40" : "");
+    prevBtn.textContent = "Previous season";
+    if (prevSeasonNum != null) {
+        prevBtn.addEventListener("click", () => {
+            const s = seasons.find((ss) => ss.season_number === prevSeasonNum);
+            if (s)
+                toast(`Previous: ${s.name || "Season " + prevSeasonNum}`, "info");
+        });
+    }
+
+    const nextBtn = document.createElement("button");
+    nextBtn.className =
+        "btn btn-ghost btn-xs px-2 border border-base-300" +
+        (nextSeasonNum == null ? " btn-disabled opacity-40" : "");
+    nextBtn.textContent = "Next season";
+    if (nextSeasonNum != null) {
+        nextBtn.addEventListener("click", () => {
+            const s = seasons.find((ss) => ss.season_number === nextSeasonNum);
+            if (s)
+                toast(`Next: ${s.name || "Season " + nextSeasonNum}`, "info");
+        });
+    }
+
+    controls.appendChild(prevBtn);
+    controls.appendChild(nextBtn);
+
+    return wrap;
+}
+
+function renderMovieCollectionSection(currentMovie, collection) {
+    const parts = Array.isArray(collection?.parts) ? collection.parts.slice() : [];
+    if (!parts.length) return null;
+
+    parts.sort((a, b) => {
+        const da = a.release_date ? new Date(a.release_date).getTime() : 0;
+        const db = b.release_date ? new Date(b.release_date).getTime() : 0;
+        return da - db;
+    });
+
+    const idx = parts.findIndex((p) => p.id === currentMovie.id);
+    const prev = idx > 0 ? parts[idx - 1] : null;
+    const next = idx >= 0 && idx < parts.length - 1 ? parts[idx + 1] : null;
+
+    const wrap = document.createElement("div");
+    wrap.className = "mt-4 space-y-2";
+
+    const title = document.createElement("div");
+    title.className = "text-sm font-semibold";
+    title.textContent = collection.name || "Collection";
+    wrap.appendChild(title);
+
+    const row = document.createElement("div");
+    row.className = "flex flex-wrap gap-2 text-[0.7rem]";
+    wrap.appendChild(row);
+
+    if (prev) {
+        const btnPrev = document.createElement("button");
+        btnPrev.className = "btn btn-ghost btn-xs px-2 border border-base-300";
+        btnPrev.textContent = `Prequel: ${prev.title || "Previous"}`;
+        btnPrev.addEventListener("click", () =>
+            openDetails(prev.id, { mediaType: "movie" })
+        );
+        row.appendChild(btnPrev);
+    }
+
+    if (next) {
+        const btnNext = document.createElement("button");
+        btnNext.className = "btn btn-ghost btn-xs px-2 border border-base-300";
+        btnNext.textContent = `Sequel: ${next.title || "Next"}`;
+        btnNext.addEventListener("click", () =>
+            openDetails(next.id, { mediaType: "movie" })
+        );
+        row.appendChild(btnNext);
+    }
+
+    // Optional: small inline list of all parts
+    const all = document.createElement("div");
+    all.className = "w-full text-[0.7rem] opacity-70 mt-1";
+    all.textContent =
+        "In this series: " +
+        parts
+            .map((p) => p.title || p.original_title || "Untitled")
+            .join(" • ");
+    wrap.appendChild(all);
+
+    return wrap;
 }
