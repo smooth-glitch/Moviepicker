@@ -31,9 +31,15 @@
                 </button>
                 <span id="roomBadge" class="badge badge-outline hidden">Room: —</span>
 
-                <button id="btnCreateRoom" class="btn btn-outline btn-sm">Create room</button>
-                <button id="btnCopyRoomLink" class="btn btn-ghost btn-sm hidden">Copy link</button>
-                <button id="btnLeaveRoom" class="btn btn-ghost btn-sm hidden">Leave</button>
+                <button id="btnCreateRoom" class="btn btn-outline btn-sm">
+                    Create room
+                </button>
+                <button id="btnCopyRoomLink" class="btn btn-ghost btn-sm hidden">
+                    Copy link
+                </button>
+                <button id="btnLeaveRoom" class="btn btn-ghost btn-sm hidden">
+                    Leave
+                </button>
 
                 <!-- Theme toggle -->
                 <button id="themeToggleBtn" class="theme-toggle btn btn-ghost btn-sm px-2" type="button"
@@ -47,11 +53,9 @@
                 </button>
 
                 <!-- User/login button with icon -->
-                <!-- User menu (dropdown) -->
                 <div class="dropdown dropdown-end">
                     <button id="btnUser" tabindex="0" role="button" class="btn btn-ghost btn-sm gap-2">
                         <span id="userChip" class="inline-flex items-center gap-2">
-                            <!-- Icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -106,7 +110,6 @@
             <section class="card bg-base-100 shadow-xl border border-base-300">
                 <div class="card-body gap-4">
                     <div id="filtersBar" class="flex flex-col gap-3 2xl:flex-row 2xl:flex-nowrap 2xl:items-end">
-                        <!-- Row 1 -->
                         <div id="searchRow" class="flex flex-col md:flex-row gap-2 md:items-end">
                             <div class="flex-1 min-w-0">
                                 <label class="label">
@@ -116,13 +119,15 @@
                                     placeholder="Title (or leave empty for rating-based discover)..." />
                             </div>
 
-                            <button id="btnSearch" class="btn btn-secondary ...">Search</button>
-                            <button id="btnTrending" class="btn btn-ghost ...">Trending</button>
+                            <button id="btnSearch" class="btn btn-secondary ...">
+                                Search
+                            </button>
+                            <button id="btnTrending" class="btn btn-ghost ...">
+                                Trending
+                            </button>
                         </div>
 
-                        <!-- Row 2 -->
                         <div id="filtersGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                            <!-- mediaType -->
                             <div class="flex flex-col gap-2">
                                 <select id="mediaType" class="select select-bordered select-sm w-full">
                                     <option value="movie" selected>Movies</option>
@@ -130,7 +135,6 @@
                                 </select>
                             </div>
 
-                            <!-- OTT -->
                             <div class="flex flex-col gap-2">
                                 <div class="dropdown w-full">
                                     <div id="ottDropdownBtn" tabindex="0" role="button"
@@ -143,30 +147,28 @@
                                         class="dropdown-content z-50 mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
                                         <label
                                             class="flex items-center gap-2 p-2 rounded-lg hover:bg-base-200/40 cursor-pointer">
-                                            <input id="ottNetflix" type="checkbox" class="checkbox checkbox-xs">
+                                            <input id="ottNetflix" type="checkbox" class="checkbox checkbox-xs" />
                                             <span class="text-sm">Netflix</span>
                                         </label>
                                         <label
                                             class="flex items-center gap-2 p-2 rounded-lg hover:bg-base-200/40 cursor-pointer">
-                                            <input id="ottPrime" type="checkbox" class="checkbox checkbox-xs">
+                                            <input id="ottPrime" type="checkbox" class="checkbox checkbox-xs" />
                                             <span class="text-sm">Prime Video</span>
                                         </label>
                                         <label
                                             class="flex items-center gap-2 p-2 rounded-lg hover:bg-base-200/40 cursor-pointer">
-                                            <input id="ottHotstar" type="checkbox" class="checkbox checkbox-xs">
+                                            <input id="ottHotstar" type="checkbox" class="checkbox checkbox-xs" />
                                             <span class="text-sm">Disney Hotstar</span>
                                         </label>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- year -->
                             <div class="flex flex-col gap-2">
                                 <input id="yearFilter" type="number" class="input input-bordered input-sm w-full"
                                     placeholder="e.g. 2023" min="1900" max="2100" />
                             </div>
 
-                            <!-- sort -->
                             <div class="flex flex-col gap-2">
                                 <select id="resultSort" class="select select-bordered select-sm w-full">
                                     <option value="popularity.desc">Popular</option>
@@ -175,7 +177,6 @@
                                 </select>
                             </div>
 
-                            <!-- genres -->
                             <div class="flex flex-col gap-2">
                                 <div class="dropdown w-full">
                                     <div id="genreDropdownBtn" tabindex="0" role="button"
@@ -186,13 +187,12 @@
 
                                     <div id="genreDropdownMenu" tabindex="0"
                                         class="dropdown-content z-[50] mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
-                                        <!-- checkboxes injected here -->
+                                        <!-- genre checkboxes injected -->
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- reset -->
                         <div class="flex flex-col gap-2">
                             <button id="btnResetFilters" class="btn btn-outline btn-sm w-full">
                                 Reset filters
@@ -230,7 +230,9 @@
                         <h2 class="card-title text-base">Your pool</h2>
 
                         <div class="flex items-center gap-2">
-                            <button id="btnImportList" class="btn btn-xs btn-primary hidden">Import</button>
+                            <button id="btnImportList" class="btn btn-xs btn-primary hidden">
+                                Import
+                            </button>
 
                             <div id="minRatingChip"
                                 class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-base-200 text-xs text-base-content/80 border border-base-300">
@@ -248,10 +250,16 @@
                                 Show hidden
                             </button>
 
-                            <button id="btnPickPool" class="btn btn-xs btn-primary">Pick</button>
+                            <button id="btnPickPool" class="btn btn-xs btn-primary">
+                                Pick
+                            </button>
 
-                            <button id="btnShareList" class="btn btn-xs btn-outline">Share</button>
-                            <button id="btnClearPool" class="btn btn-xs btn-ghost">Clear</button>
+                            <button id="btnShareList" class="btn btn-xs btn-outline">
+                                Share
+                            </button>
+                            <button id="btnClearPool" class="btn btn-xs btn-ghost">
+                                Clear
+                            </button>
                         </div>
                     </div>
 
@@ -281,7 +289,12 @@
                                 <span class="font-semibold">Room chat</span>
                             </div>
 
-                            <!-- Reply preview (hidden by default) -->
+                            <!-- Chat message list -->
+                            <div id="roomChatMessages"
+                                class="h-48 md:h-64 rounded-xl border border-base-300 bg-base-200/40 overflow-y-auto px-2 py-2 space-y-1 text-xs">
+                            </div>
+
+                            <!-- Reply preview -->
                             <div id="roomReplyPreview"
                                 class="hidden text-[0.7rem] px-2 py-1 rounded-lg bg-base-200/70 border border-base-300 flex items-center justify-between gap-2">
                                 <div class="truncate">
@@ -295,31 +308,31 @@
                                 </button>
                             </div>
 
+                            <!-- Input row -->
                             <form id="roomChatForm" class="flex items-center gap-2">
                                 <button id="roomGifBtn" type="button" class="btn btn-xs btn-ghost">
                                     GIF
                                 </button>
                                 <input id="roomChatInput" type="text" class="input input-bordered input-xs flex-1"
                                     placeholder="Message everyone…" autocomplete="off" />
-                                <button type="submit" class="btn btn-xs btn-primary">Send</button>
+                                <button type="submit" class="btn btn-xs btn-primary">
+                                    Send
+                                </button>
                             </form>
 
-                            <!-- Simple GIF search modal -->
+                            <!-- GIF picker -->
                             <dialog id="dlgGifPicker" class="modal">
                                 <div class="modal-box max-w-sm space-y-3">
                                     <h3 class="font-bold text-sm">Send a GIF</h3>
                                     <input id="gifSearchInput" type="text" class="input input-bordered input-sm w-full"
                                         placeholder="Search GIPHY…" />
                                     <div id="gifResults"
-                                        class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs">
-                                        <!-- thumbnails injected -->
-                                    </div>
+                                        class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
                                     <form method="dialog" class="modal-action">
                                         <button class="btn btn-xs">Close</button>
                                     </form>
                                 </div>
                             </dialog>
-
                         </div>
                     </div>
                 </div>
@@ -334,8 +347,12 @@
             <p id="dlgMeta" class="text-xs text-base-content/70 mb-3"></p>
             <div id="dlgOverview" class="space-y-3"></div>
             <div class="modal-action">
-                <button id="btnReroll" class="btn btn-secondary btn-sm hidden">Re-roll</button>
-                <button id="btnWatched" class="btn btn-accent btn-sm">Mark watched</button>
+                <button id="btnReroll" class="btn btn-secondary btn-sm hidden">
+                    Re-roll
+                </button>
+                <button id="btnWatched" class="btn btn-accent btn-sm">
+                    Mark watched
+                </button>
                 <form method="dialog">
                     <button class="btn btn-sm">Close</button>
                 </form>
