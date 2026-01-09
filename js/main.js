@@ -16,7 +16,13 @@ import { openDetails, markCurrentWatched } from "./details.js";
 import { clearPool } from "./pool.js";
 import { loadTrending, doSearch } from "./search.js";
 import { initWatchFiltersUI } from "./watchFilters.js";
-import { updateUserChip, openAuthDialog, handleAuthSubmit, handleGoogleSignIn, handleSignOut } from "./auth.js";
+import {
+    updateUserChip,
+    openAuthDialog,
+    handleAuthSubmit,
+    handleGoogleSignIn,
+    handleSignOut,
+} from "./auth.js";
 import { pickForMe, rerollPick } from "./pick.js";
 import { importSharedListToAccount } from "./importList.js";
 import { sharePoolOnWhatsApp } from "./share.js";
@@ -32,35 +38,8 @@ import {
     copyRoomLink,
 } from "./rooms.js";
 import { setSyncControls } from "./rooms.js";
+
 let liveSearchTimer = null;
-const chatForm = id("roomChatForm");
-const chatInput = id("roomChatInput");
-const chatMessages = id("roomChatMessages");
-
-if (chatForm && chatInput) {
-    chatForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const text = chatInput.value.trim();
-        if (!text || !inRoom()) return;
-
-        const fs = window.firebaseStore;
-        if (!fs) return;
-
-        const u = authState.user;
-        try {
-            await fs.addDoc(messagesColRef(), {
-                text,
-                userId: u?.uid ?? null,
-                userName: u?.displayName ?? u?.email ?? "Anon",
-                createdAt: fs.serverTimestamp()
-            });
-            chatInput.value = "";
-        } catch (err) {
-            toast("Failed to send message.", "error");
-            console.warn(err);
-        }
-    });
-}
 
 function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
@@ -129,7 +108,6 @@ async function populateGenreSelect(kind) {
 function syncControls() {
     const ex = id("excludeWatched");
     const mr = id("minRatingPool");
-
     const mediaType = id("mediaType");
     const yearFilter = id("yearFilter");
 
@@ -219,14 +197,12 @@ async function loadSharedListFromUrl() {
     id("btnImportList")?.classList.remove("hidden");
 }
 
-
 function syncUserMenu() {
     const signedIn = !!authState.user;
     id("btnMenuSignIn")?.classList.toggle("hidden", signedIn);
     id("btnMenuSignOut")?.classList.toggle("hidden", !signedIn);
     id("btnMenuCopyUid")?.classList.toggle("hidden", !signedIn);
 }
-
 
 async function boot() {
     // persisted state
@@ -282,7 +258,7 @@ async function boot() {
                 startRoomListener();
                 startMembersListener();
                 startHeartbeat();
-                startMessagesListener(); // NEW: chat listener
+                // startMessagesListener is called from joinRoom in rooms.js, not here
                 return;
             }
 
@@ -414,14 +390,14 @@ async function boot() {
         chatForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const text = chatInput.value;
-            if (!text.trim() || !inRoom()) return;
+            if (!text.trim() || !roomState.id) return;
 
             const fs = window.firebaseStore;
             if (!fs) return;
             const u = authState.user;
 
             try {
-                await fs.addDoc(messagesColRef(), {
+                await fs.addDoc(fs.collection(fs.db, "rooms", roomState.id, "messages"), {
                     text,
                     userId: u?.uid ?? null,
                     userName: u?.displayName ?? u?.email ?? "Anon",
@@ -438,7 +414,6 @@ async function boot() {
     await loadTmdbConfig();
     await loadTrending(1);
 }
-
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
 else boot();

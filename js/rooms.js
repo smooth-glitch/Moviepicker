@@ -38,12 +38,13 @@ let lastPlaybackApplyTs = 0;
 
 let unsubMessages = null;
 
-function stopMessagesListener() {
+
+export function stopMessagesListener() {
     if (unsubMessages) unsubMessages();
     unsubMessages = null;
 }
 
-function startMessagesListener() {
+export function startMessagesListener() {
     const fs = window.firebaseStore;
     if (!fs || !inRoom()) return stopMessagesListener();
 
