@@ -55,6 +55,7 @@ import {
 } from "./rooms.js";
 import { setSyncControls } from "./rooms.js";
 import { searchGifs } from "./gif.js";
+import { searchStickers } from "./stickers.js";
 
 let liveSearchTimer = null;
 // reply draft for chat
@@ -433,12 +434,27 @@ async function boot() {
     function renderMentionBox(list) {
         if (!mentionBox) return;
         mentionBox.innerHTML = "";
+
+        mentionBox.className =
+            "absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 " +
+            "rounded-xl shadow-lg z-20 py-1"; // solid bg, rounded, padded
+
         for (const m of list) {
             const btn = document.createElement("button");
             btn.type = "button";
             btn.className =
-                "w-full text-left px-3 py-2 text-sm hover:bg-base-200 flex items-center gap-2";
-            btn.textContent = m.name || "Anon";
+                "w-full text-left px-3 py-1.5 text-xs hover:bg-base-200 flex flex-col";
+            const name = document.createElement("span");
+            name.className = "font-semibold truncate";
+            name.textContent = m.name || "Anon";
+
+            const sub = document.createElement("span");
+            sub.className = "text-[0.65rem] opacity-70 truncate";
+            sub.textContent = m.email || m.id || "";
+
+            btn.appendChild(name);
+            if (sub.textContent) btn.appendChild(sub);
+
             btn.addEventListener("click", () => {
                 applyMention(m);
             });
@@ -446,6 +462,7 @@ async function boot() {
         }
         mentionBox.classList.remove("hidden");
     }
+
 
     function applyMention(member) {
         if (!mentionActive || mentionStartIndex < 0 || !chatInput) return;
@@ -700,35 +717,38 @@ async function boot() {
         }
     }
 
-    // Sticker picker
-    const stickerBtn = id("roomStickerBtn");
-    const stickerDialog = id("dlgStickerPicker");
-    const stickerResults = id("stickerResults");
-
-    const STICKERS = [
-        { url: "/stickers/lol.png", name: "LOL" },
-        { url: "/stickers/sad.png", name: "Sad" },
-        { url: "/stickers/gg.png", name: "GG" },
-    ];
-
-    if (stickerBtn && stickerDialog && stickerResults) {
-        stickerBtn.addEventListener("click", () => {
+    if (stickerBtn && stickerDialog && stickerResults && chatInput) {
+        stickerBtn.addEventListener("click", async () => {
+            if (stickerSearchInput) stickerSearchInput.value = "";
             stickerResults.innerHTML = "";
-            for (const s of STICKERS) {
-                const btn = document.createElement("button");
-                btn.type = "button";
-                btn.className =
-                    "relative w-full aspect-square overflow-hidden rounded-lg border border-base-300 bg-base-200";
-                btn.innerHTML = `<img src="${s.url}" alt="${s.name
-                    }" class="w-full h-full object-contain p-2" loading="lazy" />`;
-                btn.addEventListener("click", async () => {
-                    await sendStickerMessage(s);
-                    stickerDialog.close();
-                });
-                stickerResults.appendChild(btn);
+            try {
+                const stickers = await searchStickers("");
+                renderStickerResults(stickers);
+            } catch (e) {
+                console.warn(e);
+                stickerResults.innerHTML =
+                    '<div class="text-xs opacity-70 p-2">Failed to load stickers.</div>';
             }
             stickerDialog.showModal();
+            if (stickerSearchInput) stickerSearchInput.focus();
         });
+
+        if (stickerSearchInput) {
+            stickerSearchInput.addEventListener("input", () => {
+                const q = stickerSearchInput.value.trim();
+                if (stickerSearchInput._timer) clearTimeout(stickerSearchInput._timer);
+                stickerSearchInput._timer = setTimeout(async () => {
+                    try {
+                        const stickers = await searchStickers(q);
+                        renderStickerResults(stickers);
+                    } catch (e) {
+                        console.warn(e);
+                        stickerResults.innerHTML =
+                            '<div class="text-xs opacity-70 p-2">Failed to load stickers.</div>';
+                    }
+                }, 300);
+            });
+        }
 
         async function sendStickerMessage(sticker) {
             if (!roomState.id) return;
@@ -769,11 +789,34 @@ async function boot() {
                 console.warn(err);
             }
         }
-    }
 
-    await loadTmdbConfig();
-    renderResultsLoading();
-    await loadTrending(1);
+        function renderStickerResults(list) {
+            stickerResults.innerHTML = "";
+            if (!list.length) {
+                stickerResults.innerHTML =
+                    '<div class="text-xs opacity-70 p-2 col-span-3">No stickers found.</div>';
+                return;
+            }
+            for (const s of list) {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className =
+                    "relative w-full aspect-square overflow-hidden rounded-lg border border-base-300 " +
+                    "bg-base-100 hover:bg-base-200 transition";
+                btn.innerHTML = `
+              <div class="w-full h-full flex items-center justify-center">
+                <img src="${s.thumb}" alt="${s.title || ""}"
+                     class="max-w-[80%] max-h-[80%] object-contain" loading="lazy" />
+              </div>
+            `;
+                btn.addEventListener("click", async () => {
+                    await sendStickerMessage(s);
+                    stickerDialog.close();
+                });
+                stickerResults.appendChild(btn);
+            }
+        }
+    }
 }
 
 if (document.readyState === "loading")

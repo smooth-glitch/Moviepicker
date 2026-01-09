@@ -354,9 +354,15 @@
                                 </div>
                             </dialog>
                             <dialog id="dlgStickerPicker" class="modal">
-                                <div class="modal-box">
-                                    <h3 class="font-semibold mb-2 text-sm">Choose a sticker</h3>
-                                    <div id="stickerResults" class="grid grid-cols-3 gap-2"></div>
+                                <div class="modal-box max-w-sm space-y-3">
+                                    <h3 class="font-semibold mb-1 text-sm">Choose a sticker</h3>
+
+                                    <input id="stickerSearchInput" type="text"
+                                        class="input input-bordered input-sm w-full" placeholder="Search stickers…" />
+
+                                    <div id="stickerResults"
+                                        class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
+
                                     <div class="modal-action">
                                         <form method="dialog">
                                             <button class="btn btn-sm">Close</button>
@@ -364,6 +370,7 @@
                                     </div>
                                 </div>
                             </dialog>
+
                         </div>
                     </div>
                 </div>
