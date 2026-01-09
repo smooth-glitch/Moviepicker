@@ -5,6 +5,10 @@ import { openDetails } from "./details.js";
 import { addToPoolById, removeFromPool, toggleWatched } from "./pool.js";
 let showHiddenPoolItems = false;
 
+export function toggleHiddenPoolItems() {
+  showHiddenPoolItems = !showHiddenPoolItems;
+  renderPool();
+}
 
 export function year(dateStr) {
   return dateStr ? String(dateStr).slice(0, 4) : "";
@@ -149,6 +153,7 @@ export function renderResults(list) {
 }
 
 export function renderPool() {
+  const btnHidden = id("btnToggleHiddenPool");
   const wrap = id("pool");
   const empty = id("poolEmpty");
   if (!wrap) return;
@@ -173,6 +178,17 @@ export function renderPool() {
 
   // Decide what we actually render
   const listToRender = showHiddenPoolItems ? [...visible, ...hidden] : visible;
+
+  if (!listToRender.length) {
+    if (empty) {
+      empty.textContent = state.pool.length
+        ? "No movies match your filters."
+        : "Add movies from results to build your pool.";
+      empty.classList.remove("hidden");
+    }
+    return;
+  }
+  empty?.classList.add("hidden");
 
   // Banner that explains hidden items + toggle button
   if (hidden.length > 0) {

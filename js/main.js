@@ -11,7 +11,7 @@ import {
 import { LSPOOL, LSWATCHED, LSFILTERS, LSTHEME, loadJson, saveJson } from "./storage.js";
 import { toast, bindDropdownRowToggle } from "./ui.js";
 import { tmdb, loadTmdbConfig } from "./tmdb.js";
-import { renderPager, renderPool } from "./render.js";
+import { renderPager, renderPool, toggleHiddenPoolItems } from "./render.js";
 import { openDetails, markCurrentWatched } from "./details.js";
 import { clearPool } from "./pool.js";
 import { loadTrending, doSearch } from "./search.js";
@@ -293,7 +293,7 @@ async function boot() {
     id("btnCopyRoomLink")?.addEventListener("click", copyRoomLink);
 
     id("btnImportList")?.addEventListener("click", importSharedListToAccount);
-
+    id("btnToggleHiddenPool")?.addEventListener("click", toggleHiddenPoolItems);
     id("btnOpenPicked")?.addEventListener("click", () => {
         if (!lastPickedMovieId) return toast("No pick yet.", "info");
         openDetails(lastPickedMovieId, { highlight: true });
