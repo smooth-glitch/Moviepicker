@@ -5,7 +5,6 @@ import { toast } from "./ui.js";
 export function updateUserChip() {
     const label = id("userChipLabel");
     const btn = id("btnUser");
-
     if (!label) return;
 
     if (authState.user) {
@@ -19,17 +18,17 @@ export function updateUserChip() {
     }
 }
 
-
 export function openAuthDialog() {
     const dlg = id("dlgAuth");
     if (!dlg) return;
-
     if (authState.user) {
-        toast(`Signed in as ${authState.user.displayName || authState.user.email}`, "info");
+        toast(
+            `Signed in as ${authState.user.displayName || authState.user.email}`,
+            "info"
+        );
         return;
     }
-
-    (id("authName") || {}).value = (id("authName")?.value ?? "");
+    id("authName")?.value;
     dlg.showModal();
 }
 
@@ -39,11 +38,10 @@ export function handleAuthSubmit() {
         toast("Auth not ready. Check Firebase config.", "error");
         return;
     }
-
     const dlgAuth = id("dlgAuth");
-    const name = id("authName")?.value.trim() || "";
-    const email = id("authEmail")?.value.trim() || "";
-    const pass = id("authPass")?.value.trim() || "";
+    const name = id("authName")?.value.trim();
+    const email = id("authEmail")?.value.trim();
+    const pass = id("authPass")?.value.trim();
 
     if (!email || !pass) {
         toast("Email and password required.", "error");
@@ -53,14 +51,26 @@ export function handleAuthSubmit() {
     fa.signInWithEmailAndPassword(fa.auth, email, pass)
         .then(() => {
             dlgAuth?.close();
+            if (name && fa.auth.currentUser && !fa.auth.currentUser.displayName) {
+                fa.updateProfile(fa.auth.currentUser, { displayName: name }).catch(
+                    () => { }
+                );
+            }
             toast("Signed in.", "success");
         })
         .catch((err) => {
             if (err.code === "auth/user-not-found") {
-                return fa.createUserWithEmailAndPassword(fa.auth, email, pass).then(() => {
-                    dlgAuth?.close();
-                    toast("Account created & signed in.", "success");
-                });
+                return fa
+                    .createUserWithEmailAndPassword(fa.auth, email, pass)
+                    .then(() => {
+                        if (name && fa.auth.currentUser) {
+                            fa.updateProfile(fa.auth.currentUser, { displayName: name }).catch(
+                                () => { }
+                            );
+                        }
+                        dlgAuth?.close();
+                        toast("Account created & signed in.", "success");
+                    });
             }
             toast(err.message || "Sign-in failed.", "error");
         });
@@ -73,22 +83,61 @@ export function handleGoogleSignIn() {
         return;
     }
     const dlgAuth = id("dlgAuth");
-
-    fa.signInWithPopup(fa.auth, fa.provider)
+    fa.signInWithPopup(fa.auth, fa.googleProvider)
         .then(() => {
             dlgAuth?.close();
             toast("Signed in with Google.", "success");
         })
         .catch((err) => {
-            if (err.code !== "auth/popup-closed-by-user") toast(err.message || "Google sign-in failed.", "error");
+            if (err.code !== "auth/popup-closed-by-user") {
+                toast(err.message || "Google sign-in failed.", "error");
+            }
+        });
+}
+
+export function handleGithubSignIn() {
+    const fa = window.firebaseAuth;
+    if (!fa || !fa.githubProvider) {
+        toast("GitHub auth not configured.", "error");
+        return;
+    }
+    const dlgAuth = id("dlgAuth");
+    fa.signInWithPopup(fa.auth, fa.githubProvider)
+        .then(() => {
+            dlgAuth?.close();
+            toast("Signed in with GitHub.", "success");
+        })
+        .catch((err) => {
+            if (err.code !== "auth/popup-closed-by-user") {
+                toast(err.message || "GitHub sign-in failed.", "error");
+            }
+        });
+}
+
+export function handleTwitterSignIn() {
+    const fa = window.firebaseAuth;
+    if (!fa || !fa.twitterProvider) {
+        toast("X/Twitter auth not configured.", "error");
+        return;
+    }
+    const dlgAuth = id("dlgAuth");
+    fa.signInWithPopup(fa.auth, fa.twitterProvider)
+        .then(() => {
+            dlgAuth?.close();
+            toast("Signed in with X.", "success");
+        })
+        .catch((err) => {
+            if (err.code !== "auth/popup-closed-by-user") {
+                toast(err.message || "X sign-in failed.", "error");
+            }
         });
 }
 
 export function handleSignOut() {
     const fa = window.firebaseAuth;
     if (!fa) return;
-
-    fa.signOut(fa.auth)
+    fa
+        .signOut(fa.auth)
         .then(() => toast("Signed out.", "info"))
         .catch((err) => toast(err.message || "Sign-out failed.", "error"));
 }

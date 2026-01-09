@@ -1,14 +1,17 @@
-// js/firebase-init.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
 import {
   getAuth,
   onAuthStateChanged,
   GoogleAuthProvider,
+  GithubAuthProvider,
+  TwitterAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
 import {
   getFirestore,
   collection,
@@ -18,24 +21,35 @@ import {
   deleteDoc,
   onSnapshot,
   serverTimestamp,
-  addDoc,
-  query,
-  orderBy,
-  limit,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-const cfg = window.APPCONFIG?.firebaseConfig ?? window.APPCONFIG?.firebaseConfig;
+const cfg =
+  window.APPCONFIG?.firebaseConfig ?? window.APP_CONFIG?.firebaseConfig;
+
 if (!cfg) {
-  console.error("Missing firebaseConfig in config.js", window.APPCONFIG);
+  console.error(
+    "Missing firebaseConfig in config.js (window.APPCONFIG / window.APP_CONFIG)."
+  );
 } else {
   const app = initializeApp(cfg);
+
   const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
+
+  // Providers
+  const googleProvider = new GoogleAuthProvider();
+  const githubProvider = new GithubAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
+
   const db = getFirestore(app);
 
   window.firebaseAuth = {
     auth,
-    provider,
+    // providers
+    googleProvider,
+    githubProvider,
+    twitterProvider,
+
+    // helpers
     onAuthStateChanged,
     signInWithPopup,
     createUserWithEmailAndPassword,
@@ -52,9 +66,5 @@ if (!cfg) {
     deleteDoc,
     onSnapshot,
     serverTimestamp,
-    addDoc,
-    query,
-    orderBy,
-    limit,
   };
 }

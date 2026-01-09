@@ -35,8 +35,11 @@ import {
     openAuthDialog,
     handleAuthSubmit,
     handleGoogleSignIn,
+    handleGithubSignIn,
+    handleTwitterSignIn,
     handleSignOut,
 } from "./auth.js";
+
 import { pickForMe, rerollPick } from "./pick.js";
 import { importSharedListToAccount } from "./importList.js";
 import { sharePoolOnWhatsApp } from "./share.js";
@@ -620,7 +623,11 @@ async function boot() {
     });
 
     id("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
+    id("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
     id("btnGoogleDemo")?.addEventListener("click", handleGoogleSignIn);
+    id("btnGithub")?.addEventListener("click", handleGithubSignIn);
+    id("btnTwitter")?.addEventListener("click", handleTwitterSignIn);
+
 
     id("btnPrevPage")?.addEventListener("click", () => {
         if (state.page <= 1 || state.busy) return;
