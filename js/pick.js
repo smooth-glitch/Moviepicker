@@ -7,27 +7,39 @@ import { getPickCandidates } from "./pool.js";
 import { activeDocRef } from "./rooms.js";
 
 export async function pickForMe(opts = {}) {
+    const excludeWatched = !!state.filters?.excludeWatched;
+
     let candidates = getPickCandidates();
 
-    // fallback: if filters exclude everything, still allow picking from full pool
-    if (!candidates.length && state.pool.length) candidates = [...state.pool];
-
+    // If nothing matches filters:
     if (!candidates.length) {
-        toast("No movies in the pool to pick from.", "error");
-        return;
+        if (!state.pool.length) {
+            toast("No movies in the pool to pick from.", "error");
+            return;
+        }
+
+        // IMPORTANT: don't fall back to full pool when excludeWatched is ON
+        if (excludeWatched) {
+            toast("No unwatched movies match your filters.", "info");
+            return;
+        }
+
+        // Exclude watched is OFF => OK to fall back to the full pool
+        candidates = [...state.pool];
     }
 
-    // avoid repeating the same pick on reroll when possible
+    // Best-effort avoid repeating the same pick
     if (opts.avoidId && candidates.length > 1) {
-        candidates = candidates.filter((m) => m.id !== opts.avoidId);
+        const filtered = candidates.filter((m) => m.id !== opts.avoidId);
+        if (filtered.length) candidates = filtered;
     }
 
     const chosen = candidates[Math.floor(Math.random() * candidates.length)];
     setLastPickedMovieId(chosen.id);
 
-    const mediaType = chosen.mediaType || state.filters.mediaType || "movie";
+    const mediaType = chosen.mediaType ?? state.filters?.mediaType ?? "movie";
 
-    // If in a room, also write the pick to the room doc so everyone sees it
+    // Room mode: write lastPick only; room listener will openDetails()
     if (inRoom()) {
         if (!authState.user) {
             toast("Login to pick in this room.", "info");
@@ -41,8 +53,8 @@ export async function pickForMe(opts = {}) {
             {
                 lastPick: {
                     movieId: chosen.id,
-                    title: chosen.title || null,
-                    mediaType, // helps other clients open the correct type
+                    title: chosen.title ?? null,
+                    mediaType,
                     pickedBy: authState.user.uid,
                     pickedAt: fs.serverTimestamp(),
                 },
@@ -50,11 +62,14 @@ export async function pickForMe(opts = {}) {
             },
             { merge: true }
         );
+
+        return; // IMPORTANT: no openDetails() here
     }
 
+    // Non-room mode: open locally
     return openDetails(chosen.id, { highlight: true, mediaType });
 }
 
 export function rerollPick() {
-    pickForMe({ avoidId: lastPickedMovieId });
+    return pickForMe({ avoidId: lastPickedMovieId });
 }
