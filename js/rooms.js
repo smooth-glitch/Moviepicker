@@ -48,19 +48,26 @@ export function startMessagesListener() {
     const fs = window.firebaseStore;
     if (!fs || !inRoom()) return stopMessagesListener();
 
+    const colRef = fs.collection(fs.db, "rooms", roomState.id, "messages");
+
     const q = fs.query(
-        messagesColRef(),
+        colRef,
         fs.orderBy("createdAt", "asc"),
         fs.limit(200)
     );
 
-    unsubMessages = fs.onSnapshot(q, (snap) => {
-        const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        renderRoomMessages(msgs);
-    }, (err) => {
-        console.warn("Messages listener failed", err);
-    });
+    unsubMessages = fs.onSnapshot(
+        q,
+        (snap) => {
+            const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            renderRoomMessages(msgs);
+        },
+        (err) => {
+            console.warn("Messages listener failed", err);
+        }
+    );
 }
+
 
 export function renderRoomMessages(list) {
     const wrap = document.getElementById("roomChatMessages");
