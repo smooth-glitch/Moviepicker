@@ -466,6 +466,11 @@ function syncUserMenu() {
 }
 
 async function boot() {
+    await loadTmdbConfig();
+
+    // Initial homepage load – show skeletons before first trending call
+    renderResultsLoading();
+    await loadTrending(1);
     // persisted state
     state.pool = loadJson(LSPOOL, []);
     state.watched = new Set(loadJson(LSWATCHED, []));
