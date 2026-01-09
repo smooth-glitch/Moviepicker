@@ -33,6 +33,42 @@ let syncControlsCb = null;
 let membersInitDone = false;
 let lastClientWriteId = 0;
 
+// Teleparty playback sync
+let lastPlaybackApplyTs = 0;
+
+export async function updatePlaybackFromLocal({ mediaId, mediaType, position, isPlaying }) {
+    if (!inRoom()) return;
+    const fs = window.firebaseStore;
+    if (!fs) return;
+
+    const uid = authState.user?.uid ?? null;
+
+    await fs.setDoc(
+        roomDocRef(),
+        {
+            playback: {
+                mediaId,
+                mediaType,
+                position,
+                isPlaying,
+                updatedBy: uid,
+                updatedAt: fs.serverTimestamp(),
+            },
+            updatedAt: fs.serverTimestamp(),
+        },
+        { merge: true }
+    );
+}
+
+/**
+ * Called when Firestore playback payload changes.
+ * For now, just auto-open details + highlight.
+ * Later you can hook this into a real video player.
+ */
+function onPlaybackChange({ mediaId, mediaType }) {
+    if (!mediaId) return;
+    openDetails(mediaId, { highlight: true, mediaType: mediaType ?? "movie" });
+}
 
 export function stopMembersListener() {
     if (unsubMembers) unsubMembers();
@@ -342,6 +378,30 @@ export function startRoomListener() {
             // If this snapshot is from *me* but older than my latest write, ignore it
             if (selfUid && incomingBy === selfUid && incomingWriteId && incomingWriteId < lastClientWriteId) {
                 return;
+            }
+
+            // Teleparty: react to playback state
+            const playback = data.playback || null;
+            if (playback) {
+                const {
+                    mediaId,
+                    mediaType,
+                    position,
+                    isPlaying,
+                    updatedBy,
+                    updatedAt,
+                } = playback;
+
+                const myUid = authState.user?.uid ?? null;
+
+                // Ignore own writes for player commands, but still allow UI to render
+                const tsMs = typeof updatedAt?.toMillis === "function" ? updatedAt.toMillis() : 0;
+                if (!myUid || !updatedBy || updatedBy !== myUid) {
+                    if (tsMs && tsMs > lastPlaybackApplyTs) {
+                        lastPlaybackApplyTs = tsMs;
+                        onPlaybackChange({ mediaId, mediaType, position, isPlaying });
+                    }
+                }
             }
 
             applyingRemote = true;

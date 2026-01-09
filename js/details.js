@@ -1,11 +1,13 @@
 import { id } from "./dom.js";
-import { state } from "./state.js";
+import { state, inRoom } from "./state.js";
 import { tmdb } from "./tmdb.js";
 import { toast } from "./ui.js";
 import { setBusy, posterUrl, year } from "./render.js";
 import { renderWatchProvidersSection } from "./watchFilters.js";
 import { saveJson, LSWATCHED } from "./storage.js";
 import { renderPool } from "./render.js";
+import { updatePlaybackFromLocal } from "./rooms.js";
+
 
 export async function loadBestVideos(kind, id) {
     const attempts = [{ language: "en-US" }, {}];
@@ -145,6 +147,40 @@ export async function openDetails(idNum, opts = {}) {
             hint.textContent = "Tonight’s pick";
             right.appendChild(hint);
         }
+
+        // Teleparty: Play together button (room mode only)
+        if (inRoom()) {
+            const tpWrap = document.createElement("div");
+            tpWrap.className = "mt-3 flex flex-wrap items-center gap-2";
+
+            const label = document.createElement("div");
+            label.className = "text-sm opacity-70";
+            label.textContent = "Watch together";
+            tpWrap.appendChild(label);
+
+            const btn = document.createElement("button");
+            btn.className = "btn btn-sm btn-primary";
+            btn.textContent = "Play together";
+            btn.addEventListener("click", () => {
+                const cur = state.currentDetails;
+                if (!cur) return;
+
+                const mediaId = cur.id;
+                const mediaType = cur.mediaType || state.filters.mediaType || "movie";
+
+                // No real player yet, start at 0s and mark as playing
+                updatePlaybackFromLocal({
+                    mediaId,
+                    mediaType,
+                    position: 0,
+                    isPlaying: true,
+                });
+            });
+
+            tpWrap.appendChild(btn);
+            right.appendChild(tpWrap);
+        }
+
 
         wrap.appendChild(left);
         wrap.appendChild(right);
