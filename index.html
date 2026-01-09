@@ -47,16 +47,83 @@
                 </button>
 
                 <!-- User/login button with icon -->
-                <button id="btnUser" class="btn btn-ghost btn-sm gap-1">
-                    <span id="userChip" class="text-xs opacity-80">Sign in</span>
-                    <svg id="userStatusIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="hidden">
-                        <rect width="18" height="18" x="3" y="3" rx="2" />
-                        <circle cx="12" cy="10" r="3" />
-                        <path d="M7 21v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2" />
-                    </svg>
-                </button>
+                <!-- User menu (dropdown) -->
+                <div class="dropdown dropdown-end">
+                    <button id="btnUser" tabindex="0" role="button" class="btn btn-ghost btn-sm gap-1">
+                        <span id="userChip" class="text-xs opacity-80">Sign in</span>
+
+                        <!-- keep your existing status icon -->
+                        <svg id="userStatusIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                            <circle cx="12" cy="10" r="3"></circle>
+                            <path d="M7 21v-2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Make it look like your filter dropdowns -->
+                    <ul id="userDropdownMenu" tabindex="0"
+                        class="dropdown-content z-50 mt-2 w-60 p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl">
+                        <li>
+                            <button id="btnMenuSignIn" class="user-menu-item">
+                                <!-- login icon -->
+                                <svg class="user-menu-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                                    <polyline points="10 17 15 12 10 7"></polyline>
+                                    <line x1="15" y1="12" x2="3" y2="12"></line>
+                                </svg>
+                                <span>Sign in</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button id="btnMenuSettings" class="user-menu-item">
+                                <!-- settings icon -->
+                                <svg class="user-menu-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path
+                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-1.41 3.41h-.18a1.65 1.65 0 0 0-1.5 1l-.03.08a2 2 0 0 1-3.66 0l-.03-.08a1.65 1.65 0 0 0-1.5-1H9.6a2 2 0 0 1-1.41-3.41l.06-.06A1.65 1.65 0 0 0 8.6 15a1.65 1.65 0 0 0-1-1.5l-.08-.03a2 2 0 0 1 0-3.66l.08-.03a1.65 1.65 0 0 0 1-1.5 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 0 1 9.6 3.71h.18a1.65 1.65 0 0 0 1.5-1l.03-.08a2 2 0 0 1 3.66 0l.03.08a1.65 1.65 0 0 0 1.5 1h.18a2 2 0 0 1 1.41 3.41l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1 1.5l.08.03a2 2 0 0 1 0 3.66l-.08.03a1.65 1.65 0 0 0-1 1.5z">
+                                    </path>
+                                </svg>
+                                <span>Settings</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button id="btnMenuCopyUid" class="user-menu-item">
+                                <!-- copy icon -->
+                                <svg class="user-menu-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                                </svg>
+                                <span>Copy UID</span>
+                            </button>
+                        </li>
+
+                        <li>
+                            <button id="btnMenuSignOut" class="user-menu-item text-error">
+                                <!-- logout icon -->
+                                <svg class="user-menu-ico" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                                <span>Sign out</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+
             </div>
         </header>
         <div id="roomPickBanner" class="alert alert-info hidden">
@@ -263,6 +330,21 @@
 
         </div>
     </dialog>
+
+    <dialog id="dlgSettings" class="modal">
+        <div class="modal-box max-w-sm space-y-3">
+            <h3 class="font-bold text-lg">Settings</h3>
+
+            <button id="btnSettingsToggleTheme" class="btn btn-outline btn-sm w-full">
+                Toggle theme
+            </button>
+
+            <form method="dialog" class="modal-action">
+                <button class="btn btn-sm">Close</button>
+            </form>
+        </div>
+    </dialog>
+
 
     <!-- Auth dialog -->
     <dialog id="dlgAuth" class="modal">

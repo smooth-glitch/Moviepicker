@@ -114,6 +114,16 @@ function syncControls() {
 
 setSyncControls(syncControls);
 
+function updateSignOutLabel() {
+    const el = id("btnMenuSignOut");
+    if (!el) return;
+
+    const u = authState.user;
+    const name = u ? (u.displayName || u.email || "Signed in") : "";
+
+    el.textContent = u ? `Sign out (${name})` : "Sign out";
+}
+
 function resetAllFilters() {
     state.filters = normalizeFilters({
         excludeWatched: true,
@@ -180,6 +190,15 @@ async function loadSharedListFromUrl() {
     id("btnImportList")?.classList.remove("hidden");
 }
 
+
+function syncUserMenu() {
+    const signedIn = !!authState.user;
+    id("btnMenuSignIn")?.classList.toggle("hidden", signedIn);
+    id("btnMenuSignOut")?.classList.toggle("hidden", !signedIn);
+    id("btnMenuCopyUid")?.classList.toggle("hidden", !signedIn);
+}
+
+
 async function boot() {
     // persisted state
     state.pool = loadJson(LSPOOL, []);
@@ -204,6 +223,8 @@ async function boot() {
 
     renderPager();
     updateUserChip();
+    syncUserMenu();
+    updateSignOutLabel();
     await loadSharedListFromUrl();
 
     // firebase auth state
@@ -222,7 +243,8 @@ async function boot() {
             }
 
             updateUserChip();
-
+            syncUserMenu();
+            updateSignOutLabel();
             const url = new URL(window.location.href);
             const roomId = url.searchParams.get("room");
             if (roomId) {
@@ -324,10 +346,29 @@ async function boot() {
         applyTheme(current === "synthwave" ? "cupcake" : "synthwave");
     });
 
-    id("btnUser")?.addEventListener("click", () => {
-        if (authState.user) handleSignOut();
-        else openAuthDialog();
+    id("btnMenuSignIn")?.addEventListener("click", openAuthDialog);
+    id("btnMenuSignOut")?.addEventListener("click", handleSignOut);
+
+    id("btnMenuCopyUid")?.addEventListener("click", async () => {
+        const uid = authState.user?.uid;
+        if (!uid) return toast("Not signed in.", "info");
+        try {
+            await navigator.clipboard.writeText(uid);
+            toast("UID copied.", "success");
+        } catch {
+            window.prompt("Copy UID:", uid);
+        }
     });
+
+    id("btnMenuSettings")?.addEventListener("click", () => {
+        id("dlgSettings")?.showModal();
+    });
+
+    id("btnSettingsToggleTheme")?.addEventListener("click", () => {
+        id("themeToggleBtn")?.click(); // reuse your existing theme button behavior [file:10]
+    });
+
+
 
     id("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
     id("btnGoogleDemo")?.addEventListener("click", handleGoogleSignIn);

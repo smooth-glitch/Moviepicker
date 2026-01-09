@@ -1508,3 +1508,32 @@ dialog.modal::backdrop {
     border: 1px solid hsl(var(--b3));
     backdrop-filter: blur(8px);
 }
+
+/* User dropdown menu styling (match filter dropdown vibe) */
+#userDropdownMenu {
+    border-color: hsl(var(--b3)) !important;
+    background-color: hsl(var(--b1)) !important;
+    color: hsl(var(--bc)) !important;
+}
+
+.user-menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+}
+
+.user-menu-item:hover {
+    background-color: color-mix(in oklab, hsl(var(--b2)) 35%, transparent);
+    border-color: color-mix(in oklab, hsl(var(--b3)) 70%, transparent);
+}
+
+.user-menu-ico {
+    width: 1rem;
+    height: 1rem;
+    flex: 0 0 auto;
+    opacity: 0.9;
+}
