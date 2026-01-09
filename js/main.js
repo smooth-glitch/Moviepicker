@@ -640,6 +640,43 @@ async function boot() {
     // Chat form + reply + mentions + tray wiring
     // --------------------------------------------------
     const chatForm = id("roomChatForm");
+    const chatShell = id("roomChatShell");
+    const chatMessages = id("roomChatMessages");
+    const chatResize = id("roomChatResize");
+
+    if (chatShell && chatMessages && chatResize) {
+        let resizing = false;
+        let startY = 0;
+        let startHeight = 0;
+
+        chatResize.addEventListener("mousedown", (e) => {
+            if (chatShell.classList.contains("fullscreen")) return;
+            resizing = true;
+            startY = e.clientY;
+            startHeight = chatMessages.offsetHeight;
+            document.body.style.userSelect = "none";
+        });
+
+        window.addEventListener("mousemove", (e) => {
+            if (!resizing) return;
+            const delta = e.clientY - startY;
+            let next = startHeight + delta;
+            next = Math.max(120, Math.min(next, window.innerHeight * 0.8));
+            chatMessages.style.height = `${next}px`;
+        });
+
+        window.addEventListener("mouseup", () => {
+            if (!resizing) return;
+            resizing = false;
+            document.body.style.userSelect = "";
+        });
+
+        // Double‑click handle to toggle a pseudo‑fullscreen modal
+        chatResize.addEventListener("dblclick", () => {
+            chatShell.classList.toggle("fullscreen");
+        });
+    }
+
     const chatInput = id("roomChatInput");
     const gifBtn = id("roomGifBtn");
     const stickerBtn = id("roomStickerBtn");
@@ -942,7 +979,7 @@ async function boot() {
         }
     }
 
-    // Tray open/close + search
+    // Open from small buttons
     if (gifBtn && tray && trayGrid && traySearch) {
         gifBtn.addEventListener("click", () =>
             openTray("gif", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji)
@@ -950,61 +987,54 @@ async function boot() {
     }
     if (stickerBtn && tray && trayGrid && traySearch) {
         stickerBtn.addEventListener("click", () =>
-            openTray(
-                "sticker",
-                tray,
-                trayGrid,
-                traySearch,
-                tabGif,
-                tabSticker,
-                tabEmoji
-            )
+            openTray("sticker", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji)
         );
     }
     if (emojiBtn && tray && trayGrid && traySearch) {
         emojiBtn.addEventListener("click", () =>
-            openTray(
-                "emoji",
-                tray,
-                trayGrid,
-                traySearch,
-                tabGif,
-                tabSticker,
-                tabEmoji
-            )
+            openTray("emoji", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji)
         );
     }
 
-    if (trayClose) {
-        trayClose.addEventListener("click", () => closeTray(tray));
-    }
+    // Tabs inside the tray
+    tabGif?.addEventListener("click", () => {
+        openTray("gif", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+        // initial list
+        renderTrayGifs("", trayGrid, sendGifMessage);
+    });
 
+    tabSticker?.addEventListener("click", () => {
+        openTray("sticker", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+        renderTrayStickers("", trayGrid, sendStickerMessage);
+    });
+
+    tabEmoji?.addEventListener("click", () => {
+        openTray("emoji", tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+        renderTrayEmojis("", trayGrid, chatInput, tray);
+    });
+
+    trayClose?.addEventListener("click", () => closeTray(tray));
+
+    // Search inside tray
     if (traySearch) {
         traySearch.addEventListener("input", () => {
             if (traySearchTimer) clearTimeout(traySearchTimer);
-            traySearchTimer = setTimeout(async () => {
+            traySearchTimer = setTimeout(() => {
+                const q = traySearch.value.trim();
                 if (trayMode === "gif") {
-                    await renderTrayGifs(
-                        traySearch.value.trim(),
-                        trayGrid,
-                        sendGifMessage
-                    );
+                    renderTrayGifs(q, trayGrid, sendGifMessage);
                 } else if (trayMode === "sticker") {
-                    await renderTrayStickers(
-                        traySearch.value.trim(),
-                        trayGrid,
-                        sendStickerMessage
-                    );
+                    renderTrayStickers(q, trayGrid, sendStickerMessage);
                 } else if (trayMode === "emoji") {
-                    await renderTrayEmojis(
-                        traySearch.value.trim(),
-                        trayGrid,
-                        chatInput,
-                        tray
-                    );
+                    renderTrayEmojis(q, trayGrid, chatInput, tray);
                 }
             }, 250);
         });
+    }
+
+
+    if (trayClose) {
+        trayClose.addEventListener("click", () => closeTray(tray));
     }
 
     // Initial render when opening

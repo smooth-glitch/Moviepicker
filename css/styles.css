@@ -1668,3 +1668,29 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
   background-color: color-mix(in oklab, hsl(var(--b2)) 60%, transparent);
   border: 1px solid hsl(var(--b3));
 }
+
+#roomChatShell {
+  min-height: 6rem;
+  max-height: 80vh; /* do not exceed viewport */
+}
+
+#roomChatShell.fullscreen {
+  position: fixed;
+  inset: 3.5rem 0.75rem 4.5rem 0.75rem; /* leave space for header/footer */
+  z-index: 60;
+  background-color: hsl(var(--b1));
+  border-radius: 1rem;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.7);
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#roomChatShell.fullscreen #roomChatMessages {
+  flex: 1;
+  height: auto;
+}
+
+#roomChatShell.fullscreen #roomChatResize {
+  cursor: default;
+}

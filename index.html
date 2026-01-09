@@ -297,10 +297,19 @@
                                 <span class="font-semibold">Room chat</span>
                             </div>
 
+                            
                             <!-- Chat message list -->
-                            <div id="roomChatMessages"
-                                class="h-48 md:h-64 rounded-xl border border-base-300 bg-base-200/40 overflow-y-auto px-2 py-2 space-y-1 text-xs">
+                            <div id="roomChatShell" class="relative flex flex-col">
+                                <div id="roomChatMessages" class="h-48 md:h-64 rounded-xl border border-base-300 bg-base-200/40
+             overflow-y-auto px-2 py-2 space-y-1 text-xs"></div>
+
+                                <!-- Resize handle -->
+                                <div id="roomChatResize" class="h-3 flex items-center justify-center cursor-ns-resize select-none text-[9px]
+             text-base-content/50">
+                                    ⋮
+                                </div>
                             </div>
+
 
                             <!-- Reply preview -->
                             <div id="roomReplyPreview"
