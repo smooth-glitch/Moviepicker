@@ -31,6 +31,8 @@ const ONLINEWINDOWMS = 70000;
 let syncControlsCb = null;
 // Top-level (near unsubMembers)
 let membersInitDone = false;
+let lastClientWriteId = 0;
+
 
 export function stopMembersListener() {
     if (unsubMembers) unsubMembers();
@@ -170,15 +172,27 @@ export function scheduleCloudSave() {
     if (applyingRemote) return;
 
     clearTimeout(saveTimer);
+
+    const delay = inRoom() ? 0 : 400;
+
     saveTimer = setTimeout(async () => {
         try {
             const fs = window.firebaseStore;
+
+            // NEW: monotonically increasing id for "my latest write"
+            lastClientWriteId = Date.now();
+
             await fs.setDoc(
                 activeDocRef(),
                 {
                     pool: state.pool,
                     watched: Array.from(state.watched),
                     filters: state.filters,
+
+                    // NEW: versioning fields
+                    updatedBy: authState.user.uid,
+                    clientWriteId: lastClientWriteId,
+
                     updatedAt: fs.serverTimestamp(),
                 },
                 { merge: true }
@@ -186,8 +200,9 @@ export function scheduleCloudSave() {
         } catch (e) {
             console.warn("Firestore save failed", e);
         }
-    }, 400);
+    }, delay);
 }
+
 
 export async function ensureUserDoc() {
     if (!fsReady()) return;
@@ -318,6 +333,15 @@ export function startRoomListener() {
                     setLastPickedMovieId(lp.movieId);
                     openDetails(lp.movieId, { highlight: true, mediaType: lp.mediaType ?? "movie" });
                 }
+            }
+
+            const selfUid = authState.user?.uid ?? null;
+            const incomingBy = data.updatedBy ?? null;
+            const incomingWriteId = Number(data.clientWriteId ?? 0);
+
+            // If this snapshot is from *me* but older than my latest write, ignore it
+            if (selfUid && incomingBy === selfUid && incomingWriteId && incomingWriteId < lastClientWriteId) {
+                return;
             }
 
             applyingRemote = true;
