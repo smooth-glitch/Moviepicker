@@ -661,6 +661,25 @@ export function updateRoomUI() {
     if (chatBar) {
         chatBar.classList.toggle("hidden", !hasRoom);
     }
+    // inside updateRoomUI()
+    const wrap = document.getElementById("poolChatWrap");
+    const chatCol = document.getElementById("roomChatColumn");
+    const membersWrap = document.getElementById("roomMembersWrap");
+
+    if (wrap) {
+        // 1 column normally, 2 columns when in room (Pool + Members)
+        wrap.classList.toggle("md:grid-cols-2", hasRoom);
+    }
+
+    if (membersWrap) {
+        membersWrap.classList.toggle("hidden", !hasRoom);
+    }
+
+    if (chatCol) {
+        chatCol.classList.toggle("hidden", !hasRoom);
+        chatCol.classList.toggle("flex", hasRoom);
+    }
+
 
 }
 

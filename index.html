@@ -231,7 +231,7 @@
                 </div>
             </section>
 
-            <!-- Right: pool + room members -->
+            <!-- Right: pool + room members + chat below -->
             <section class="card bg-base-100 shadow-xl border border-base-300">
                 <div class="card-body gap-4">
                     <div class="flex items-center justify-between gap-2">
@@ -271,302 +271,312 @@
                         </div>
                     </div>
 
-                    <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
-                        <div class="card-body gap-3">
-                            <div class="flex items-center justify-between">
-                                <h3 class="font-bold text-sm">Room members</h3>
-                                <span id="roomOnlineCount" class="text-xs opacity-70"></span>
+                    <!-- Pool + members grid -->
+                    <div id="poolChatWrap" class="grid grid-cols-1 md:grid-cols-1 gap-4 items-start">
+                        <!-- Left: pool -->
+                        <div>
+                            <div id="poolEmpty" class="text-xs text-base-content/60">
+                                Add movies from results to build your pool.
                             </div>
-                            <div id="roomMembersList" class="space-y-2 text-sm"></div>
+                            <div id="pool" class="space-y-2"></div>
+                        </div>
+
+                        <!-- Right: room members (shown when in room) -->
+                        <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
+                            <div class="card-body gap-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-bold text-sm">Room members</h3>
+                                    <span id="roomOnlineCount" class="text-xs opacity-70"></span>
+                                </div>
+                                <div id="roomMembersList" class="space-y-2 text-sm"></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Pool only -->
-                    <div id="poolOnlyWrap">
-                        <div id="poolEmpty" class="text-xs text-base-content/60">
-                            Add movies from results to build your pool.
+                    <!-- Chat bar below -->
+                    <div id="roomChatColumn" class="hidden flex-col gap-2">
+                        <div class="flex items-center justify-between text-xs text-base-content/70">
+                            <span class="font-semibold">Room chat</span>
                         </div>
-                        <div id="pool" class="space-y-2"></div>
+
+                        <!-- Chat message list -->
+                        <div id="roomChatShell" class="relative flex flex-col">
+                            <div id="roomChatMessages"
+                                class="h-56 md:h-72 rounded-xl border border-base-300 bg-base-200/40 overflow-y-auto px-2 py-2 space-y-1 text-xs">
+                            </div>
+
+                            <!-- Resize handle -->
+                            <div id="roomChatResize"
+                                class="h-3 flex items-center justify-center cursor-ns-resize select-none text-[9px] text-base-content/50">
+                                ⋮
+                            </div>
+                        </div>
+
+                        <!-- Reply preview -->
+                        <div id="roomReplyPreview"
+                            class="hidden text-[0.7rem] px-2 py-1 rounded-lg bg-base-200/70 border border-base-300 flex items-center justify-between gap-2">
+                            <div class="truncate">
+                                <span class="opacity-70 mr-1">Replying to</span>
+                                <span id="roomReplyToName" class="font-semibold"></span>
+                                <span id="roomReplyToSnippet" class="ml-1 opacity-80"></span>
+                            </div>
+                            <button id="roomReplyClear" type="button" class="btn btn-[0.6rem] btn-ghost btn-xs px-2">
+                                ✕
+                            </button>
+                        </div>
+
+                        <!-- Docked tray (Discord-style) -->
+                        <div id="chatTray" class="hidden chat-tray">
+                            <div class="flex items-center gap-2">
+                                <button id="chatTrayTabGif" type="button" class="btn btn-xs btn-ghost chat-tray-tab">
+                                    GIFs
+                                </button>
+                                <button id="chatTrayTabSticker" type="button"
+                                    class="btn btn-xs btn-ghost chat-tray-tab">
+                                    Stickers
+                                </button>
+                                <button id="chatTrayTabEmoji" type="button" class="btn btn-xs btn-ghost chat-tray-tab">
+                                    Emoji
+                                </button>
+
+                                <div class="flex-1"></div>
+                                <button id="chatTrayClose" type="button" class="btn btn-xs btn-ghost">
+                                    ✕
+                                </button>
+                            </div>
+
+                            <label class="input input-bordered input-sm w-full mt-2 flex items-center gap-2">
+                                <span class="opacity-60 text-xs">Search</span>
+                                <input id="chatTraySearch" type="text" class="grow" placeholder="Search…"
+                                    autocomplete="off" />
+                            </label>
+
+                            <div id="chatTrayGrid" class="mt-2 grid grid-cols-2 gap-2 max-h-72 overflow-y-auto"></div>
+                        </div>
+
+                        <!-- Chat input -->
+                        <form id="roomChatForm" class="flex flex-col gap-2 mt-2">
+                            <div class="flex items-center gap-2">
+                                <button id="roomGifBtn" type="button" class="btn btn-xs btn-ghost px-2"
+                                    title="Send GIF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-image-play-icon">
+                                        <path
+                                            d="M15 15.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997a1 1 0 0 1-1.517-.86z" />
+                                        <path d="M21 12.17V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" />
+                                        <path d="m6 21 5-5" />
+                                        <circle cx="9" cy="9" r="2" />
+                                    </svg>
+                                </button>
+
+                                <button id="roomStickerBtn" type="button" class="btn btn-xs btn-ghost px-2"
+                                    title="Send sticker">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-sticker-icon">
+                                        <path
+                                            d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" />
+                                        <path d="M15 3v5a1 1 0 0 0 1 1h5" />
+                                        <path d="M8 13h.01" />
+                                        <path d="M16 13h.01" />
+                                        <path d="M10 16s.8 1 2 1c1.3 0 2-1 2-1" />
+                                    </svg>
+                                </button>
+
+                                <button id="roomEmojiBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Emoji">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9" />
+                                        <path d="M9 10h.01" />
+                                        <path d="M15 10h.01" />
+                                        <path d="M8 15s1.5 2 4 2 4-2 4-2" />
+                                    </svg>
+                                </button>
+
+                                <div class="flex-1 relative">
+                                    <input id="roomChatInput" type="text" class="input input-bordered input-sm w-full"
+                                        placeholder="Type a message" />
+                                    <div id="mentionSuggestions"
+                                        class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    Send
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- GIF picker -->
+                        <dialog id="dlgGifPicker" class="modal">
+                            <div class="modal-box max-w-sm space-y-3">
+                                <h3 class="font-bold text-sm">Send a GIF</h3>
+                                <input id="gifSearchInput" type="text" class="input input-bordered input-sm w-full"
+                                    placeholder="Search GIPHY…" />
+                                <div id="gifResults"
+                                    class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
+                                <form method="dialog" class="modal-action">
+                                    <button class="btn btn-xs">Close</button>
+                                </form>
+                            </div>
+                        </dialog>
+
+                        <!-- Sticker picker -->
+                        <dialog id="dlgStickerPicker" class="modal">
+                            <div class="modal-box max-w-sm space-y-3">
+                                <h3 class="font-semibold mb-1 text-sm">Choose a sticker</h3>
+
+                                <input id="stickerSearchInput" type="text" class="input input-bordered input-sm w-full"
+                                    placeholder="Search stickers…" />
+
+                                <div id="stickerResults"
+                                    class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
+
+                                <div class="modal-action">
+                                    <form method="dialog">
+                                        <button class="btn btn-sm">Close</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </dialog>
                     </div>
                 </div>
             </section>
         </main>
 
-        <!-- Wide chat bar below the two-column layout -->
-        <section id="roomChatBar" class="card bg-base-100 shadow-xl border border-base-300 mt-4 hidden">
-            <div class="card-body gap-3">
-                <div class="flex items-center justify-between text-xs text-base-content/70">
-                    <span class="font-semibold">Room chat</span>
+        <!-- Details dialog -->
+        <dialog id="dlg" class="modal">
+            <div class="modal-box max-w-xl">
+                <h3 id="dlgTitle" class="font-bold text-lg mb-1"></h3>
+                <p id="dlgMeta" class="text-xs text-base-content/70 mb-3"></p>
+                <div id="dlgOverview" class="space-y-3"></div>
+                <div class="modal-action">
+                    <button id="btnReroll" class="btn btn-secondary btn-sm hidden">
+                        Re-roll
+                    </button>
+                    <button id="btnWatched" class="btn btn-accent btn-sm">
+                        Mark watched
+                    </button>
+                    <form method="dialog">
+                        <button class="btn btn-sm">Close</button>
+                    </form>
                 </div>
+            </div>
+        </dialog>
 
-                <!-- Chat message list -->
-                <div id="roomChatShell" class="relative flex flex-col">
-                    <div id="roomChatMessages"
-                        class="h-56 md:h-72 rounded-xl border border-base-300 bg-base-200/40 overflow-y-auto px-2 py-2 space-y-1 text-xs">
-                    </div>
+        <dialog id="dlgSettings" class="modal">
+            <div class="modal-box max-w-sm space-y-3">
+                <h3 class="font-bold text-lg">Settings</h3>
 
-                    <!-- Resize handle -->
-                    <div id="roomChatResize"
-                        class="h-3 flex items-center justify-center cursor-ns-resize select-none text-[9px] text-base-content/50">
-                        ⋮
-                    </div>
-                </div>
+                <button id="btnSettingsToggleTheme" class="btn btn-outline btn-sm w-full">
+                    Toggle theme
+                </button>
 
-                <!-- Reply preview -->
-                <div id="roomReplyPreview"
-                    class="hidden text-[0.7rem] px-2 py-1 rounded-lg bg-base-200/70 border border-base-300 flex items-center justify-between gap-2">
-                    <div class="truncate">
-                        <span class="opacity-70 mr-1">Replying to</span>
-                        <span id="roomReplyToName" class="font-semibold"></span>
-                        <span id="roomReplyToSnippet" class="ml-1 opacity-80"></span>
-                    </div>
-                    <button id="roomReplyClear" type="button" class="btn btn-[0.6rem] btn-ghost btn-xs px-2">
+                <form method="dialog" class="modal-action">
+                    <button class="btn btn-sm">Close</button>
+                </form>
+            </div>
+        </dialog>
+
+        <!-- Auth dialog -->
+        <dialog id="dlgAuth" class="modal">
+            <div class="modal-box max-w-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-lg">Sign in</h3>
+                    <button type="button" class="btn btn-ghost btn-xs"
+                        onclick="document.getElementById('dlgAuth').close()">
                         ✕
                     </button>
                 </div>
 
-                <!-- Docked tray (Discord-style) -->
-                <div id="chatTray" class="hidden chat-tray">
-                    <div class="flex items-center gap-2">
-                        <button id="chatTrayTabGif" type="button" class="btn btn-xs btn-ghost chat-tray-tab">
-                            GIFs
-                        </button>
-                        <button id="chatTrayTabSticker" type="button" class="btn btn-xs btn-ghost chat-tray-tab">
-                            Stickers
-                        </button>
-                        <button id="chatTrayTabEmoji" type="button" class="btn btn-xs btn-ghost chat-tray-tab">
-                            Emoji
-                        </button>
+                <p class="text-sm text-base-content/70">
+                    Save your movie pool and preferences across devices.
+                </p>
 
-                        <div class="flex-1"></div>
-                        <button id="chatTrayClose" type="button" class="btn btn-xs btn-ghost">
-                            ✕
-                        </button>
-                    </div>
+                <!-- Social sign in -->
+                <div class="space-y-2">
+                    <button id="btnGoogleDemo" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-white">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4">
+                                <path fill="#EA4335"
+                                    d="M12 10.2v3.9h5.4c-.2 1.2-.9 2.4-2 3.2l3.3 2.6C20.4 18.4 21.5 15.9 21.5 13c0-.7-.1-1.3-.2-1.9H12z" />
+                                <path fill="#34A853"
+                                    d="M6.5 14.3l-1 3.8-3.1.1C3.5 20.7 7.4 23 12 23c3 0 5.5-1 7.3-2.7l-3.3-2.6c-1 .7-2.3 1.2-4 1.2-3.1 0-5.8-2.1-6.7-5z" />
+                                <path fill="#4A90E2"
+                                    d="M3.4 8.2 0.4 5.6C2.1 2.6 6.1 1 9.9 1c2.7 0 5 .9 6.8 2.6L14 6.4C13 5.6 11.7 5.2 10 5.2 7 5.2 4.4 7.1 3.4 8.2z" />
+                                <path fill="#FBBC05"
+                                    d="M21.5 13c0 2.9-1.1 5.4-3.1 7.1l-3.3-2.6c.9-.6 1.5-1.6 1.8-2.7H12v-3.9h9.3c.1.6.2 1.2.2 2z" />
+                            </svg>
+                        </span>
+                        <span class="text-xs">Continue with Google</span>
+                    </button>
 
-                    <label class="input input-bordered input-sm w-full mt-2 flex items-center gap-2">
-                        <span class="opacity-60 text-xs">Search</span>
-                        <input id="chatTraySearch" type="text" class="grow" placeholder="Search…" autocomplete="off" />
-                    </label>
-
-                    <div id="chatTrayGrid" class="mt-2 grid grid-cols-2 gap-2 max-h-72 overflow-y-auto"></div>
-                </div>
-
-                <form id="roomChatForm" class="flex flex-col gap-2 mt-2">
-                    <div class="flex items-center gap-2">
-                        <button id="roomGifBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Send GIF">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-image-play-icon">
+                    <button id="btnGithub" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
                                 <path
-                                    d="M15 15.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997a1 1 0 0 1-1.517-.86z" />
-                                <path d="M21 12.17V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" />
-                                <path d="m6 21 5-5" />
-                                <circle cx="9" cy="9" r="2" />
+                                    d="M12 .5C5.7.5.7 5.5.7 11.8c0 5 3.3 9.1 7.8 10.6.6.1.8-.3.8-.6v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.1-1.2-1.4-1.2-1.4-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.9 2.7 1.4.1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.8-.4s1.9.1 2.8.4C18 5 19 5.2 19 5.2c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.3.7 1 .7 2.1v3.1c0 .3.2.7.8.6 4.5-1.5 7.8-5.6 7.8-10.6C23.3 5.5 18.3.5 12 .5z" />
                             </svg>
-                        </button>
+                        </span>
+                        <span class="text-xs">Continue with GitHub</span>
+                    </button>
 
-                        <button id="roomStickerBtn" type="button" class="btn btn-xs btn-ghost px-2"
-                            title="Send sticker">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-sticker-icon">
+                    <button id="btnTwitter" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
                                 <path
-                                    d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" />
-                                <path d="M15 3v5a1 1 0 0 0 1 1h5" />
-                                <path d="M8 13h.01" />
-                                <path d="M16 13h.01" />
-                                <path d="M10 16s.8 1 2 1c1.3 0 2-1 2-1" />
+                                    d="M18.9 3H21l-4.6 5.3L21.8 21h-4.9l-3.4-6-3.9 4.6V21H3.1l4.9-5.6L2.4 3h5l3.1 5.4L14 3h4.9zm-2.1 15.2h1.3L7.3 4.7H5.9l10.9 13.5z" />
                             </svg>
-                        </button>
-
-                        <button id="roomEmojiBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Emoji">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="9" />
-                                <path d="M9 10h.01" />
-                                <path d="M15 10h.01" />
-                                <path d="M8 15s1.5 2 4 2 4-2 4-2" />
-                            </svg>
-                        </button>
-
-                        <div class="flex-1 relative">
-                            <input id="roomChatInput" type="text" class="input input-bordered input-sm w-full"
-                                placeholder="Type a message" />
-                            <div id="mentionSuggestions"
-                                class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            Send
-                        </button>
-                    </div>
-                </form>
-
-                <!-- GIF picker -->
-                <dialog id="dlgGifPicker" class="modal">
-                    <div class="modal-box max-w-sm space-y-3">
-                        <h3 class="font-bold text-sm">Send a GIF</h3>
-                        <input id="gifSearchInput" type="text" class="input input-bordered input-sm w-full"
-                            placeholder="Search GIPHY…" />
-                        <div id="gifResults" class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
-                        <form method="dialog" class="modal-action">
-                            <button class="btn btn-xs">Close</button>
-                        </form>
-                    </div>
-                </dialog>
-
-                <dialog id="dlgStickerPicker" class="modal">
-                    <div class="modal-box max-w-sm space-y-3">
-                        <h3 class="font-semibold mb-1 text-sm">Choose a sticker</h3>
-
-                        <input id="stickerSearchInput" type="text" class="input input-bordered input-sm w-full"
-                            placeholder="Search stickers…" />
-
-                        <div id="stickerResults" class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs">
-                        </div>
-
-                        <div class="modal-action">
-                            <form method="dialog">
-                                <button class="btn btn-sm">Close</button>
-                            </form>
-                        </div>
-                    </div>
-                </dialog>
-            </div>
-        </section>
-    </div>
-
-    <!-- Details dialog -->
-    <dialog id="dlg" class="modal">
-        <div class="modal-box max-w-xl">
-            <h3 id="dlgTitle" class="font-bold text-lg mb-1"></h3>
-            <p id="dlgMeta" class="text-xs text-base-content/70 mb-3"></p>
-            <div id="dlgOverview" class="space-y-3"></div>
-            <div class="modal-action">
-                <button id="btnReroll" class="btn btn-secondary btn-sm hidden">
-                    Re-roll
-                </button>
-                <button id="btnWatched" class="btn btn-accent btn-sm">
-                    Mark watched
-                </button>
-                <form method="dialog">
-                    <button class="btn btn-sm">Close</button>
-                </form>
-            </div>
-        </div>
-    </dialog>
-
-    <dialog id="dlgSettings" class="modal">
-        <div class="modal-box max-w-sm space-y-3">
-            <h3 class="font-bold text-lg">Settings</h3>
-
-            <button id="btnSettingsToggleTheme" class="btn btn-outline btn-sm w-full">
-                Toggle theme
-            </button>
-
-            <form method="dialog" class="modal-action">
-                <button class="btn btn-sm">Close</button>
-            </form>
-        </div>
-    </dialog>
-
-    <!-- Auth dialog -->
-    <dialog id="dlgAuth" class="modal">
-        <div class="modal-box max-w-sm space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="font-bold text-lg">Sign in</h3>
-                <button type="button" class="btn btn-ghost btn-xs" onclick="document.getElementById('dlgAuth').close()">
-                    ✕
-                </button>
-            </div>
-
-            <p class="text-sm text-base-content/70">
-                Save your movie pool and preferences across devices.
-            </p>
-
-            <!-- Social sign in -->
-            <div class="space-y-2">
-                <button id="btnGoogleDemo" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-white">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4">
-                            <path fill="#EA4335"
-                                d="M12 10.2v3.9h5.4c-.2 1.2-.9 2.4-2 3.2l3.3 2.6C20.4 18.4 21.5 15.9 21.5 13c0-.7-.1-1.3-.2-1.9H12z" />
-                            <path fill="#34A853"
-                                d="M6.5 14.3l-1 3.8-3.1.1C3.5 20.7 7.4 23 12 23c3 0 5.5-1 7.3-2.7l-3.3-2.6c-1 .7-2.3 1.2-4 1.2-3.1 0-5.8-2.1-6.7-5z" />
-                            <path fill="#4A90E2"
-                                d="M3.4 8.2 0.4 5.6C2.1 2.6 6.1 1 9.9 1c2.7 0 5 .9 6.8 2.6L14 6.4C13 5.6 11.7 5.2 10 5.2 7 5.2 4.4 7.1 3.4 8.2z" />
-                            <path fill="#FBBC05"
-                                d="M21.5 13c0 2.9-1.1 5.4-3.1 7.1l-3.3-2.6c.9-.6 1.5-1.6 1.8-2.7H12v-3.9h9.3c.1.6.2 1.2.2 2z" />
-                        </svg>
-                    </span>
-                    <span class="text-xs">Continue with Google</span>
-                </button>
-
-                <button id="btnGithub" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
-                            <path
-                                d="M12 .5C5.7.5.7 5.5.7 11.8c0 5 3.3 9.1 7.8 10.6.6.1.8-.3.8-.6v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.1-1.2-1.4-1.2-1.4-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.9 2.7 1.4.1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.8-.4s1.9.1 2.8.4C18 5 19 5.2 19 5.2c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.3.7 1 .7 2.1v3.1c0 .3.2.7.8.6 4.5-1.5 7.8-5.6 7.8-10.6C23.3 5.5 18.3.5 12 .5z" />
-                        </svg>
-                    </span>
-                    <span class="text-xs">Continue with GitHub</span>
-                </button>
-
-                <button id="btnTwitter" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
-                            <path
-                                d="M18.9 3H21l-4.6 5.3L21.8 21h-4.9l-3.4-6-3.9 4.6V21H3.1l4.9-5.6L2.4 3h5l3.1 5.4L14 3h4.9zm-2.1 15.2h1.3L7.3 4.7H5.9l10.9 13.5z" />
-                        </svg>
-                    </span>
-                    <span class="text-xs">Continue with X</span>
-                </button>
-            </div>
-
-            <div class="divider text-[11px]">or use email</div>
-
-            <!-- Email/password -->
-            <div class="space-y-3">
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text text-xs">Name</span>
-                    </label>
-                    <input id="authName" type="text" class="input input-bordered input-sm" placeholder="Neo" />
+                        </span>
+                        <span class="text-xs">Continue with X</span>
+                    </button>
                 </div>
 
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text text-xs">Email</span>
-                    </label>
-                    <input id="authEmail" type="email" class="input input-bordered input-sm"
-                        placeholder="you@example.com" />
+                <div class="divider text-[11px]">or use email</div>
+
+                <!-- Email/password -->
+                <div class="space-y-3">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-xs">Name</span>
+                        </label>
+                        <input id="authName" type="text" class="input input-bordered input-sm" placeholder="Neo" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-xs">Email</span>
+                        </label>
+                        <input id="authEmail" type="email" class="input input-bordered input-sm"
+                            placeholder="you@example.com" />
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-xs">Password</span>
+                        </label>
+                        <input id="authPass" type="password" class="input input-bordered input-sm"
+                            placeholder="••••••••" />
+                    </div>
                 </div>
 
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text text-xs">Password</span>
-                    </label>
-                    <input id="authPass" type="password" class="input input-bordered input-sm" placeholder="••••••••" />
+                <div class="modal-action flex items-center justify-between gap-2">
+                    <button id="btnAuthSubmit" class="btn btn-primary btn-sm">
+                        Sign in
+                    </button>
+                    <form method="dialog">
+                        <button class="btn btn-sm">Cancel</button>
+                    </form>
                 </div>
             </div>
+        </dialog>
 
-            <div class="modal-action flex items-center justify-between gap-2">
-                <button id="btnAuthSubmit" class="btn btn-primary btn-sm">
-                    Sign in
-                </button>
-                <form method="dialog">
-                    <button class="btn btn-sm">Cancel</button>
-                </form>
-            </div>
+        <!-- Reactions menu -->
+        <div id="reactionMenu" class="reaction-menu hidden">
+            <!-- reaction icons will be injected here -->
         </div>
-    </dialog>
-
-    <!-- Reactions menu -->
-    <div id="reactionMenu" class="reaction-menu hidden">
-        <!-- reaction icons will be injected here -->
     </div>
 
     <script type="module" src="./js/main.js"></script>
