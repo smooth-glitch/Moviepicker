@@ -656,19 +656,12 @@ export function updateRoomUI() {
     if (btnCopy) btnCopy.classList.toggle("hidden", !hasRoom);
     if (btnLeave) btnLeave.classList.toggle("hidden", !hasRoom);
 
-    const wrap = document.getElementById("poolChatWrap");
-    const chatCol = document.getElementById("roomChatColumn");
-    if (wrap && chatCol) {
-        if (hasRoom) {
-            wrap.classList.add("md:grid-cols-2");
-            chatCol.classList.remove("hidden");
-            chatCol.classList.add("flex");
-        } else {
-            wrap.classList.remove("md:grid-cols-2");
-            chatCol.classList.add("hidden");
-            chatCol.classList.remove("flex");
-        }
+    const chatBar = document.getElementById("roomChatBar");
+
+    if (chatBar) {
+        chatBar.classList.toggle("hidden", !hasRoom);
     }
+
 }
 
 export function stopRoomListener() {
