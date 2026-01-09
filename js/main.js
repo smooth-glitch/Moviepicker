@@ -234,6 +234,31 @@ function syncUserMenu() {
     id("btnMenuCopyUid")?.classList.toggle("hidden", !signedIn);
 }
 
+let emojiCache = null;
+
+async function loadEmojis() {
+    if (emojiCache) return emojiCache;
+    try {
+        const res = await fetch("https://emojihub.yurace.pro/api/all");
+        if (!res.ok) throw new Error("Failed to load emojis");
+        const data = await res.json();
+        // Convert to a simple array of strings like "😀"
+        emojiCache = data
+            .map((e) => (Array.isArray(e.htmlCode) ? e.htmlCode[0] : null))
+            .filter(Boolean)
+            .map((code) => {
+                // htmlCode like "&#128515;" -> actual char
+                const num = Number(code.replace(/[&#;]/g, ""));
+                return String.fromCodePoint(num);
+            });
+    } catch (e) {
+        console.warn("Emoji API failed", e);
+        emojiCache = ["😀", "😅", "😂", "😍", "😎", "😢", "😡", "👍", "👀", "🔥", "🙏"];
+    }
+    return emojiCache;
+}
+
+
 async function boot() {
     // persisted state
     state.pool = loadJson(LSPOOL, []);
@@ -826,6 +851,61 @@ async function boot() {
             }
         }
     }
+
+    const emojiBtn = id("roomEmojiBtn");
+
+    if (emojiBtn && chatInput) {
+        emojiBtn.addEventListener("click", async () => {
+            const menuId = "emojiQuickMenu";
+            const existing = document.getElementById(menuId);
+            if (existing) existing.remove();
+
+            const emojis = await loadEmojis();
+            // take a slice for performance; you can later add categories/search
+            const subset = emojis.slice(0, 60);
+
+            const menu = document.createElement("div");
+            menu.id = menuId;
+            menu.className =
+                "fixed z-[9999] grid grid-cols-8 gap-1 px-2 py-2 rounded-xl " +
+                "bg-base-100 border border-base-300 shadow-xl text-lg max-h-64 overflow-y-auto";
+
+            subset.forEach((e) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className =
+                    "w-8 h-8 grid place-items-center rounded-lg hover:bg-base-200";
+                btn.textContent = e;
+                btn.addEventListener("click", (ev) => {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    const start = chatInput.selectionStart ?? chatInput.value.length;
+                    const end = chatInput.selectionEnd ?? chatInput.value.length;
+                    const v = chatInput.value;
+                    chatInput.value = v.slice(0, start) + e + v.slice(end);
+                    const caret = start + e.length;
+                    chatInput.setSelectionRange(caret, caret);
+                    chatInput.focus();
+                    menu.remove();
+                });
+                menu.appendChild(btn);
+            });
+
+            document.body.appendChild(menu);
+            const rect = emojiBtn.getBoundingClientRect();
+            menu.style.left = `${Math.max(8, rect.left)}px`;
+            menu.style.bottom = `${window.innerHeight - rect.top + 8}px`;
+
+            const close = () => menu.remove();
+            setTimeout(() => {
+                document.addEventListener("click", close, { once: true });
+                window.addEventListener("resize", close, { once: true });
+                document.addEventListener("scroll", close, { once: true, passive: true });
+            }, 0);
+        });
+    }
+
+
 }
 
 if (document.readyState === "loading")

@@ -1565,3 +1565,63 @@ html[data-reduce-motion] *::after {
   transform: translateY(0) scale(0.97);
   box-shadow: none;
 }
+
+/* Chat input + send button polish */
+#roomChatForm {
+  gap: 0.5rem;
+}
+
+#roomChatInput {
+  transition: box-shadow 140ms ease, border-color 140ms ease,
+    transform 120ms ease;
+}
+
+#roomChatInput:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55), 0 0 0 1px hsl(var(--p));
+}
+
+/* Send button subtle lift */
+#roomChatForm button[type="submit"] {
+  transition: transform 120ms ease, box-shadow 150ms ease, filter 140ms ease;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+#roomChatForm button[type="submit"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+#roomChatForm button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Default (fallback) */
+.chat-bubble-primary,
+.chat-bubble-neutral {
+  border-radius: 9999px;
+}
+
+/* Dark synthwave theme: my messages light, others slightly darker */
+html[data-theme="synthwave"] .chat-bubble-primary {
+  background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
+}
+
+html[data-theme="synthwave"] .chat-bubble-neutral {
+  background-color: color-mix(in oklab, hsl(var(--b1)) 80%, hsl(var(--b3)) 20%);
+  color: hsl(var(--bc));
+}
+
+/* Light cupcake theme: invert for balance */
+html[data-theme="cupcake"] .chat-bubble-primary {
+  background-color: hsl(222 18% 12%); /* dark text bubble */
+  color: #fff;
+}
+
+html[data-theme="cupcake"] .chat-bubble-neutral {
+  background-color: #fff; /* white bubble */
+  color: hsl(222 18% 12%);
+}
