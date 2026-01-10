@@ -196,39 +196,88 @@
             <section class="card bg-base-100 shadow-xl border border-base-300">
                 <div class="card-body gap-4">
                     <div id="filtersBar" class="flex flex-col gap-3">
-                        <!-- Search row is above; keep as you have it -->
-                        <!-- TOP: Search row -->
                         <div id="searchRow">
+                            <!-- Search column (unchanged layout, just SVG inside label) -->
                             <div>
                                 <label class="label">
-                                    <span class="label-text">Search movie</span>
+                                    <span class="label-text flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="opacity-70">
+                                            <circle cx="11" cy="11" r="8" />
+                                            <path d="m21 21-4.3-4.3" />
+                                        </svg>
+                                        Search movie
+                                    </span>
                                 </label>
-                                <input id="q" class="input input-bordered w-full"
+                                <input id="q" type="text" class="input input-bordered w-full"
                                     placeholder="Title (or leave empty for rating-based discover)..." />
                             </div>
 
-                            <div class="flex gap-2">
-                                <button id="btnSearch" class="btn btn-secondary">
+                            <!-- Buttons column (same structure, icons inside buttons only) -->
+                            <div>
+                                <button id="btnSearch" class="btn btn-secondary gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="11" cy="11" r="8" />
+                                        <path d="m21 21-4.3-4.3" />
+                                    </svg>
                                     Search
                                 </button>
-                                <button id="btnPick" class="btn btn-secondary">
+
+                                <button id="btnPick" class="btn btn-secondary gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="m21 16-6.3-6.3" />
+                                        <path d="m21 10-6.3 6.3" />
+                                        <path d="M10 21H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v7" />
+                                        <path d="M2 10h19" />
+                                        <path d="m9 2 2.5 7.5L14 2" />
+                                    </svg>
                                     Surprise me
                                 </button>
-                                <button id="btnCreateRoom" class="btn btn-secondary hidden">
+
+                                <button id="btnCreateRoom" class="btn btn-secondary gap-2 hidden">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 5v14" />
+                                        <path d="M5 12h14" />
+                                    </svg>
                                     Create room
                                 </button>
-                                <button id="btnTrending" class="btn btn-ghost">
+
+                                <button id="btnTrending" class="btn btn-ghost gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="m22 7-8.5 8.5-5-5L2 17" />
+                                        <path d="M16 7h6v6" />
+                                    </svg>
                                     Trending
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Filters grid row -->
+
+
                         <div id="filtersGrid">
-                            <!-- Media type -->
+                            <!-- Type -->
                             <div>
                                 <label class="label">
-                                    <span class="label-text">Type</span>
+                                    <span class="label-text flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="opacity-70">
+                                            <rect width="20" height="20" x="2" y="2" rx="2.18" />
+                                            <line x1="7" x2="7" y1="2" y2="22" />
+                                            <line x1="17" x2="17" y1="2" y2="22" />
+                                            <line x1="2" x2="22" y1="12" y2="12" />
+                                        </svg>
+                                        Type
+                                    </span>
                                 </label>
                                 <select id="mediaType" class="select select-bordered select-sm w-full">
                                     <option value="movie" selected>Movies</option>
@@ -239,30 +288,50 @@
                             <!-- Genres -->
                             <div>
                                 <label class="label">
-                                    <span class="label-text">Genres</span>
+                                    <span class="label-text flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="opacity-70">
+                                            <path d="M3 6h18" />
+                                            <path d="M7 12h10" />
+                                            <path d="M10 18h4" />
+                                        </svg>
+                                        Genres
+                                    </span>
                                 </label>
-
-                                <div class="flex flex-wrap gap-2">
-                                    <!-- Genres dropdown (flex-1) -->
-                                    <div class="dropdown flex-1 min-w-[10rem]">
-                                        <div id="genreDropdownBtn" tabindex="0" role="button"
-                                            class="btn btn-outline btn-sm w-full justify-between">
-                                            Genres
+                                <div class="dropdown w-full">
+                                    <div id="genreDropdownBtn" tabindex="0" role="button"
+                                        class="btn btn-outline btn-sm w-full justify-between">
+                                        <span class="truncate">Genres</span>
+                                        <span class="flex items-center gap-1">
                                             <span id="genreDropdownCount" class="opacity-60 text-xs"></span>
-                                        </div>
-
-                                        <div id="genreDropdownMenu"
-                                            class="dropdown-content z-50 mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
-                                        </div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round" class="opacity-60">
+                                                <path d="m6 9 6 6 6-6" />
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div id="genreDropdownMenu"
+                                        class="dropdown-content z-50 mt-2 w-full p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl max-h-64 overflow-auto">
                                     </div>
                                 </div>
                             </div>
 
-
                             <!-- Year -->
                             <div>
                                 <label class="label">
-                                    <span class="label-text">Year</span>
+                                    <span class="label-text flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="opacity-70">
+                                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                            <line x1="16" x2="16" y1="2" y2="6" />
+                                            <line x1="8" x2="8" y1="2" y2="6" />
+                                            <line x1="3" x2="21" y1="10" y2="10" />
+                                        </svg>
+                                        Year
+                                    </span>
                                 </label>
                                 <input id="yearFilter" type="number" min="1900" max="2100"
                                     class="input input-bordered input-sm w-full" placeholder="e.g. 2023" />
@@ -271,7 +340,17 @@
                             <!-- Sort -->
                             <div>
                                 <label class="label">
-                                    <span class="label-text">Sort by</span>
+                                    <span class="label-text flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="opacity-70">
+                                            <path d="m3 16 4 4 4-4" />
+                                            <path d="M7 20V4" />
+                                            <path d="m21 8-4-4-4 4" />
+                                            <path d="M17 4v16" />
+                                        </svg>
+                                        Sort by
+                                    </span>
                                 </label>
                                 <select id="resultSort" class="select select-bordered select-sm w-full">
                                     <option value="popularity.desc">Popular</option>
@@ -285,10 +364,20 @@
                                 <label class="label">
                                     <span class="label-text">&nbsp;</span>
                                 </label>
-                                <button id="btnResetFilters" class="btn btn-outline btn-sm w-full">Reset
-                                    filters</button>
+                                <button id="btnResetFilters" class="btn btn-outline btn-sm w-full gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                        <path d="M3 3v5h5" />
+                                    </svg>
+                                    Reset filters
+                                </button>
                             </div>
                         </div>
+
+
+
                     </div>
 
 
@@ -366,16 +455,60 @@
                             <div id="pool" class="space-y-2"></div>
                         </div>
 
-                        <!-- Right: room members (shown when in room) -->
                         <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
-                            <div class="card-body gap-3">
-                                <div class="flex items-center justify-between">
-                                    <h3 class="font-bold text-sm">Room members</h3>
-                                    <span id="roomOnlineCount" class="text-xs opacity-70"></span>
+                            <div class="card-body gap-4 p-4">
+                                <!-- Header -->
+                                <div class="flex items-center justify-between pb-2 border-b border-base-200">
+                                    <h3 class="font-bold text-sm flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="text-primary">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                            <circle cx="9" cy="7" r="4" />
+                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                        </svg>
+                                        Room members
+                                    </h3>
+                                    <span id="roomOnlineCount" class="badge badge-sm badge-ghost"></span>
                                 </div>
-                                <div id="roomMembersList" class="space-y-2 text-sm"></div>
+
+                                <!-- Member List -->
+                                <div id="roomMembersList" class="space-y-2 text-sm max-h-48 overflow-y-auto pr-1">
+                                    <!-- Members injected here -->
+                                </div>
+
+                                <!-- Actions (Moved from Left) -->
+                                <div class="grid grid-cols-2 gap-2 mt-2 pt-3 border-t border-base-200">
+                                    <button id="btnCopyRoomLink" class="btn btn-sm btn-outline gap-2 w-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                        </svg>
+                                        Copy Link
+                                    </button>
+
+                                    <button id="btnLeaveRoom" class="btn btn-sm btn-error btn-outline gap-2 w-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                            <polyline points="16 17 21 12 16 7" />
+                                            <line x1="21" x2="9" y1="12" y2="12" />
+                                        </svg>
+                                        Leave
+                                    </button>
+                                </div>
+
+                                <!-- Room Badge (Moved from Left - Optional info display) -->
+                                <div id="roomBadge" class="text-xs text-center opacity-60 truncate mt-1 select-all">
+                                    <span id="roomBadgeLabel"></span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
                     <!-- Chat bar below -->

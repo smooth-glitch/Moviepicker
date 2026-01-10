@@ -503,39 +503,50 @@ async function boot() {
     updateSignOutLabel();
     await loadSharedListFromUrl();
     syncCreateRoomButton();
-    // firebase auth state
-    const fa = window.firebaseAuth;
-    if (fa) {
-        fa.onAuthStateChanged(fa.auth, async (user) => {
-            authState.user = user || null;
 
-            const fs = window.firebaseStore;
-            if (user && fs) {
-                await fs.setDoc(
-                    fs.doc(fs.db, "users", user.uid),
-                    { email: user.email || null, createdAt: fs.serverTimestamp() },
-                    { merge: true }
-                );
-            }
+    // in boot(), right after determining roomId
+    const url = new URL(window.location.href);
+    const roomId = url.searchParams.get("room");
 
-            updateUserChip();
-            syncUserMenu();
-            updateSignOutLabel();
-            syncCreateRoomButton();
-            const url = new URL(window.location.href);
-            const roomId = url.searchParams.get("room");
-            if (roomId) {
-                joinRoom(roomId);
-                return;
-            }
-
-            updateRoomUI();
-
-            if (!authState.user) return;
-            await ensureUserDoc();
-            startUserDocListener();
-        });
+    if (!roomId) {
+        // ensure we are not considered "in a room" from old state
+        roomState.id = null;
     }
+
+    fa.onAuthStateChanged(fa.auth, async (user) => {
+        authState.user = user || null;
+
+        const fs = window.firebaseStore;
+        if (user && fs) {
+            await fs.setDoc(
+                fs.doc(fs.db, "users", user.uid),
+                { email: user.email || null, createdAt: fs.serverTimestamp() },
+                { merge: true }
+            );
+        }
+
+        updateUserChip();
+        syncUserMenu();
+        updateSignOutLabel();
+        syncCreateRoomButton();
+
+        const url = new URL(window.location.href);
+        const roomId = url.searchParams.get("room");
+
+        if (roomId) {
+            joinRoom(roomId);
+            return;
+        }
+
+        // ensure we are not considered in a room before first UI update
+        roomState.id = null;
+
+        updateRoomUI();
+
+        if (!authState.user) return;
+        await ensureUserDoc();
+        startUserDocListener();
+    });
 
     const qEl = id("q");
 
@@ -584,7 +595,15 @@ async function boot() {
     id("btnShareList")?.addEventListener("click", sharePoolOnWhatsApp);
 
     id("btnCreateRoom")?.addEventListener("click", createRoom);
-    id("btnLeaveRoom")?.addEventListener("click", leaveRoom);
+    id("btnLeaveRoom")?.addEventListener("click", async () => {
+        await leaveRoom();
+        // optional immediate UI reset
+        const members = document.getElementById("roomMembersWrap");
+        const chatCol = document.getElementById("roomChatColumn");
+        members?.classList.add("hidden");
+        chatCol?.classList.add("hidden");
+    });
+
 
     id("btnResetFilters")?.addEventListener("click", resetAllFilters);
 

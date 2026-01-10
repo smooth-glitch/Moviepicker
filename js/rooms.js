@@ -647,8 +647,18 @@ export function updateRoomUI() {
     const btnLeave = id("btnLeaveRoom");
     const chatCol = document.getElementById("roomChatColumn");
     const hasRoom = inRoom();
-    // this class no longer affects layout but you can keep it if you want
     document.body.classList.toggle("has-room", hasRoom);
+
+    const membersWrap = document.getElementById("roomMembersWrap");
+
+    // Show/hide right-side panels
+    if (membersWrap) {
+        membersWrap.classList.toggle("hidden", !hasRoom);
+    }
+    if (chatCol) {
+        chatCol.classList.toggle("hidden", !hasRoom);
+        chatCol.classList.toggle("flex", hasRoom);
+    }
 
     if (badge && chatCol) {
         badge.onclick = () => {
@@ -661,7 +671,6 @@ export function updateRoomUI() {
     if (badge) {
         const labelEl = document.getElementById("roomBadgeLabel");
         badge.classList.toggle("hidden", !hasRoom);
-
         if (!hasRoom) {
             if (labelEl) labelEl.textContent = "Room: —";
         } else {
@@ -685,22 +694,11 @@ export function updateRoomUI() {
     }
 
     const wrap = document.getElementById("poolChatWrap");
-    const membersWrap = document.getElementById("roomMembersWrap");
-
     if (wrap) {
-        // 1 column normally, 2 columns (pool + chat) when in room
         wrap.classList.toggle("md:grid-cols-2", hasRoom);
     }
-
-    if (membersWrap) {
-        membersWrap.classList.toggle("hidden", !hasRoom);
-    }
-
-    if (chatCol) {
-        chatCol.classList.toggle("hidden", !hasRoom);
-        chatCol.classList.toggle("flex", hasRoom);
-    }
 }
+
 
 
 export function stopRoomListener() {
