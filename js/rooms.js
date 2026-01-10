@@ -647,7 +647,7 @@ export function updateRoomUI() {
     const btnLeave = id("btnLeaveRoom");
 
     const hasRoom = inRoom();
-    document.body.classList.toggle("has-room", inRoom);
+    document.body.classList.toggle("has-room", hasRoom);
 
     if (badge) {
         badge.classList.toggle("hidden", !hasRoom);
