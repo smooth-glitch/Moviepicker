@@ -553,6 +553,15 @@ async function boot() {
         renderPool();
     });
 
+    id("btnMenuSettings")?.addEventListener("click", () => {
+        document.getElementById("dlgSettings")?.showModal();
+    });
+
+    id("btnRoomBadge")?.addEventListener("click", () => {
+        document.getElementById("roomChatColumn")?.scrollIntoView({ behavior: "smooth" });
+        id("roomChatInput")?.focus();
+    });
+
     id("btnSearch")?.addEventListener("click", () => doSearch(1));
     id("btnTrending")?.addEventListener("click", () => loadTrending(1));
 
@@ -561,8 +570,6 @@ async function boot() {
 
     id("btnReroll")?.addEventListener("click", rerollPick);
     id("btnWatched")?.addEventListener("click", markCurrentWatched);
-    // Hero sign-in button (bottom-right of banner)
-    id("btnUser")?.addEventListener("click", openAuthDialog);
 
     id("btnCopyRoomLink")?.addEventListener("click", copyRoomLink);
 

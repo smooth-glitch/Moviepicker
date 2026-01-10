@@ -268,7 +268,7 @@ main.grid>section:first-child .card-body {
 #btnTrending,
 #btnPick,
 #btnCreateRoom {
-  min-width: 6rem;
+    min-width: 6rem;
 }
 
 
@@ -363,4 +363,13 @@ main.grid {
 section.relative+main.grid {
     margin-top: 0;
     /* hero directly above main */
+}
+
+/* add these to the existing list */
+#btnRoomBadge,
+#btnCopyRoomLink,
+#btnLeaveRoom {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
 }

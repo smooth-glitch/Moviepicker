@@ -82,8 +82,8 @@
 <body class="min-h-screen text-base-content">
     <div class="max-w-5xl mx-auto px-3 pt-3 pb-6 md:pt-4 md:pb-8 space-y-4 flex flex-col min-h-screen">
         <!-- Hero with logo, theme toggle, and actions -->
-        <section class="relative" id="hero">
-            <div class="relative w-full h-60 md:h-64 lg:h-72 rounded-none shadow-2xl overflow-hidden">
+        <section class="relative z-50" id="hero">
+            <div class="relative w-full h-60 md:h-64 lg:h-72 rounded-none shadow-2xl overflow-visible">
                 <!-- Background images -->
                 <img src="assets/light-logo.jpg" alt="CineCircle cupcake theme"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 theme-cupcake" />
@@ -146,33 +146,37 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Sign in - Bottom right card (bigger, not cut off) -->
-                <div class="absolute bottom-4 right-4 z-20 hero-fade">
-                    <button id="btnUser"
-                        class="btn btn-md md:btn-lg gap-2 btn-outline bg-transparent border-base-300 text-base-content transition-all"
-                        type="button">
+            <!-- User menu dropdown (hero) -->
+            <!-- User menu dropdown (hero) -->
+            <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end">
+                <label tabindex="0" id="btnUser"
+                    class="btn btn-md md:btn-lg gap-2 bg-base-100/95 hover:bg-base-100 border border-base-300 shadow-lg hover:shadow-xl text-base-content transition-all">
+                    <span class="inline-flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-venetian-mask-icon lucide-venetian-mask">
                             <path d="M18 11c-1.5 0-2.5.5-3 2" />
-                            <path
-                                d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z" />
+                            <path d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2
+                         5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z" />
                             <path d="M6 11c1.5 0 2.5.5 3 2" />
                         </svg>
+                    </span>
+                    <span id="userChipLabel" class="text-xs md:text-sm font-medium">
+                        Save pools
+                    </span>
+                </label>
 
-                        <span id="userChipLabel" class="text-xs md:text-sm font-medium">
-                            Save pools
-                        </span>
-                    </button>
-                </div>
-
+                <ul tabindex="0" id="userDropdownMenu"
+                    class="dropdown-content menu menu-sm mt-2 w-56 p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl z-[9999]">
+                    <li><button id="btnMenuSignIn" type="button" class="user-menu-item">Sign in</button></li>
+                    <li><button id="btnMenuSettings" type="button" class="user-menu-item">Settings</button></li>
+                    <li><button id="btnMenuCopyUid" type="button" class="user-menu-item">Copy UID</button></li>
+                    <li><button id="btnMenuSignOut" type="button" class="user-menu-item">Sign out</button></li>
+                </ul>
             </div>
         </section>
-
-
-
-
 
         <div id="roomPickBanner" class="alert alert-info hidden">
             <span id="roomPickText">Tonight’s pick: —</span>
@@ -234,6 +238,8 @@
                                     </div>
 
                                     <!-- Actions next to Genres -->
+
+
                                     <div class="flex gap-2 sm:shrink-0">
                                         <button id="btnPick" class="btn btn-secondary btn-sm">
                                             Surprise me
@@ -241,6 +247,17 @@
 
                                         <button id="btnCreateRoom" class="btn btn-outline btn-sm hidden">
                                             Create room
+                                        </button>
+
+                                        <!-- Room controls -->
+                                        <button id="roomBadge" class="btn btn-outline btn-sm hidden">
+                                            <span id="roomBadgeLabel" class="truncate">Room: —</span>
+                                        </button>
+                                        <button id="btnCopyRoomLink" class="btn btn-outline btn-sm hidden">
+                                            Copy link
+                                        </button>
+                                        <button id="btnLeaveRoom" class="btn btn-outline btn-sm hidden">
+                                            Leave
                                         </button>
                                     </div>
 
