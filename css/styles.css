@@ -1897,42 +1897,4 @@ html[data-theme="synthwave"] .chat-bubble-neutral {
   transform: translateY(-1px) scale(1.03);
 }
 
-/* When room chat is open, show 5 results per row on laptop-ish screens */
-@media (min-width: 1280px) and (max-width: 1600px) {
-  body.has-room #results {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-}
 
-/* 1920×1080: when in-room, let results flow into the empty space under right panel */
-@media (min-width: 1600px) and (max-width: 2100px) and (min-height: 900px) {
-  body.has-room main.grid {
-    display: block !important;
-    /* override Tailwind's 'grid' */
-  }
-
-  body.has-room main.grid::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
-
-  /* Right panel: pool/chat card */
-  body.has-room main.grid>section:last-child {
-    float: right;
-    width: 520px;
-    /* good for 1920 */
-    margin-left: 1rem;
-  }
-
-  /* Left panel should not stretch full width; it will wrap around the float */
-  body.has-room main.grid>section:first-child {
-    overflow: visible;
-    /* keep dropdowns safe */
-  }
-
-  /* Optional: slightly smaller min card width = more cards per row on left area */
-  body.has-room #results {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-}
