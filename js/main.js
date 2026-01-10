@@ -561,6 +561,8 @@ async function boot() {
 
     id("btnReroll")?.addEventListener("click", rerollPick);
     id("btnWatched")?.addEventListener("click", markCurrentWatched);
+    // Hero sign-in button (bottom-right of banner)
+    id("btnUser")?.addEventListener("click", openAuthDialog);
 
     id("btnCopyRoomLink")?.addEventListener("click", copyRoomLink);
 
