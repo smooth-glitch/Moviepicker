@@ -177,13 +177,13 @@ main.grid * {
     }
 }
 
-/* Right sidebar layout */
+/* Right sidebar layout (pool + members + chat section) */
 main.grid>section:last-child {
     align-self: flex-start !important;
 }
 
 main.grid>section:last-child>.card-body {
-    /* let the right card stretch vertically */
+    /* let the right card stretch vertically with its contents */
     flex: 1 1 auto !important;
     min-height: 0 !important;
 }
@@ -223,32 +223,5 @@ main.grid>section:first-child .card-body {
 @media (min-width: 1680px) and (max-width: 2100px) {
     #results {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    }
-}
-
-/* Optional: two-column desktop with results flowing under pool */
-@media (min-width: 1680px) and (max-width: 2100px) {
-    body.has-room main.grid {
-        display: block !important;
-    }
-
-    body.has-room main.grid::after {
-        content: "";
-        display: block;
-        clear: both;
-    }
-
-    body.has-room main.grid>section:last-child {
-        float: right;
-        width: 520px;
-        margin-left: 1rem;
-    }
-
-    body.has-room main.grid>section:first-child {
-        overflow: visible;
-    }
-
-    body.has-room #results {
-        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
     }
 }
