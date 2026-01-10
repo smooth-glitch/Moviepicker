@@ -248,7 +248,6 @@ main.grid>section:first-child .card-body {
     min-width: 16rem;
 }
 
-/* Small controls: keep them short */
 #mediaType,
 #yearFilter,
 #resultSort,
@@ -256,17 +255,22 @@ main.grid>section:first-child .card-body {
 #ottDropdownBtn,
 #btnSearch,
 #btnTrending,
-#btnResetFilters {
+#btnResetFilters,
+#btnPick,
+#btnCreateRoom {
     height: 2.5rem;
     padding-inline: 0.85rem;
     flex: 0 0 auto;
 }
 
-/* Make the 3 main tabs similar height */
+
 #btnSearch,
-#btnTrending {
-    min-width: 6rem;
+#btnTrending,
+#btnPick,
+#btnCreateRoom {
+  min-width: 6rem;
 }
+
 
 /* Mobile: stack everything full‑width */
 @media (max-width: 768px) {
@@ -292,7 +296,9 @@ main.grid>section:first-child .card-body {
     #ottDropdownBtn,
     #btnSearch,
     #btnTrending,
-    #btnResetFilters {
+    #btnResetFilters,
+    #btnPick,
+    #btnCreateRoom {
         width: 100% !important;
     }
 }
@@ -347,4 +353,14 @@ main.grid>section:first-child .card-body {
         flex-wrap: nowrap;
         align-items: flex-end;
     }
+}
+
+/* Tighten gap between hero and filters card */
+main.grid {
+    margin-top: 0.25rem;
+}
+
+section.relative+main.grid {
+    margin-top: 0;
+    /* hero directly above main */
 }

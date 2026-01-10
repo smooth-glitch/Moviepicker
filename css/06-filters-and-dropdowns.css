@@ -264,3 +264,22 @@ label:has(#excludeWatched:checked) span,
     padding-inline: 1rem;
     font-size: 0.9rem;
 }
+
+/* Search bar hover + focus lift */
+#q {
+    transition:
+        border-color 180ms ease,
+        box-shadow 200ms ease,
+        transform 180ms ease,
+        background-color 200ms ease;
+}
+
+#q:hover,
+#q:focus-visible {
+    transform: translateY(-2px);
+    border-color: hsl(var(--p));
+    box-shadow:
+        0 0 0 2px color-mixin(oklab, hsl(var(--p)) 55, transparent),
+        0 16px 34px rgba(0, 0, 0, 0.6);
+    background-color: color-mixin(oklab, hsl(var(--b2)) 40, transparent);
+}

@@ -60,23 +60,9 @@ button:active .theme-ico,
     transition: transform 160ms ease, filter 160ms ease;
 }
 
-.card:hover img {
-    transform: translateY(-2px) scale(1.02);
-    filter: saturate(1.1) contrast(1.05);
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
-}
 
 .card figure {
     padding: 0.75rem 0.75rem 0;
-}
-
-.card img {
-    border-radius: 0.7rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .card-body {
@@ -359,4 +345,29 @@ html[data-theme="cupcake"] .btn-accent:hover {
 
 #toasts.toast {
     z-index: 9999;
+}
+
+.card img {
+    border-radius: 0.7rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: transform 160ms ease, filter 160ms ease;
+}
+
+/* Only posters breathe a bit; card itself stays put */
+.card:hover img {
+    transform: translateY(-1px) scale(1.01);
+    filter: saturate(1.05) contrast(1.03);
+}
+
+/* Remove card translateY so grid and filters don’t lift as a block */
+.card:hover {
+    transform: none;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.48),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Keep filters card completely static */
+main.grid>section.card:first-child:hover {
+    transform: none !important;
+    box-shadow: inherit !important;
 }
