@@ -149,7 +149,6 @@ main.grid * {
 
 @media (min-width: 1536px) {
     #filtersBar {
-        display: flex;
         flex-wrap: nowrap;
         gap: 0.75rem;
         align-items: flex-end;
@@ -173,9 +172,11 @@ main.grid * {
     #btnSearch,
     #btnTrending,
     #btnResetFilters {
+        flex: 0 0 var(--ctrlW);
         width: var(--ctrlW) !important;
     }
 }
+
 
 /* Right sidebar layout (pool + members + chat section) */
 main.grid>section:last-child {
@@ -223,5 +224,127 @@ main.grid>section:first-child .card-body {
 @media (min-width: 1680px) and (max-width: 2100px) {
     #results {
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}
+
+/* Filters top bar */
+#filtersBar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Second row: dropdowns + reset */
+#filtersGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+/* Search input: grow, but not full screen */
+#q {
+    flex: 1 1 22rem;
+    min-width: 16rem;
+}
+
+/* Small controls: keep them short */
+#mediaType,
+#yearFilter,
+#resultSort,
+#genreDropdownBtn,
+#ottDropdownBtn,
+#btnSearch,
+#btnTrending,
+#btnResetFilters {
+    height: 2.5rem;
+    padding-inline: 0.85rem;
+    flex: 0 0 auto;
+}
+
+/* Make the 3 main tabs similar height */
+#btnSearch,
+#btnTrending {
+    min-width: 6rem;
+}
+
+/* Mobile: stack everything full‑width */
+@media (max-width: 768px) {
+    #filtersBar {
+        flex-direction: column;
+    }
+
+    #searchRow,
+    #filtersGrid {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #q {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+
+    #mediaType,
+    #yearFilter,
+    #resultSort,
+    #genreDropdownBtn,
+    #ottDropdownBtn,
+    #btnSearch,
+    #btnTrending,
+    #btnResetFilters {
+        width: 100% !important;
+    }
+}
+
+/* Top search row: input on left, buttons on right */
+#searchRow {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+}
+
+/* Input wrapper is the first child div inside #searchRow */
+#searchRow>div:first-child {
+    flex: 1 1 auto;
+    /* grow to fill row */
+    min-width: 0;
+}
+
+/* Search + Trending buttons (direct children after the div) */
+#searchRow>#btnSearch,
+#searchRow>#btnTrending {
+    flex: 0 0 auto;
+    min-width: 7rem;
+    height: 2.75rem;
+    padding-inline: 1.2rem;
+}
+
+/* Mobile: stack input and buttons */
+@media (max-width: 768px) {
+    #searchRow {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #searchRow>#btnSearch,
+    #searchRow>#btnTrending {
+        width: 100%;
+    }
+}
+
+#filtersBar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Only on very wide screens, allow a single row if there is space */
+@media (min-width: 1536px) {
+    #filtersBar {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-end;
     }
 }
