@@ -11,21 +11,15 @@
 
 /* Peppy background + subtle grain */
 body {
-  background: radial-gradient(
-      900px 500px at 15% -10%,
+  background: radial-gradient(900px 500px at 15% -10%,
       rgba(255, 0, 170, 0.28),
-      transparent 55%
-    ),
-    radial-gradient(
-      800px 520px at 90% 0%,
+      transparent 55%),
+    radial-gradient(800px 520px at 90% 0%,
       rgba(0, 255, 230, 0.22),
-      transparent 55%
-    ),
-    radial-gradient(
-      900px 520px at 60% 110%,
+      transparent 55%),
+    radial-gradient(900px 520px at 60% 110%,
       rgba(120, 90, 255, 0.24),
-      transparent 55%
-    ),
+      transparent 55%),
     hsl(var(--b2));
 }
 
@@ -373,11 +367,9 @@ html[data-theme="cupcake"] .modal-box {
 
 /* Primary / secondary gradients (base look) */
 .btn-primary {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--p)),
-    color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%)
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--p)),
+      color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%));
   border-color: transparent;
   color: hsl(0 0% 5%);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
@@ -389,11 +381,9 @@ html[data-theme="cupcake"] .modal-box {
 }
 
 .btn-secondary {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--s)),
-    color-mix(in oklab, hsl(var(--s)) 75%, hsl(var(--p)) 25%)
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--s)),
+      color-mix(in oklab, hsl(var(--s)) 75%, hsl(var(--p)) 25%));
   border-color: transparent;
   color: hsl(0 0% 5%);
   box-shadow: var(--ui-shadow);
@@ -515,11 +505,9 @@ html[data-theme="cupcake"] .theme-toggle__dark-inner {
 html[data-theme="synthwave"] .btn-primary,
 html[data-theme="synthwave"] .btn-secondary,
 html[data-theme="synthwave"] .btn-accent {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--p)),
-    color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%)
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--p)),
+      color-mix(in oklab, hsl(var(--p)) 80%, hsl(var(--s)) 20%));
   border-color: transparent;
   color: hsl(0 0% 5%);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5),
@@ -535,11 +523,9 @@ html[data-theme="synthwave"] .btn-accent:hover {
 html[data-theme="cupcake"] .btn-primary,
 html[data-theme="cupcake"] .btn-secondary,
 html[data-theme="cupcake"] .btn-accent {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--s)),
-    color-mix(in oklab, hsl(var(--s)) 80%, hsl(var(--p)) 20%)
-  );
+  background: linear-gradient(135deg,
+      hsl(var(--s)),
+      color-mix(in oklab, hsl(var(--s)) 80%, hsl(var(--p)) 20%));
   border-color: transparent;
   color: hsl(0 0% 5%);
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.3),
@@ -601,7 +587,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
   }
 
   /* second header row becomes full width and wraps */
-  header.header-shell > div:last-child {
+  header.header-shell>div:last-child {
     width: 100%;
     flex-wrap: wrap;
     justify-content: flex-start;
@@ -652,7 +638,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* If app.js uses a flex row for title+badge, allow wrap */
-#results .card .card-body > .flex.items-start {
+#results .card .card-body>.flex.items-start {
   flex-wrap: wrap;
 }
 
@@ -690,7 +676,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* Each pool row is created by app.js as a direct child of #pool */
-#pool > div {
+#pool>div {
   display: grid !important;
   grid-template-columns: 3rem minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -704,12 +690,12 @@ html[data-theme="cupcake"] .btn-accent:hover {
   transition: background-color 160ms ease;
 }
 
-#pool > div:hover {
+#pool>div:hover {
   background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
 }
 
 /* Thumb slot: either <img> or placeholder div */
-#pool > div > :first-child {
+#pool>div> :first-child {
   width: 3rem !important;
   height: 4rem !important;
   border-radius: 0.6rem !important;
@@ -717,7 +703,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* Info column */
-#pool > div > :nth-child(2) {
+#pool>div> :nth-child(2) {
   min-width: 0 !important;
 }
 
@@ -730,7 +716,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* Actions column */
-#pool > div > :nth-child(3) {
+#pool>div> :nth-child(3) {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 0.45rem !important;
@@ -739,12 +725,12 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 @media (max-width: 640px) {
-  #pool > div {
+  #pool>div {
     grid-template-columns: 3rem minmax(0, 1fr) !important;
     grid-template-rows: auto auto !important;
   }
 
-  #pool > div > :nth-child(3) {
+  #pool>div> :nth-child(3) {
     grid-column: 1 / -1 !important;
     justify-content: flex-start !important;
   }
@@ -794,7 +780,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* Header row: “Room members” + Online badge */
-#roomMembersWrap .card-body > div:first-child {
+#roomMembersWrap .card-body>div:first-child {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -802,7 +788,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
   overflow: visible !important;
 }
 
-#roomMembersWrap .card-body > div:first-child h3 {
+#roomMembersWrap .card-body>div:first-child h3 {
   min-width: 0 !important;
   margin: 0 !important;
 }
@@ -836,7 +822,7 @@ html[data-theme="cupcake"] .btn-accent:hover {
 }
 
 /* Each row (app.js uses bg-base-20040 etc.) */
-#roomMembersList > div {
+#roomMembersList>div {
   width: 100% !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -849,11 +835,11 @@ html[data-theme="cupcake"] .btn-accent:hover {
   word-break: break-word;
 }
 
-#roomMembersList > div > .truncate {
+#roomMembersList>div>.truncate {
   min-width: 0 !important;
 }
 
-#roomMembersList > div > .badge {
+#roomMembersList>div>.badge {
   justify-self: end !important;
   white-space: nowrap !important;
 }
@@ -962,11 +948,9 @@ label:has(#excludeWatched):hover {
 
 label:has(#excludeWatched:checked) {
   border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklab, hsl(var(--p)) 70%, transparent),
-    color-mix(in oklab, hsl(var(--s)) 55%, transparent)
-  );
+  background: linear-gradient(135deg,
+      color-mix(in oklab, hsl(var(--p)) 70%, transparent),
+      color-mix(in oklab, hsl(var(--s)) 55%, transparent));
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(255, 255, 255, 0.06);
 }
@@ -1015,11 +999,9 @@ label:has(#excludeWatched:checked),
 #watchFilters .watch-chip[aria-pressed="true"],
 #watchFilters .watch-chip[data-active="true"] {
   border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklab, hsl(var(--p)) 70%, transparent),
-    color-mix(in oklab, hsl(var(--s)) 55%, transparent)
-  );
+  background: linear-gradient(135deg,
+      color-mix(in oklab, hsl(var(--p)) 70%, transparent),
+      color-mix(in oklab, hsl(var(--s)) 55%, transparent));
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(255, 255, 255, 0.06);
 }
@@ -1130,11 +1112,9 @@ label:has(#excludeWatched:checked) span,
 }
 
 #genreDropdownBtn:hover {
-  background-color: color-mix(
-    in oklab,
-    hsl(var(--b2)) 35%,
-    transparent
-  ) !important;
+  background-color: color-mix(in oklab,
+      hsl(var(--b2)) 35%,
+      transparent) !important;
 }
 
 #genreDropdownBtn:focus-visible {
@@ -1210,13 +1190,13 @@ main.grid {
 }
 
 /* Let both cards stretch and allow inner scrolling areas */
-main.grid > section {
+main.grid>section {
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
 
-main.grid > section > .card-body {
+main.grid>section>.card-body {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
@@ -1256,11 +1236,9 @@ main.grid * {
 }
 
 #ottDropdownBtn:hover {
-  background-color: color-mix(
-    in oklab,
-    hsl(var(--b2)) 35%,
-    transparent
-  ) !important;
+  background-color: color-mix(in oklab,
+      hsl(var(--b2)) 35%,
+      transparent) !important;
 }
 
 #ottDropdownBtn:focus-visible {
@@ -1309,11 +1287,9 @@ main.grid * {
 #genreDropdownMenu label:has(input[type="checkbox"]:checked),
 #ottDropdownMenu label:has(input[type="checkbox"]:checked) {
   border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
-  background: linear-gradient(
-    135deg,
-    color-mix(in oklab, hsl(var(--p)) 45%, transparent),
-    color-mix(in oklab, hsl(var(--s)) 35%, transparent)
-  );
+  background: linear-gradient(135deg,
+      color-mix(in oklab, hsl(var(--p)) 45%, transparent),
+      color-mix(in oklab, hsl(var(--s)) 35%, transparent));
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.06);
 }
@@ -1352,6 +1328,7 @@ main.grid * {
 
 /* Small laptops: grid-based filters, full-width controls */
 @media (min-width: 1024px) and (max-width: 1535px) {
+
   #filtersBar #mediaType,
   #filtersBar #yearFilter,
   #filtersBar #resultSort,
@@ -1413,32 +1390,32 @@ main.grid * {
 }
 
 /* Remove unnecessary vertical space in the right "Your pool" card */
-main.grid > section:last-child {
+main.grid>section:last-child {
   align-self: flex-start !important;
   /* don't stretch to match left column height */
 }
 
-main.grid > section:last-child > .card-body {
+main.grid>section:last-child>.card-body {
   flex: 0 0 auto !important;
   min-height: auto !important;
 }
 
 /* Pool should size to content; only scroll if it becomes long */
-main.grid > section:last-child #pool {
+main.grid>section:last-child #pool {
   flex: 0 0 auto !important;
   max-height: 32rem;
   overflow: auto;
 }
 
 @media (max-width: 768px) {
-  main.grid > section:last-child #pool {
+  main.grid>section:last-child #pool {
     max-height: 24rem;
   }
 }
 
 /* Allow dropdown menus to overflow the left card (fix mobile/tablet clipping) */
-main.grid > section:first-child.card,
-main.grid > section:first-child .card-body {
+main.grid>section:first-child.card,
+main.grid>section:first-child .card-body {
   overflow: visible !important;
 }
 
@@ -1529,15 +1506,19 @@ html[data-reduce-motion] *::after {
 
 /* My messages (right side) – black bubble with white text */
 .chat-bubble-primary {
-  background-color: #000; /* black bubble */
-  color: #fff; /* white text */
+  background-color: #000;
+  /* black bubble */
+  color: #fff;
+  /* white text */
   border-radius: 9999px;
 }
 
 /* Other people's messages (left side) – white bubble with black text */
 .chat-bubble-neutral {
-  background-color: #fff; /* white bubble */
-  color: #000; /* black text */
+  background-color: #fff;
+  /* white bubble */
+  color: #000;
+  /* black text */
   border-radius: 9999px;
 }
 
@@ -1620,12 +1601,14 @@ html[data-theme="synthwave"] .chat-bubble-neutral {
 
 /* Light cupcake theme: invert for balance */
 html[data-theme="cupcake"] .chat-bubble-primary {
-  background-color: hsl(222 18% 12%); /* dark text bubble */
+  background-color: hsl(222 18% 12%);
+  /* dark text bubble */
   color: #fff;
 }
 
 html[data-theme="cupcake"] .chat-bubble-neutral {
-  background-color: #fff; /* white bubble */
+  background-color: #fff;
+  /* white bubble */
   color: hsl(222 18% 12%);
 }
 
@@ -1636,7 +1619,8 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
     position: fixed;
     left: 0.75rem;
     right: 0.75rem;
-    bottom: 5.5rem; /* roughly just above the chat form */
+    bottom: 5.5rem;
+    /* roughly just above the chat form */
     max-width: 480px;
     margin-inline: auto;
   }
@@ -1652,7 +1636,8 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 .chat-tray {
   position: absolute;
   right: 0.5rem;
-  bottom: 2.6rem; /* sits above the input row */
+  bottom: 2.6rem;
+  /* sits above the input row */
   width: min(26rem, 92vw);
   padding: 0.75rem;
   border-radius: 1rem;
@@ -1671,12 +1656,14 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 
 #roomChatShell {
   min-height: 6rem;
-  max-height: 80vh; /* do not exceed viewport */
+  max-height: 80vh;
+  /* do not exceed viewport */
 }
 
 #roomChatShell.fullscreen {
   position: fixed;
-  inset: 3.5rem 0.75rem 4.5rem 0.75rem; /* leave space for header/footer */
+  inset: 3.5rem 0.75rem 4.5rem 0.75rem;
+  /* leave space for header/footer */
   z-index: 60;
   background-color: hsl(var(--b1));
   border-radius: 1rem;
@@ -1697,10 +1684,14 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 
 /* Soften cupcake light theme */
 html[data-theme="cupcake"] {
-  --b1: 38 60% 88%; /* base-100: warm beige */
-  --b2: 35 55% 82%; /* base-200: slightly deeper */
-  --b3: 30 50% 75%; /* base-300: borders */
-  --bc: 222 18% 15%; /* base-content: dark slate text */
+  --b1: 38 60% 88%;
+  /* base-100: warm beige */
+  --b2: 35 55% 82%;
+  /* base-200: slightly deeper */
+  --b3: 30 50% 75%;
+  /* base-300: borders */
+  --bc: 222 18% 15%;
+  /* base-content: dark slate text */
 }
 
 html[data-theme="cupcake"] #roomChatMessages {
@@ -1725,45 +1716,59 @@ html[data-theme="cupcake"] {
   --bc: 222 18% 15%;
 
   /* Cupcake-style primary (buttons, links) */
-  --p: 330 72% 72%; /* primary: strawberry frosting pink */
-  --pf: 330 80% 64%; /* primary-focus: slightly deeper */
-  --pc: 330 20% 18%; /* primary-content: dark text on pink */
+  --p: 330 72% 72%;
+  /* primary: strawberry frosting pink */
+  --pf: 330 80% 64%;
+  /* primary-focus: slightly deeper */
+  --pc: 330 20% 18%;
+  /* primary-content: dark text on pink */
 }
 
 html[data-theme="cupcake"] {
   /* …previous vars… */
 
-  --s: 200 60% 70%; /* secondary: soft teal */
+  --s: 200 60% 70%;
+  /* secondary: soft teal */
   --sf: 200 65% 62%;
   --sc: 200 20% 18%;
 
-  --a: 45 90% 70%; /* accent: pastel yellow */
+  --a: 45 90% 70%;
+  /* accent: pastel yellow */
   --af: 45 95% 62%;
   --ac: 45 25% 18%;
 }
 
 html[data-theme="synthwave"] {
   /* Darker, cooler background */
-  --b1: 250 25% 10%; /* base-100: deep indigo */
-  --b2: 250 28% 14%; /* base-200 */
-  --b3: 250 30% 20%; /* base-300: borders */
-  --bc: 220 20% 88%; /* base-content: light cool text */
+  --b1: 250 25% 10%;
+  /* base-100: deep indigo */
+  --b2: 250 28% 14%;
+  /* base-200 */
+  --b3: 250 30% 20%;
+  /* base-300: borders */
+  --bc: 220 20% 88%;
+  /* base-content: light cool text */
 }
 
 html[data-theme="synthwave"] {
   /* …base vars above… */
 
   /* Electric cyan primary for buttons, links */
-  --p: 190 95% 65%; /* primary */
-  --pf: 190 95% 58%; /* primary-focus */
-  --pc: 210 40% 10%; /* primary-content (text on primary) */
+  --p: 190 95% 65%;
+  /* primary */
+  --pf: 190 95% 58%;
+  /* primary-focus */
+  --pc: 210 40% 10%;
+  /* primary-content (text on primary) */
 
   /* Purple secondary, pink accent */
-  --s: 275 80% 70%; /* secondary: neon purple */
+  --s: 275 80% 70%;
+  /* secondary: neon purple */
   --sf: 275 80% 62%;
   --sc: 275 25% 14%;
 
-  --a: 330 80% 68%; /* accent: magenta */
+  --a: 330 80% 68%;
+  /* accent: magenta */
   --af: 330 80% 60%;
   --ac: 330 30% 14%;
 }
@@ -1780,8 +1785,10 @@ html[data-theme="synthwave"] .chat-bubble-neutral {
 
 /* Boxy look: minimal rounding */
 :root {
-  --rounded-box: 0.4rem; /* cards, modals */
-  --rounded-btn: 0.35rem; /* buttons */
+  --rounded-box: 0.4rem;
+  /* cards, modals */
+  --rounded-btn: 0.35rem;
+  /* buttons */
   --rounded-badge: 0.35rem;
   --rounded-input: 0.35rem;
 }
@@ -1814,7 +1821,7 @@ html[data-theme="synthwave"] .chat-bubble-neutral {
 /* Primary shells */
 .card,
 .modal-box,
-#poolChatWrap > div,
+#poolChatWrap>div,
 #roomMembersWrap,
 #roomChatColumn,
 #roomChatShell {
@@ -1888,4 +1895,11 @@ html[data-theme="synthwave"] .chat-bubble-neutral {
 .reaction-menu .reaction-item:hover {
   background-color: color-mix(in oklab, hsl(var(--b2)) 45%, transparent);
   transform: translateY(-1px) scale(1.03);
+}
+
+/* When room chat is open, show 5 results per row on laptop-ish screens */
+@media (min-width: 1280px) and (max-width: 1600px) {
+  body.has-room #results {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
