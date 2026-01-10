@@ -364,3 +364,13 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
         max-height: 28rem;
     }
 }
+
+@media (min-width: 1440px) and (max-width: 2100px) {
+    #roomChatMessages {
+        max-height: 20rem;
+    }
+
+    #pool {
+        max-height: 28rem;
+    }
+}
