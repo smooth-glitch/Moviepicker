@@ -7,6 +7,14 @@ import { renderWatchProvidersSection } from "./watchFilters.js";
 import { saveJson, LSWATCHED } from "./storage.js";
 import { renderPool } from "./render.js";
 import { updatePlaybackFromLocal, saveTelepartyUrl } from "./rooms.js";
+import { addToPoolById } from "./pool.js";
+
+
+let currentDetailsId = null;
+
+export function getCurrentDetailsId() {
+    return currentDetailsId;
+}
 
 export async function loadBestVideos(kind, id) {
     const attempts = [{ language: "en-US" }, {}];
@@ -57,19 +65,26 @@ export async function openDetails(idNum, opts = {}) {
     const dlg = id("dlg");
     const dlgTitle = id("dlgTitle");
     const dlgMeta = id("dlgMeta");
-    const box = id("dlgOverview");
+    const ovEl = id("dlgOverview");
     const btnReroll = id("btnReroll");
+    const posterEl = id("dlgPoster");
+    const mainExtras = id("dlgMainExtras");
+    const extraContent = id("dlgExtraContent");
 
     try {
         setBusy(true);
 
+        currentDetailsId = idNum;
         dlgTitle.textContent = "Loading…";
         dlgMeta.textContent = "";
-        box.innerHTML = `
+        ovEl.innerHTML = `
       <div class="flex items-center justify-center py-10">
         <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
-    `; // daisyUI loading spinner [web:151]
+    `;
+        if (posterEl) posterEl.src = "";
+        if (mainExtras) mainExtras.innerHTML = "";
+        if (extraContent) extraContent.innerHTML = "";
 
         dlg.showModal();
 
@@ -84,12 +99,12 @@ export async function openDetails(idNum, opts = {}) {
 
         state.currentDetails = { ...data, mediaType: kind };
 
+        // ----- Title & meta -----
         const title =
             kind === "tv"
                 ? data.name || data.original_name || "Untitled"
                 : data.title || data.original_title || "Untitled";
-        const dateStr =
-            kind === "tv" ? data.first_air_date : data.release_date;
+        const dateStr = kind === "tv" ? data.first_air_date : data.release_date;
 
         dlgTitle.textContent = title;
 
@@ -116,70 +131,70 @@ export async function openDetails(idNum, opts = {}) {
 
         dlgMeta.textContent = parts.filter(Boolean).join(" • ");
 
-        box.innerHTML = "";
+        // Poster
+        if (posterEl) {
+            const p = posterUrl(data.poster_path);
+            if (p) {
+                posterEl.src = p;
+                posterEl.alt = title;
+            } else {
+                posterEl.src = "";
+            }
+        }
 
-        const wrap = document.createElement("div");
-        wrap.className = "flex gap-4 flex-col sm:flex-row";
+        // Overview
+        ovEl.textContent = data.overview || "No overview available.";
 
-        const left = document.createElement("div");
-        left.className = "sm:w-40";
-        const p = posterUrl(data.poster_path);
-        left.innerHTML = p
-            ? `<img class="rounded-xl w-full aspect-[2/3] object-cover" src="${p}" alt="" loading="lazy" />`
-            : `<div class="rounded-xl bg-base-200 aspect-[2/3] grid place-items-center text-base-content/60">No poster</div>`;
+        // ----- Main extras (trailers / providers / seasons / collection) -----
+        if (mainExtras) {
+            mainExtras.innerHTML = "";
+        }
 
-        const right = document.createElement("div");
-        right.className = "flex-1";
+        const rightExtras = document.createElement("div");
+        rightExtras.className = "space-y-4";
 
-        const ov = document.createElement("p");
-        ov.className = "leading-relaxed";
-        ov.textContent = data.overview || "No overview available.";
-        right.appendChild(ov);
-
-        // Trailer + Teleparty + Play together row
+        // Trailer row (with icons)
         try {
             const videos = await loadBestVideos(kind, idNum);
             const best = pickBestTrailer(videos);
             const url = trailerUrl(best);
 
             const trailerWrap = document.createElement("div");
-            trailerWrap.className = "mt-3 flex flex-wrap items-center gap-2";
+            trailerWrap.className = "flex flex-wrap items-center gap-2";
 
             if (url) {
                 const btnTrailer = document.createElement("a");
-                btnTrailer.className = "btn btn-sm btn-primary";
+                btnTrailer.className = "btn btn-sm btn-secondary gap-2";
                 btnTrailer.href = url;
                 btnTrailer.target = "_blank";
                 btnTrailer.rel = "noopener noreferrer";
-                btnTrailer.textContent = "Watch trailer";
+                btnTrailer.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Watch trailer
+        `;
                 trailerWrap.appendChild(btnTrailer);
             } else {
                 const none = document.createElement("div");
-                none.className = "text-sm opacity-60";
-                none.textContent = "Not available";
+                none.className = "text-xs opacity-60";
+                none.textContent = "Trailer not available";
                 trailerWrap.appendChild(none);
             }
 
             if (inRoom()) {
                 const btnTeleparty = document.createElement("button");
                 btnTeleparty.type = "button";
-                btnTeleparty.className =
-                    "btn btn-sm btn-primary flex items-center gap-2";
-
-                const icon = document.createElement("span");
-                icon.className =
-                    "inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-100 text-xs font-semibold";
-                icon.textContent = "TP";
-
-                const text = document.createElement("span");
-                text.textContent = "Teleparty";
-
-                btnTeleparty.appendChild(icon);
-                btnTeleparty.appendChild(text);
-
+                btnTeleparty.className = "btn btn-sm btn-primary gap-2";
+                btnTeleparty.innerHTML = `
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-base-100 text-[10px] font-semibold">TP</span>
+          <span>Teleparty</span>
+        `;
                 btnTeleparty.addEventListener("click", async () => {
                     const existing = prompt(
-                        "Paste your Teleparty link here (install the Teleparty extension, start a party, then paste the link):",
+                        "Paste your Teleparty link here:",
                         ""
                     );
                     if (!existing) return;
@@ -190,22 +205,26 @@ export async function openDetails(idNum, opts = {}) {
                         toast("Failed to save Teleparty link.", "error");
                     }
                 });
-
                 trailerWrap.appendChild(btnTeleparty);
 
                 const btnPlayTogether = document.createElement("button");
                 btnPlayTogether.type = "button";
-                btnPlayTogether.className = "btn btn-sm btn-primary";
-                btnPlayTogether.textContent = "Play together";
-
+                btnPlayTogether.className = "btn btn-sm btn-primary gap-2";
+                btnPlayTogether.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <polygon points="10 9 15 12 10 15 10 9"/>
+          </svg>
+          Play together
+        `;
                 btnPlayTogether.addEventListener("click", () => {
                     const cur = state.currentDetails;
                     if (!cur) return;
-
                     const mediaId = cur.id;
                     const mediaType =
                         cur.mediaType || state.filters.mediaType || "movie";
-
                     updatePlaybackFromLocal({
                         mediaId,
                         mediaType,
@@ -213,98 +232,153 @@ export async function openDetails(idNum, opts = {}) {
                         isPlaying: true,
                     });
                 });
-
                 trailerWrap.appendChild(btnPlayTogether);
             }
 
-            right.appendChild(trailerWrap);
+            rightExtras.appendChild(trailerWrap);
         } catch {
-            // ignore trailer errors
+            /* ignore trailer errors */
         }
 
         // Where to watch
         try {
             const wp = await tmdb(`${kind}/${idNum}/watch/providers`, {});
             const wpSection = renderWatchProvidersSection(wp);
-            if (wpSection) right.appendChild(wpSection);
-        } catch {
-            // ignore
-        }
+            if (wpSection) rightExtras.appendChild(wpSection);
+        } catch { }
 
-        // TV seasons (prequel/sequel as previous/next season)
+        // Seasons
         if (kind === "tv" && Array.isArray(data.seasons)) {
             const seasonsSection = renderTvSeasonsSection(data);
-            if (seasonsSection) right.appendChild(wrapInCollapse("Seasons", seasonsSection));
-        }
-
-        if (kind === "movie" && data.belongs_to_collection?.id) {
-            try {
-                const col = await tmdb(`collection/${data.belongs_to_collection.id}`, {
-                    language: "en-US",
-                });
-                const colSection = renderMovieCollectionSection(data, col);
-                if (colSection) right.appendChild(colSection);
-            } catch {
-                // ignore collection errors
+            if (seasonsSection) {
+                rightExtras.appendChild(
+                    wrapInCollapse("Seasons", seasonsSection)
+                );
             }
         }
 
+        // Movie collection
+        if (kind === "movie" && data.belongs_to_collection?.id) {
+            try {
+                const col = await tmdb(
+                    `collection/${data.belongs_to_collection.id}`,
+                    { language: "en-US" }
+                );
+                const colSection = renderMovieCollectionSection(data, col);
+                if (colSection) rightExtras.appendChild(colSection);
+            } catch { }
+        }
 
-        // TV recommendations/similar
+        if (mainExtras) mainExtras.appendChild(rightExtras);
+
+        // ----- Recommendations / Similar (new placement, with icons) -----
+        if (extraContent) extraContent.innerHTML = "";
+
+        async function buildSection(title, list, mediaType) {
+            if (!Array.isArray(list) || !list.length) return "";
+            const cards = list.slice(0, 10).map((m) => {
+                const p = posterUrl(m.poster_path);
+                const name = mediaType === "tv"
+                    ? m.name || m.original_name
+                    : m.title || m.original_title;
+                return `
+          <button
+            type="button"
+            class="flex-none w-24 text-left group"
+            data-id="${m.id}"
+            data-kind="${mediaType}"
+          >
+            <div class="relative aspect-[2/3] rounded-lg overflow-hidden bg-base-300 mb-1.5">
+              ${p
+                        ? `<img src="${p}" alt="${escapeHtml(name || "")}"
+                        class="w-full h-full object-cover transition group-hover:scale-105" loading="lazy" />`
+                        : `<div class="w-full h-full grid place-items-center text-[10px] opacity-60">No poster</div>`
+                    }
+            </div>
+            <p class="text-[11px] leading-tight line-clamp-2 group-hover:text-primary">
+              ${escapeHtml(name || "Untitled")}
+            </p>
+          </button>
+        `;
+            }).join("");
+
+            return `
+        <section class="space-y-2">
+          <h4 class="font-semibold text-sm flex items-center gap-2 opacity-80">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            ${title}
+          </h4>
+          <div class="flex gap-3 overflow-x-auto pb-2">
+            ${cards}
+          </div>
+        </section>
+      `;
+        }
+
+        let sectionsHtml = "";
+
         if (kind === "tv") {
-            if (Array.isArray(data.recommendations?.results) && data.recommendations.results.length) {
-                const recInner = renderMiniList(
+            if (data.recommendations?.results?.length) {
+                sectionsHtml += await buildSection(
                     "Recommended shows",
                     data.recommendations.results,
                     "tv"
                 );
-                if (recInner) {
-                    right.appendChild(wrapInCollapse("Recommended shows", recInner));
-                }
             }
-
-            if (Array.isArray(data.similar?.results) && data.similar.results.length) {
-                const simInner = renderMiniList(
+            if (data.similar?.results?.length) {
+                sectionsHtml += await buildSection(
                     "Similar shows",
                     data.similar.results,
                     "tv"
                 );
-                if (simInner) {
-                    right.appendChild(wrapInCollapse("Similar shows", simInner));
-                }
+            }
+        } else {
+            const rec = await tmdb(`movie/${idNum}/recommendations`, {
+                language: "en-US",
+            });
+            if (rec.results?.length) {
+                sectionsHtml += await buildSection(
+                    "Recommended movies",
+                    rec.results,
+                    "movie"
+                );
+            }
+            const sim = await tmdb(`movie/${idNum}/similar`, {
+                language: "en-US",
+            });
+            if (sim.results?.length) {
+                sectionsHtml += await buildSection(
+                    "Similar movies",
+                    sim.results,
+                    "movie"
+                );
             }
         }
 
+        if (extraContent && sectionsHtml) {
+            extraContent.innerHTML = sectionsHtml;
 
-        if (kind === "movie") {
-            const rec = await tmdb(`movie/${idNum}/recommendations`, { language: "en-US" });
-            if (Array.isArray(rec.results) && rec.results.length) {
-                const recInner = renderMiniList("Recommended movies", rec.results, "movie");
-                if (recInner) {
-                    right.appendChild(wrapInCollapse("Recommended movies", recInner));
-                }
-            }
-
-            const sim = await tmdb(`movie/${idNum}/similar`, { language: "en-US" });
-            if (Array.isArray(sim.results) && sim.results.length) {
-                const simInner = renderMiniList("Similar movies", sim.results, "movie");
-                if (simInner) {
-                    right.appendChild(wrapInCollapse("Similar movies", simInner));
-                }
-            }
+            // Delegate click to openDetails on recs/similar cards
+            extraContent.querySelectorAll("button[data-id]").forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const mid = Number(btn.getAttribute("data-id"));
+                    const mkind = btn.getAttribute("data-kind") || kind;
+                    if (!Number.isFinite(mid)) return;
+                    openDetails(mid, { mediaType: mkind });
+                });
+            });
         }
-
 
         if (opts.highlight) {
             const hint = document.createElement("div");
             hint.className = "mt-3 badge badge-primary badge-outline";
             hint.textContent = "Tonight’s pick";
-            right.appendChild(hint);
+            mainExtras?.appendChild(hint);
         }
-
-        wrap.appendChild(left);
-        wrap.appendChild(right);
-        box.appendChild(wrap);
 
         if (btnReroll) btnReroll.classList.toggle("hidden", !opts?.highlight);
 
@@ -315,6 +389,7 @@ export async function openDetails(idNum, opts = {}) {
         setBusy(false);
     }
 }
+
 
 // Mini horizontal list for recommendations/similar
 function renderMiniList(title, items, kind) {

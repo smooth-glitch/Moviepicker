@@ -143,13 +143,40 @@ export function renderResults(list) {
       const action = btn.dataset.action;
       const mid = Number(btn.dataset.id);
       if (action === "details") openDetails(mid);
-      if (action === "add") addToPoolById(mid);
+      if (action === "add") {
+        addToPoolById(mid);
+        refreshResultsPoolButtons();
+      }
+
+
     });
 
     wrap.appendChild(card);
   }
 
   renderPager();
+}
+
+export function refreshResultsPoolButtons() {
+  const wrap = id("results");
+  if (!wrap) return;
+
+  const idsInPool = new Set(state.pool.map((x) => x.id));
+
+  wrap.querySelectorAll('button[data-action="add"]').forEach((btn) => {
+    const mid = Number(btn.dataset.id);
+    const inPool = idsInPool.has(mid);
+
+    if (inPool) {
+      btn.classList.remove("btn-secondary");
+      btn.classList.add("btn-disabled");
+      btn.textContent = "In pool";
+    } else {
+      btn.classList.remove("btn-disabled");
+      btn.classList.add("btn-secondary");
+      btn.textContent = "Add";
+    }
+  });
 }
 
 export function renderPool() {
@@ -273,9 +300,20 @@ export function renderPool() {
         openDetails(mid, { mediaType: m.mediaType || "movie" });
         return;
       }
-      if (action === "toggleWatched") toggleWatched(mid);
-      if (action === "remove") removeFromPool(mid);
+      if (action === "toggleWatched") {
+        toggleWatched(mid);
+        renderPool();
+        return;
+      }
+      if (action === "remove") {
+        removeFromPool(mid);
+        renderPool();
+        refreshResultsPoolButtons(); // flip “In pool” -> “Add” where relevant
+        return;
+      }
     });
+
+
 
     wrap.appendChild(row);
   }

@@ -26,8 +26,8 @@ import {
     renderResultsLoading,
     setBusy,
 } from "./render.js";
-import { openDetails, markCurrentWatched } from "./details.js";
-import { clearPool } from "./pool.js";
+import { openDetails, markCurrentWatched, getCurrentDetailsId } from "./details.js";
+import { clearPool, addToPoolById } from "./pool.js";
 import { loadTrending, doSearch } from "./search.js";
 import { initWatchFiltersUI } from "./watchFilters.js";
 import {
@@ -490,6 +490,67 @@ async function boot() {
         onChange: () => {
             if (state.lastMode !== "trending") doSearch(1);
         },
+    });
+
+    // When opening settings, sync inputs from state
+    id("btnMenuSettings")?.addEventListener("click", () => {
+        const dlg = document.getElementById("dlgSettings");
+        if (!dlg) return;
+
+        const exclude = id("settingsExcludeWatched");
+        const themeToggle = id("settingsThemeToggle");
+
+        // filters
+        if (exclude) exclude.checked = !!state.filters.excludeWatched;
+
+        // theme: checked = synthwave, unchecked = cupcake
+        const currentTheme =
+            document.documentElement.getAttribute("data-theme") || "synthwave";
+        if (themeToggle) themeToggle.checked = currentTheme === "synthwave";
+
+        dlg.showModal();
+    });
+
+    id("btnAddFromDetails")?.addEventListener("click", async () => {
+        const idNum = getCurrentDetailsId();
+        const cur = state.currentDetails;
+        if (!idNum || !cur) return;
+
+        const mediaType = cur.mediaType || state.filters.mediaType || "movie";
+        try {
+            await addToPoolById(idNum, mediaType);
+            toast("Added to pool.", "success");
+        } catch {
+            toast("Failed to add to pool.", "error");
+        }
+        document.getElementById("dlg")?.close();
+    });
+
+    id("btnSettingsToggleTheme")?.addEventListener("click", () => {
+        const current =
+            document.documentElement.getAttribute("data-theme") || "synthwave";
+        applyTheme(current === "synthwave" ? "cupcake" : "synthwave");
+    });
+
+    id("settingsThemeToggle")?.addEventListener("change", () => {
+        const toggle = id("settingsThemeToggle");
+        if (!toggle) return;
+
+        const nextTheme = toggle.checked ? "synthwave" : "cupcake";
+        applyTheme(nextTheme); // you already have applyTheme(theme)
+    });
+
+    // Persist settings changes
+    id("settingsExcludeWatched")?.addEventListener("change", () => {
+        const on = id("settingsExcludeWatched").checked;
+        state.filters.excludeWatched = on;
+        saveJson(LSFILTERS, state.filters);
+    });
+
+    id("settingsMinRating")?.addEventListener("input", () => {
+        const v = Number(id("settingsMinRating").value);
+        state.filters.minRating = Number.isFinite(v) ? v : 0;
+        saveJson(LSFILTERS, state.filters);
     });
 
     bindDropdownRowToggle("genreDropdownMenu");
