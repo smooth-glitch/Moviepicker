@@ -37,7 +37,7 @@ A modern, responsive **movie night helper** built with **HTML**, **Tailwind + da
 
 ---
 
-## 🚀 Getting Starte
+## 🚀 Getting Start
 
 ### ✅ Run locally
 
