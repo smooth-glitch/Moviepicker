@@ -8,6 +8,20 @@
 @import "07-chat-and-room.css";
 @import "08-theme-overrides-and-elevation.css";
 
+/* ========== SETTINGS MODAL STYLING ========== */
+
+/* Settings Modal Backdrop - More Blur */
+#settingsBackdrop {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Settings Modal - General */
+#settingsModal {
+    background: transparent !important;
+}
+
 /* Settings Modal Animations */
 .fade-in-up {
     animation: fadeInUp 0.2s ease-out forwards;
@@ -25,9 +39,104 @@
     }
 }
 
-/* Ensure modal is always on top */
-#settingsModal {
-    z-index: 9999 !important;
+/* Settings Modal Tabs */
+.settings-tab-btn {
+    transition: all 0.2s ease;
+}
+
+.settings-tab-btn.active {
+    background-color: hsl(var(--b3)) !important;
+    font-weight: 600;
+}
+
+.settings-tab-btn:hover {
+    background-color: hsl(var(--b3)) !important;
+}
+
+/* Settings Content */
+.settings-content {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+/* Settings Modal Inputs */
+#settingsModal input[type="text"],
+#settingsModal input[type="email"],
+#settingsModal input[type="password"],
+#settingsModal input[type="range"],
+#settingsModal input[type="checkbox"],
+#settingsModal input[type="number"] {
+    color: hsl(var(--bc)) !important;
+}
+
+#settingsModal input[type="text"]::placeholder,
+#settingsModal input[type="email"]::placeholder,
+#settingsModal input[type="password"]::placeholder {
+    color: hsl(var(--bc) / 0.5) !important;
+}
+
+/* Settings Modal Buttons */
+#settingsModal .btn {
+    color: hsl(var(--bc)) !important;
+    border-color: hsl(var(--b3)) !important;
+}
+
+#settingsModal .btn-neutral {
+    background-color: hsl(var(--b3)) !important;
+    color: hsl(var(--bc)) !important;
+    border-color: hsl(var(--b3)) !important;
+}
+
+#settingsModal .btn-ghost {
+    color: hsl(var(--bc)) !important;
+}
+
+#settingsModal .btn-ghost:hover {
+    background-color: hsl(var(--b3) / 0.3) !important;
+    color: hsl(var(--bc)) !important;
+}
+
+#settingsModal .btn-error {
+    color: hsl(var(--er)) !important;
+    border-color: hsl(var(--er)) !important;
+}
+
+#settingsModal .btn-error:hover {
+    background-color: hsl(var(--er) / 0.1) !important;
+}
+
+/* Settings Modal Labels */
+#settingsModal .label-text {
+    color: hsl(var(--bc)) !important;
+}
+
+/* Settings Modal Dividers */
+#settingsModal .divider {
+    border-color: hsl(var(--b3)) !important;
+}
+
+/* Settings Modal Form Control */
+#settingsModal .form-control {
+    color: hsl(var(--bc)) !important;
+}
+
+/* Settings Modal Toggles */
+#settingsModal .toggle {
+    border-color: hsl(var(--b3)) !important;
+}
+
+#settingsModal .toggle:checked {
+    background-color: hsl(var(--p)) !important;
+    border-color: hsl(var(--p)) !important;
+}
+
+/* Settings Modal Range */
+#settingsModal .range {
+    background-color: hsl(var(--b3)) !important;
+}
+
+/* Settings Modal Avatar */
+#settingsModal .avatar img {
+    background-color: hsl(var(--b1)) !important;
 }
 
 /* Custom Scrollbar for Settings */
@@ -36,10 +145,66 @@
 }
 
 #settingsModal ::-webkit-scrollbar-track {
-    background: transparent;
+    background: hsl(var(--b2));
 }
 
 #settingsModal ::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
+    background-color: hsl(var(--b3));
     border-radius: 4px;
+}
+
+#settingsModal ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--b4));
+}
+
+/* Ensure text visibility in both themes */
+#settingsModal h2,
+#settingsModal h3,
+#settingsModal p,
+#settingsModal span,
+#settingsModal label {
+    color: hsl(var(--bc)) !important;
+}
+
+/* Alert styling */
+#settingsModal .alert {
+    background-color: hsl(var(--b2)) !important;
+    color: hsl(var(--bc)) !important;
+    border-color: hsl(var(--b3)) !important;
+}
+
+#settingsModal .alert-info {
+    background-color: hsl(var(--i) / 0.2) !important;
+    border-color: hsl(var(--i)) !important;
+}
+
+#settingsModal .alert-success {
+    background-color: hsl(var(--su) / 0.2) !important;
+    border-color: hsl(var(--su)) !important;
+}
+
+#settingsModal .alert-error {
+    background-color: hsl(var(--er) / 0.2) !important;
+    border-color: hsl(var(--er)) !important;
+}
+
+/* Loading spinner */
+#settingsModal .loading {
+    border-color: hsl(var(--b3)) !important;
+    border-right-color: hsl(var(--bc)) !important;
+}
+
+/* Join element styling */
+#settingsModal .join {
+    gap: 0;
+}
+
+#settingsModal .join-item {
+    border-color: hsl(var(--b3)) !important;
+    background-color: hsl(var(--b2)) !important;
+    color: hsl(var(--bc)) !important;
+}
+
+#settingsModal .join-item:not(:first-child) {
+    border-left: 0;
 }
