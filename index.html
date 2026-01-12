@@ -149,9 +149,10 @@
             </div>
 
             <!-- User menu dropdown (hero) -->
-            <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end dropdown-top">
-                <!-- 1. The Trigger Button -->
-                <label tabindex="0" id="btnUser"
+
+            <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end" tabindex="0">
+                <!-- Trigger -->
+                <label id="btnUser"
                     class="btn btn-md md:btn-lg gap-2 bg-base-100/95 hover:bg-base-100 border border-base-300 shadow-lg hover:shadow-xl text-base-content transition-all cursor-pointer">
                     <span class="inline-flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -162,22 +163,22 @@
                             <path d="M6 11c1.5 0 2.5.5 3 2" />
                         </svg>
                     </span>
-                    <span id="userChipLabel" class="text-xs md:text-sm font-medium">Save pools</span>
+                    <span id="userChipLabel" class="text-xs md:text-sm font-medium">
+                        Save pools
+                    </span>
                 </label>
 
-                <!-- PASTE THIS RIGHT AFTER </label> -->
-                <ul tabindex="0" id="userDropdownMenu"
-                    class="dropdown-content menu p-2 shadow-2xl bg-base-100 rounded-none border border-base-300 w-52 z-[9999]">
-                    <!-- Signed OUT item -->
-                    <li id="menuItemSignIn"><a id="btnMenuSignIn">Sign In</a></li>
-
-                    <!-- Signed IN items (Hidden by default, shown by Auth JS) -->
-                    <li id="menuItemSettings" class="hidden"><a id="btnMenuSettings">Settings</a></li>
-                    <li id="menuItemCopyUid" class="hidden"><a id="btnMenuCopyUid">Copy UID</a></li>
-                    <li id="menuItemSignOut" class="hidden"><a id="btnMenuSignOut" class="text-error">Sign Out</a></li>
+                <!-- Menu -->
+                <ul id="userDropdownMenu"
+                    class="dropdown-content menu menu-sm mt-2 w-56 p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl z-[9999]">
+                    <li><button id="btnMenuSignIn" type="button" class="user-menu-item">Sign in</button></li>
+                    <li><button id="btnMenuSettings" type="button" class="user-menu-item">Settings</button></li>
+                    <li><button id="btnMenuCopyUid" type="button" class="user-menu-item">Copy UID</button></li>
+                    <li><button id="btnMenuSignOut" type="button" class="user-menu-item">Sign out</button></li>
                 </ul>
-
             </div>
+
+
 
         </section>
 
@@ -931,61 +932,129 @@
     <script type="module" src="./js/main.js"></script>
     <!-- Settings Modal (Discord Style - Boxy & Responsive) -->
     <div id="settingsModal" class="fixed inset-0 z-[9999] hidden font-sans" style="isolation: isolate;">
-        <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="settingsBackdrop"></div>
 
-        <!-- Modal Container -->
+        <!-- Backdrop: SOLID dark color (not transparent) -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="settingsBackdrop"
+            style="background-color: rgba(0, 0, 0, 0.6) !important;"></div>
+
+        <!-- Modal Container: Flex only, NO background -->
         <div class="absolute inset-0 flex items-center justify-center p-4 fade-in-up">
-            <div
-                class="bg-base-100 w-full max-w-4xl h-[85vh] max-h-[700px] shadow-2xl flex overflow-hidden relative border border-base-300 pointer-events-auto">
 
-                <!-- Left Sidebar (Navigation) -->
+            <!-- Modal Card: All styling here -->
+            <!-- Modal Card: Solid background, no transparency -->
+            <div class="bg-base-100 w-full max-w-4xl h-[85vh] max-h-[700px] shadow-2xl flex overflow-hidden relative border border-base-300"
+                style="background-color: var(--fallback-b1, oklch(var(--b1) / 1)) !important; opacity: 1 !important;">
+
+
+                <!-- LEFT SIDEBAR -->
                 <div class="w-1/3 min-w-[200px] bg-base-200 p-4 flex flex-col border-r border-base-300">
                     <div class="text-xs font-bold text-base-content/50 px-3 mb-2 uppercase tracking-wider">User Settings
                     </div>
+
                     <nav class="space-y-1 flex-1">
                         <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none active"
-                            data-tab="my-account">My Account</button>
+                            data-tab="my-account">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            My Account
+                        </button>
                         <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
-                            data-tab="appearance">Appearance</button>
+                            data-tab="appearance">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                            </svg>
+                            Appearance
+                        </button>
                         <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
-                            data-tab="privacy">Preferences</button>
+                            data-tab="privacy">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Preferences
+                        </button>
                     </nav>
+
                     <div class="mt-auto pt-4 border-t border-base-300">
-                        <button id="logoutBtn" class="btn btn-error btn-outline btn-sm w-full rounded-none">Log
-                            Out</button>
+                        <button id="logoutBtn"
+                            class="btn btn-error btn-outline btn-sm w-full rounded-none flex justify-between">
+                            <span>Log Out</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Right Content Area -->
-                <div class="w-2/3 bg-base-100 p-6 md:p-8 overflow-y-auto relative">
+                <!-- RIGHT CONTENT AREA -->
+                <div class="w-2/3 bg-base-100 p-6 md:p-8 overflow-y-auto relative custom-scrollbar">
+
                     <!-- Close Button -->
                     <button id="closeSettingsBtn"
-                        class="btn btn-square btn-sm btn-ghost absolute top-4 right-4 rounded-none z-10">✕</button>
+                        class="btn btn-square btn-sm btn-ghost absolute top-4 right-4 rounded-none z-10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
 
-                    <!-- Tab: My Account -->
+                    <!-- TAB: MY ACCOUNT -->
                     <div id="tab-my-account" class="settings-content active space-y-6">
-                        <h2 class="text-2xl font-bold font-headline mb-6">My Account</h2>
+                        <h2 class="text-2xl font-bold font-sora mb-6">My Account</h2>
 
+                        <!-- Profile Banner & Avatar (Clickable Upload) -->
                         <div class="bg-base-200 p-4 relative mb-6 border border-base-300">
                             <div
                                 class="h-20 bg-gradient-to-r from-primary/80 to-secondary/80 absolute top-0 left-0 w-full">
                             </div>
                             <div class="mt-10 flex items-end gap-4 relative z-10 px-2">
-                                <div class="avatar">
+                                <!-- Avatar - Clickable for Upload -->
+                                <div class="avatar cursor-pointer group relative"
+                                    onclick="document.getElementById('avatarUpload').click()">
                                     <div
-                                        class="w-20 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 bg-base-100">
+                                        class="w-20 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 bg-base-100 overflow-hidden relative">
                                         <img id="settingsAvatar" src="https://ui-avatars.com/api/?name=User" />
+                                        <!-- Hover Overlay -->
+                                        <div
+                                            class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4v16m8-8H4" />
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
+
+                                <!-- Hidden File Input -->
+                                <input type="file" id="avatarUpload" class="hidden" accept="image/*" />
+
+                                <!-- User Info -->
                                 <div class="mb-1">
                                     <h3 class="text-xl font-bold" id="settingsDisplayName">User</h3>
-                                    <p class="text-xs text-base-content/60">#<span id="settingsUidDisplay">0000</span>
-                                    </p>
+                                    <p class="text-xs text-base-content/60 font-mono">ID: <span
+                                            id="settingsUidDisplay">0000000</span></p>
                                 </div>
+
                             </div>
                         </div>
 
+                        <!-- Upload Status Alert -->
+                        <div id="uploadStatus" class="hidden alert alert-info">
+                            <svg class="stroke-current shrink-0 h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span id="uploadStatusText">Uploading...</span>
+                        </div>
+
+                        <!-- Display Name Input -->
                         <div class="form-control w-full">
                             <label class="label"><span
                                     class="label-text text-xs font-bold uppercase text-base-content/60">Display
@@ -996,12 +1065,35 @@
                                 <button id="saveNameBtn" class="btn btn-neutral rounded-none">Save</button>
                             </div>
                         </div>
+
+                        <!-- User ID (Copyable) - Updated to show full ID -->
+                        <div class="form-control w-full">
+                            <label class="label">
+                                <span class="label-text text-xs font-bold uppercase text-base-content/60">User ID</span>
+                                <span class="label-text-alt text-xs opacity-60">(Click copy button)</span>
+                            </label>
+                            <div class="join w-full">
+                                <input type="text" id="inputUid"
+                                    class="input input-bordered join-item w-full font-mono text-xs bg-base-200 rounded-none"
+                                    readonly />
+                                <button class="btn btn-square join-item rounded-none"
+                                    onclick='navigator.clipboard.writeText(document.getElementById("inputUid").value); const btn = this; btn.textContent="✓ Copied!"; setTimeout(() => btn.innerHTML="<svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\" /></svg>", 2000);'
+                                    title="Copy User ID">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <!-- Tab: Appearance -->
+                    <!-- TAB: APPEARANCE -->
                     <div id="tab-appearance" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-headline mb-6">Appearance</h2>
+                        <h2 class="text-2xl font-bold font-sora mb-6">Appearance</h2>
 
+                        <!-- Theme Toggle -->
                         <div class="flex items-center justify-between p-4 bg-base-200 border border-base-300">
                             <div>
                                 <h3 class="font-bold">Dark Mode</h3>
@@ -1009,25 +1101,20 @@
                             </div>
                             <input type="checkbox" id="themeToggle" class="toggle theme-controller" value="synthwave" />
                         </div>
-
-                        <div class="p-4 bg-base-200 border border-base-300">
-                            <div class="flex justify-between mb-2">
-                                <h3 class="font-bold">Text Size</h3>
-                            </div>
-                            <input type="range" id="setTextScale" min="0.8" max="1.2" step="0.1"
-                                class="range range-primary range-xs w-full" />
-                        </div>
                     </div>
 
-                    <!-- Tab: Preferences -->
+                    <!-- TAB: PREFERENCES -->
                     <div id="tab-privacy" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-headline mb-6">Global Preferences</h2>
+                        <h2 class="text-2xl font-bold font-sora mb-6">Global Preferences</h2>
 
                         <div class="p-4 bg-base-200 border border-base-300 space-y-4">
                             <div class="flex items-center justify-between">
-                                <span>Exclude Watched</span>
+                                <span>Exclude Watched by Default</span>
                                 <input type="checkbox" id="setDefaultExcludeWatched" class="toggle toggle-sm" />
                             </div>
+
+                            <div class="divider my-2"></div>
+
                             <div>
                                 <div class="flex justify-between mb-2"><span>Min Rating Default</span></div>
                                 <input type="range" id="setDefaultMinRating" min="0" max="9" step="1"
@@ -1040,7 +1127,6 @@
             </div>
         </div>
     </div>
-
 </body>
 
 </html>
