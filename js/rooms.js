@@ -238,174 +238,195 @@ function removeEmojiPicker() {
 export async function renderRoomMessages(list) {
     const wrap = document.getElementById("roomChatMessages");
     if (!wrap) return;
-  
+
     wrap.innerHTML = "";
     const myId = authState.user?.uid ?? null;
-  
+
     // Quick reactions
     const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢"];
-  
+
     for (const m of list) {
-      const isMe = m.userId && m.userId === myId;
-  
-      // ========== FETCH USER PROFILE FOR AVATAR ==========
-      let userProfile = null;
-      if (m.userId) {
-        userProfile = await getUserProfile(m.userId);
-      }
-  
-      const avatarUrl = getAvatarUrl(
-        m.userId,
-        userProfile?.displayName || m.userName,
-        userProfile?.photoURL
-      );
-      const displayName = userProfile?.displayName || m.userName || "Anonymous";
-  
-      // ========== CREATE MESSAGE ROW ==========
-      const row = document.createElement("div");
-      row.className = "chat-message";
-  
-      // Avatar
-      const avatarDiv = document.createElement("div");
-      avatarDiv.className = "chat-message-avatar-container";
-      avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar" />`;
-      row.appendChild(avatarDiv);
-  
-      // Content wrapper
-      const content = document.createElement("div");
-      content.className = "chat-message-content";
-  
-      // Header (name + time)
-      const header = document.createElement("div");
-      header.className = "chat-message-header";
-      
-      const nameSpan = document.createElement("span");
-      nameSpan.className = "chat-message-author";
-      nameSpan.textContent = isMe ? "You" : displayName;
-      nameSpan.style.color = isMe ? "hsl(var(--p))" : "hsl(var(--bc))";
-      header.appendChild(nameSpan);
-  
-      // Time
-      const ts = m.createdAt && typeof m.createdAt.toDate === "function" ? m.createdAt.toDate() : null;
-      if (ts) {
-        const timeLabel = ts.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-        const timeSpan = document.createElement("span");
-        timeSpan.className = "chat-message-time";
-        timeSpan.textContent = timeLabel;
-        header.appendChild(timeSpan);
-      }
-  
-      content.appendChild(header);
-  
-      // Message bubble
-      const bubble = document.createElement("div");
-      const isMedia = m.type === "gif" || m.type === "sticker";
-      bubble.className = isMedia
-        ? "text-xs max-w-80"
-        : `chat-bubble text-xs max-w-80 ${isMe ? "chat-bubble-primary" : "chat-bubble-neutral"}`;
-  
-      // Context menu for reactions
-      bubble.addEventListener("contextmenu", (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        removeEmojiPicker();
-  
-        const picker = document.createElement("div");
-        picker.id = "msgEmojiPicker";
-        picker.className = "fixed z-[9999] flex items-center gap-1 px-2 py-1 rounded-full bg-base-100 border border-base-300 shadow-xl";
-  
-        for (const emoji of QUICK_EMOJIS) {
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "w-8 h-8 rounded-full hover:bg-base-200 grid place-items-center text-lg";
-          btn.textContent = emoji;
-          btn.addEventListener("click", async (e2) => {
-            e2.preventDefault();
-            e2.stopPropagation();
-            await toggleReaction(m.id, emoji);
+        const isMe = m.userId && m.userId === myId;
+
+        // ========== FETCH USER PROFILE FOR AVATAR ==========
+        let userProfile = null;
+        if (m.userId) {
+            userProfile = await getUserProfile(m.userId);
+        }
+
+        const avatarUrl = getAvatarUrl(
+            m.userId,
+            userProfile?.displayName || m.userName,
+            userProfile?.photoURL
+        );
+        const displayName = userProfile?.displayName || m.userName || "Anonymous";
+
+        // ========== CREATE MESSAGE ROW ==========
+        const row = document.createElement("div");
+        row.className = "chat-message";
+
+        // Avatar
+        const avatarDiv = document.createElement("div");
+        avatarDiv.className = "chat-message-avatar-container";
+        avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar" />`;
+        row.appendChild(avatarDiv);
+
+        // Content wrapper
+        const content = document.createElement("div");
+        content.className = "chat-message-content";
+
+        // Header (name + time)
+        const header = document.createElement("div");
+        header.className = "chat-message-header";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "chat-message-author";
+        nameSpan.textContent = isMe ? "You" : displayName;
+        nameSpan.style.color = isMe ? "hsl(var(--p))" : "hsl(var(--bc))";
+        header.appendChild(nameSpan);
+
+        // Time
+        const ts = m.createdAt && typeof m.createdAt.toDate === "function" ? m.createdAt.toDate() : null;
+        if (ts) {
+            const timeLabel = ts.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            const timeSpan = document.createElement("span");
+            timeSpan.className = "chat-message-time";
+            timeSpan.textContent = timeLabel;
+            header.appendChild(timeSpan);
+        }
+
+        content.appendChild(header);
+
+        // Message bubble
+        const bubble = document.createElement("div");
+        const isMedia = m.type === "gif" || m.type === "sticker";
+        bubble.className = isMedia
+            ? "text-xs max-w-80"
+            : `chat-bubble text-xs max-w-80 ${isMe ? "chat-bubble-primary" : "chat-bubble-neutral"}`;
+
+        // Context menu for reactions
+        bubble.addEventListener("contextmenu", (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
             removeEmojiPicker();
-          });
-          picker.appendChild(btn);
+
+            const picker = document.createElement("div");
+            picker.id = "msgEmojiPicker";
+            picker.className = "fixed z-[9999] flex items-center gap-1 px-2 py-1 rounded-full bg-base-100 border border-base-300 shadow-xl";
+
+            for (const emoji of QUICK_EMOJIS) {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "w-8 h-8 rounded-full hover:bg-base-200 grid place-items-center text-lg";
+                btn.textContent = emoji;
+                btn.addEventListener("click", async (e2) => {
+                    e2.preventDefault();
+                    e2.stopPropagation();
+                    await toggleReaction(m.id, emoji);
+                    removeEmojiPicker();
+                });
+                picker.appendChild(btn);
+            }
+
+            document.body.appendChild(picker);
+            positionPopupUnderChat(picker);
+        });
+
+        // Click to set reply
+        row.addEventListener("click", () => {
+            removeEmojiPicker();
+            if (typeof setReplyDraft === "function") {
+                setReplyDraft(m);
+            }
+        });
+
+        // Reply preview
+        const replyBox = renderReplyPreview(m.replyTo);
+        if (replyBox) bubble.appendChild(replyBox);
+
+        // Main content (text, gif, or sticker)
+        if (m.type === "gif" && m.gifUrl) {
+            const img = document.createElement("img");
+            img.src = m.gifUrl;
+            img.alt = m.text || "GIF";
+            img.className = "max-w-full rounded-md mt-1 mb-0.5";
+            img.loading = "lazy";
+            bubble.appendChild(img);
+        } else if (m.type === "sticker" && m.stickerUrl) {
+            const img = document.createElement("img");
+            img.src = m.stickerUrl;
+            img.alt = "Sticker";
+            img.className = "h-24 w-24 object-contain mt-1";
+            img.loading = "lazy";
+            bubble.appendChild(img);
+        } else if (m.type === "voice" && m.voiceUrl) {
+            // ========== VOICE NOTE ==========
+            const voiceContainer = document.createElement("div");
+            voiceContainer.className = "flex items-center gap-2 bg-base-100/50 p-2 rounded-lg mt-1";
+
+            const audio = document.createElement("audio");
+            audio.src = m.voiceUrl;
+            audio.controls = true;
+            audio.className = "w-full max-w-xs";
+            audio.style.height = "32px";
+
+            const duration = m.voiceDuration ? `${m.voiceDuration}s` : "";
+            if (duration) {
+                const durationLabel = document.createElement("span");
+                durationLabel.className = "text-xs opacity-70";
+                durationLabel.textContent = duration;
+                voiceContainer.appendChild(durationLabel);
+            }
+
+            voiceContainer.appendChild(audio);
+            bubble.appendChild(voiceContainer);
+        } else {
+            const body = renderTextWithMentions(m.text || "", m.mentions);
+            body.classList.add("block", "mt-0.5");
+            bubble.appendChild(body);
         }
-  
-        document.body.appendChild(picker);
-        positionPopupUnderChat(picker);
-      });
-  
-      // Click to set reply
-      row.addEventListener("click", () => {
-        removeEmojiPicker();
-        if (typeof setReplyDraft === "function") {
-          setReplyDraft(m);
+
+        content.appendChild(bubble);
+
+        // Reactions bar
+        if (m.reactions && typeof m.reactions === "object") {
+            const emojis = Object.keys(m.reactions);
+            if (emojis.length) {
+                const reactionsBar = document.createElement("div");
+                reactionsBar.className = "mt-1 flex flex-wrap gap-1 text-[0.7rem] items-center";
+
+                for (const emoji of emojis) {
+                    const users = Array.isArray(m.reactions[emoji]) ? m.reactions[emoji] : [];
+                    if (!users.length) continue;
+
+                    const mine = myId ? users.includes(myId) : false;
+                    const pill = document.createElement("button");
+                    pill.type = "button";
+                    pill.className = mine
+                        ? "px-2 py-0.5 rounded-full border text-[0.7rem] flex items-center gap-1 bg-primary text-black border-primary"
+                        : "px-2 py-0.5 rounded-full border text-[0.7rem] flex items-center gap-1 bg-base-100/70 text-base-content border-base-300/80";
+                    pill.textContent = `${emoji} ${users.length}`;
+                    pill.addEventListener("click", (ev) => {
+                        ev.stopPropagation();
+                        toggleReaction(m.id, emoji);
+                        removeEmojiPicker();
+                    });
+
+                    reactionsBar.appendChild(pill);
+                }
+
+                content.appendChild(reactionsBar);
+            }
         }
-      });
-  
-      // Reply preview
-      const replyBox = renderReplyPreview(m.replyTo);
-      if (replyBox) bubble.appendChild(replyBox);
-  
-      // Main content (text, gif, or sticker)
-      if (m.type === "gif" && m.gifUrl) {
-        const img = document.createElement("img");
-        img.src = m.gifUrl;
-        img.alt = m.text || "GIF";
-        img.className = "max-w-full rounded-md mt-1 mb-0.5";
-        img.loading = "lazy";
-        bubble.appendChild(img);
-      } else if (m.type === "sticker" && m.stickerUrl) {
-        const img = document.createElement("img");
-        img.src = m.stickerUrl;
-        img.alt = "Sticker";
-        img.className = "h-24 w-24 object-contain mt-1";
-        img.loading = "lazy";
-        bubble.appendChild(img);
-      } else {
-        const body = renderTextWithMentions(m.text || "", m.mentions);
-        body.classList.add("block", "mt-0.5");
-        bubble.appendChild(body);
-      }
-  
-      content.appendChild(bubble);
-  
-      // Reactions bar
-      if (m.reactions && typeof m.reactions === "object") {
-        const emojis = Object.keys(m.reactions);
-        if (emojis.length) {
-          const reactionsBar = document.createElement("div");
-          reactionsBar.className = "mt-1 flex flex-wrap gap-1 text-[0.7rem] items-center";
-  
-          for (const emoji of emojis) {
-            const users = Array.isArray(m.reactions[emoji]) ? m.reactions[emoji] : [];
-            if (!users.length) continue;
-  
-            const mine = myId ? users.includes(myId) : false;
-            const pill = document.createElement("button");
-            pill.type = "button";
-            pill.className = mine
-              ? "px-2 py-0.5 rounded-full border text-[0.7rem] flex items-center gap-1 bg-primary text-black border-primary"
-              : "px-2 py-0.5 rounded-full border text-[0.7rem] flex items-center gap-1 bg-base-100/70 text-base-content border-base-300/80";
-            pill.textContent = `${emoji} ${users.length}`;
-            pill.addEventListener("click", (ev) => {
-              ev.stopPropagation();
-              toggleReaction(m.id, emoji);
-              removeEmojiPicker();
-            });
-  
-            reactionsBar.appendChild(pill);
-          }
-  
-          content.appendChild(reactionsBar);
-        }
-      }
-  
-      row.appendChild(content);
-      wrap.appendChild(row);
+
+        row.appendChild(content);
+        wrap.appendChild(row);
     }
-  
+
     // Scroll to bottom
     wrap.scrollTop = wrap.scrollHeight;
-  }
-  
+}
+
 
 export async function updatePlaybackFromLocal({
     mediaId,

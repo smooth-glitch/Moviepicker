@@ -12,190 +12,217 @@
 
 /* Settings Modal Backdrop - More Blur */
 #settingsBackdrop {
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
 }
 
 /* Settings Modal - General */
 #settingsModal {
-    background: transparent !important;
+  background: transparent !important;
 }
 
 /* Settings Modal Animations */
 .fade-in-up {
-    animation: fadeInUp 0.2s ease-out forwards;
+  animation: fadeInUp 0.2s ease-out forwards;
 }
 
 /* Backdrop - More Blur */
 #settingsBackdrop {
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
-    background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  background-color: rgba(0, 0, 0, 0.75) !important;
 }
 
 /* Modal Animations */
 .fade-in-up {
-    animation: fadeInUp 0.2s ease-out forwards;
+  animation: fadeInUp 0.2s ease-out forwards;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: scale(0.98) translateY(10px);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(10px);
+  }
 
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* Fix width classes (Tailwind syntax errors) */
 #settingsModal .w-13 {
-    width: 33.333333% !important;
+  width: 33.333333% !important;
 }
 
 #settingsModal .w-23 {
-    width: 66.666667% !important;
+  width: 66.666667% !important;
 }
 
 #settingsModal .min-w-200px {
-    min-width: 200px !important;
+  min-width: 200px !important;
 }
 
 /* Fix height */
 #settingsModal .h-85vh {
-    height: 85vh !important;
+  height: 85vh !important;
 }
 
 #settingsModal .h-600px {
-    height: 600px !important;
+  height: 600px !important;
 }
 
 #settingsModal .max-h-700px {
-    max-height: 700px !important;
+  max-height: 700px !important;
 }
 
 /* Better Centering */
 #settingsModal h2,
 #settingsModal h3 {
-    text-align: left;
+  text-align: left;
 }
 
 #settingsModal .form-control {
-    width: 100%;
+  width: 100%;
 }
 
 /* Active Tab Styling */
 .settings-tab-btn.active {
-    background-color: hsl(var(--b3)) !important;
-    font-weight: 600;
+  background-color: hsl(var(--b3)) !important;
+  font-weight: 600;
 }
 
 .settings-tab-btn:hover {
-    background-color: hsl(var(--b3) / 0.5) !important;
+  background-color: hsl(var(--b3) / 0.5) !important;
 }
 
 /* Light Theme Text Visibility */
 [data-theme="cupcake"] #settingsModal,
 [data-theme="cupcake"] #settingsModal * {
-    color: hsl(var(--bc)) !important;
+  color: hsl(var(--bc)) !important;
 }
 
 [data-theme="cupcake"] #settingsModal .bg-base-100 {
-    background-color: #faf7f5 !important;
+  background-color: #faf7f5 !important;
 }
 
 [data-theme="cupcake"] #settingsModal .bg-base-200 {
-    background-color: #e9e7e7 !important;
+  background-color: #e9e7e7 !important;
 }
 
 [data-theme="cupcake"] #settingsModal .text-base-content\/50,
 [data-theme="cupcake"] #settingsModal .text-base-content\/60 {
-    color: #291334 !important;
-    opacity: 0.8;
+  color: #291334 !important;
+  opacity: 0.8;
 }
 
 /* Dark Theme */
 [data-theme="synthwave"] #settingsModal .bg-base-100 {
-    background-color: #1a103d !important;
+  background-color: #1a103d !important;
 }
 
 [data-theme="synthwave"] #settingsModal .bg-base-200 {
-    background-color: #251454 !important;
+  background-color: #251454 !important;
 }
 
 /* Button Visibility */
 #settingsModal .btn {
-    color: hsl(var(--bc)) !important;
+  color: hsl(var(--bc)) !important;
 }
 
 #settingsModal .btn-neutral {
-    background-color: hsl(var(--b3)) !important;
-    color: hsl(var(--bc)) !important;
+  background-color: hsl(var(--b3)) !important;
+  color: hsl(var(--bc)) !important;
 }
 
 /* Input Visibility */
 #settingsModal input[type="text"],
 #settingsModal input[readonly] {
-    color: hsl(var(--bc)) !important;
-    background-color: hsl(var(--b2)) !important;
+  color: hsl(var(--bc)) !important;
+  background-color: hsl(var(--b2)) !important;
 }
 
 /* ========== ROOM CHAT AVATARS ========== */
 
 /* Chat message with avatar */
 .chat-message {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-start;
-    padding: 0.25rem 0;
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.25rem 0;
 }
 
 .chat-message-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    object-fit: cover;
-    background-color: hsl(var(--b3));
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  object-fit: cover;
+  background-color: hsl(var(--b3));
 }
 
 .chat-message-content {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-message-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    margin-bottom: 0.125rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.125rem;
 }
 
 .chat-message-author {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: hsl(var(--bc));
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: hsl(var(--bc));
 }
 
 .chat-message-time {
-    font-size: 0.625rem;
-    opacity: 0.5;
-    color: hsl(var(--bc));
+  font-size: 0.625rem;
+  opacity: 0.5;
+  color: hsl(var(--bc));
 }
 
 .chat-message-text {
-    font-size: 0.875rem;
-    color: hsl(var(--bc));
-    word-wrap: break-word;
+  font-size: 0.875rem;
+  color: hsl(var(--bc));
+  word-wrap: break-word;
 }
 
 /* Hover effect */
 .chat-message:hover {
-    background-color: hsl(var(--b2) / 0.3);
-    border-radius: 4px;
-    margin: -2px;
-    padding: calc(0.25rem + 2px) 2px;
+  background-color: hsl(var(--b2) / 0.3);
+  border-radius: 4px;
+  margin: -2px;
+  padding: calc(0.25rem + 2px) 2px;
+}
+
+/* ========== VOICE NOTE UI ========== */
+#voiceRecordingUI {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Audio player styling */
+#roomChatMessages audio {
+  height: 32px;
+  background-color: hsl(var(--b2));
+  border-radius: 16px;
+  padding: 0 8px;
+}
+
+#roomChatMessages audio::-webkit-media-controls-panel {
+  background-color: hsl(var(--b2));
 }

@@ -65,11 +65,144 @@ let liveSearchTimer = null;
 // reply draft for chat
 let currentReplyTarget = null;
 
+// ========== VOICE NOTE RECORDING ==========
+let mediaRecorder = null;
+let audioChunks = [];
+let recordingStartTime = 0;
+let timerInterval = null;
 
 // --------------------------------------------------
 // Utility
 // --------------------------------------------------
 
+const voiceBtn = document.getElementById("roomVoiceBtn");
+const voiceUI = document.getElementById("voiceRecordingUI");
+const voiceTimer = document.getElementById("voiceTimer");
+const voiceCancelBtn = document.getElementById("voiceCancelBtn");
+const voiceSendBtn = document.getElementById("voiceSendBtn");
+
+if (voiceBtn && voiceUI) {
+    voiceBtn.addEventListener("click", async () => {
+        if (!roomState.id) {
+            toast("Join a room first.", "info");
+            return;
+        }
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.addEventListener("dataavailable", (event) => {
+                audioChunks.push(event.data);
+            });
+
+            mediaRecorder.addEventListener("stop", () => {
+                stream.getTracks().forEach((track) => track.stop());
+            });
+
+            mediaRecorder.start();
+            recordingStartTime = Date.now();
+
+            // Show recording UI
+            voiceUI.classList.remove("hidden");
+            chatInput.disabled = true;
+
+            // Start timer
+            timerInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const mins = Math.floor(elapsed / 60);
+                const secs = elapsed % 60;
+                if (voiceTimer) {
+                    voiceTimer.textContent = `${mins}:${secs.toString().padStart(2, "0")}`;
+                }
+            }, 1000);
+
+        } catch (error) {
+            console.error("Microphone access denied:", error);
+            toast("Microphone access denied.", "error");
+        }
+    });
+
+    // Cancel recording
+    voiceCancelBtn?.addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+        }
+        clearInterval(timerInterval);
+        voiceUI.classList.add("hidden");
+        if (chatInput) chatInput.disabled = false;
+        audioChunks = [];
+    });
+
+    // Send voice note
+    voiceSendBtn?.addEventListener("click", async () => {
+        if (!mediaRecorder) return;
+
+        if (mediaRecorder.state === "recording") {
+            mediaRecorder.stop();
+        }
+
+        clearInterval(timerInterval);
+
+        mediaRecorder.addEventListener("stop", async () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+
+            // Convert to Base64
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Audio = e.target.result;
+
+                // Send to Firestore
+                const fs = window.firebaseStore;
+                const u = authState.user;
+
+                const payload = {
+                    type: "voice",
+                    text: null,
+                    voiceUrl: base64Audio,
+                    voiceDuration: Math.floor((Date.now() - recordingStartTime) / 1000),
+                    gifUrl: null,
+                    stickerUrl: null,
+                    mentions: [],
+                    userId: u?.uid ?? null,
+                    userName: u?.displayName ?? u?.email ?? "Anon",
+                    createdAt: fs.serverTimestamp(),
+                    reactions: {},
+                };
+
+                if (currentReplyTarget) {
+                    payload.replyTo = {
+                        id: currentReplyTarget.id,
+                        userName: currentReplyTarget.userName || "Anon",
+                        type: currentReplyTarget.type || "text",
+                        text: currentReplyTarget.text || null,
+                        gifUrl: currentReplyTarget.gifUrl || null,
+                        stickerUrl: currentReplyTarget.stickerUrl || null,
+                    };
+                }
+
+                try {
+                    await fs.addDoc(
+                        fs.collection(fs.db, `rooms/${roomState.id}/messages`),
+                        payload
+                    );
+                    clearReplyDraft();
+                    voiceUI.classList.add("hidden");
+                    if (chatInput) chatInput.disabled = false;
+                } catch (err) {
+                    toast("Failed to send voice note.", "error");
+                    console.warn(err);
+                }
+            };
+
+            reader.readAsDataURL(audioBlob);
+        }, { once: true });
+
+        voiceUI.classList.add("hidden");
+        if (chatInput) chatInput.disabled = false;
+    });
+}
 function setPageLoading(on) {
     const el = document.getElementById("pageLoader");
     if (!el) return;

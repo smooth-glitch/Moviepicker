@@ -631,6 +631,20 @@
                             </button>
                         </div>
 
+                        <!-- Voice Recording UI -->
+                        <div id="voiceRecordingUI"
+                            class="hidden p-2 bg-error/20 border border-error rounded-lg flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="loading loading-ring loading-xs text-error"></span>
+                                <span class="text-xs font-semibold">Recording...</span>
+                                <span id="voiceTimer" class="text-xs font-mono">0:00</span>
+                            </div>
+                            <div class="flex gap-1">
+                                <button id="voiceCancelBtn" type="button" class="btn btn-xs btn-ghost">Cancel</button>
+                                <button id="voiceSendBtn" type="button" class="btn btn-xs btn-error">Send</button>
+                            </div>
+                        </div>
+
                         <!-- Docked tray (Discord-style) -->
                         <div id="chatTray" class="hidden chat-tray">
                             <div class="flex items-center gap-2">
@@ -701,231 +715,240 @@
                                     </svg>
                                 </button>
 
-                                <div class="flex-1 relative">
-                                    <input id="roomChatInput" type="text" class="input input-bordered input-sm w-full"
-                                        placeholder="Type a message" />
-                                    <div id="mentionSuggestions"
-                                        class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-sm btn-primary">
-                                    Send
+                                <button id="roomVoiceBtn" type="button" class="btn btn-xs btn-ghost px-2"
+                                    title="Voice note">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                        <line x1="12" x2="12" y1="19" y2="22" />
+                                    </svg>
                                 </button>
                             </div>
-                        </form>
 
-                        <!-- GIF picker -->
-                        <dialog id="dlgGifPicker" class="modal">
-                            <div class="modal-box max-w-sm space-y-3">
-                                <h3 class="font-bold text-sm">Send a GIF</h3>
-                                <input id="gifSearchInput" type="text" class="input input-bordered input-sm w-full"
-                                    placeholder="Search GIPHY…" />
-                                <div id="gifResults"
-                                    class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
-                                <form method="dialog" class="modal-action">
-                                    <button class="btn btn-xs">Close</button>
-                                </form>
-                            </div>
-                        </dialog>
-
-                        <!-- Sticker picker -->
-                        <dialog id="dlgStickerPicker" class="modal">
-                            <div class="modal-box max-w-sm space-y-3">
-                                <h3 class="font-semibold mb-1 text-sm">
-                                    Choose a sticker
-                                </h3>
-
-                                <input id="stickerSearchInput" type="text" class="input input-bordered input-sm w-full"
-                                    placeholder="Search stickers…" />
-
-                                <div id="stickerResults"
-                                    class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
-
-                                <div class="modal-action">
-                                    <form method="dialog">
-                                        <button class="btn btn-sm">Close</button>
-                                    </form>
+                            <div class="flex-1 relative">
+                                <input id="roomChatInput" type="text" class="input input-bordered input-sm w-full"
+                                    placeholder="Type a message" />
+                                <div id="mentionSuggestions"
+                                    class="absolute bottom-9 left-0 w-56 bg-base-100 border border-base-300 rounded-lg shadow-lg hidden z-20">
                                 </div>
                             </div>
-                        </dialog>
-                    </div>
-                </div>
-            </section>
-        </main>
 
-        <!-- Details dialog (polished) -->
-        <!-- Details dialog -->
-        <dialog id="dlg" class="modal">
-            <div class="modal-box w-11/12 max-w-4xl p-0 overflow-hidden bg-base-100">
-                <!-- Close (top-right) -->
-                <form method="dialog">
-                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10 text-base-content/70"
-                        aria-label="Close">
-                        ✕
-                    </button>
-                </form>
-
-                <div class="flex flex-col md:flex-row">
-                    <!-- Left: poster + actions -->
-                    <div
-                        class="w-full md:w-1/3 lg:w-1/4 bg-base-200/40 p-6 flex flex-col gap-4 items-center text-center">
-                        <div class="w-full max-w-[220px] rounded-xl overflow-hidden bg-base-300/60 shadow-lg">
-                            <img id="dlgPoster" src="" alt="Poster" class="w-full h-full object-cover aspect-[2/3]" />
-                        </div>
-
-                        <div class="w-full flex flex-col gap-2 mt-4">
-                            <button id="btnAddFromDetails" class="btn btn-primary btn-sm w-full gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M5 12h14" />
-                                    <path d="M12 5v14" />
-                                </svg>
-                                Add to pool
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                Send
                             </button>
-
-                            <button id="btnWatched" class="btn btn-outline btn-sm w-full gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-                                Mark watched
-                            </button>
-
-                            <button id="btnReroll" class="btn btn-ghost btn-sm w-full gap-2 hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                    <path d="M3 3v5h5" />
-                                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-                                    <path d="M21 21v-5h-5" />
-                                </svg>
-                                Re-roll
-                            </button>
-                        </div>
                     </div>
-
-                    <!-- Right: title, overview, extra sections -->
-                    <div class="w-full md:w-2/3 lg:w-3/4 p-6 md:p-8 max-h-[85vh] overflow-y-auto">
-                        <h3 id="dlgTitle" class="font-headline font-bold text-2xl md:text-3xl leading-tight"></h3>
-
-                        <p id="dlgMeta"
-                            class="text-sm text-base-content/70 mt-1 mb-4 flex flex-wrap gap-x-3 gap-y-1 items-center">
-                        </p>
-
-                        <p id="dlgOverview" class="leading-relaxed text-base opacity-90 mb-6"></p>
-
-                        <!-- Trailers / providers / seasons / collection -->
-                        <div id="dlgMainExtras" class="space-y-4 mb-6"></div>
-
-                        <!-- Recommendations / similar / collections tiles -->
-                        <div id="dlgExtraContent" class="space-y-6 border-t border-base-200 pt-6"></div>
-                    </div>
-                </div>
-            </div>
-        </dialog>
-
-        <!-- Auth dialog -->
-        <dialog id="dlgAuth" class="modal">
-            <div class="modal-box max-w-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-bold text-lg">Sign in</h3>
-                    <button type="button" class="btn btn-ghost btn-xs"
-                        onclick="document.getElementById('dlgAuth').close()">
-                        ✕
-                    </button>
-                </div>
-
-                <p class="text-sm text-base-content/70">
-                    Save your movie pool and preferences across devices.
-                </p>
-
-                <!-- Social sign in -->
-                <div class="space-y-2">
-                    <button id="btnGoogleDemo" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-white">
-                            <svg viewBox="0 0 24 24" class="h-4 w-4">
-                                <path fill="#EA4335"
-                                    d="M12 10.2v3.9h5.4c-.2 1.2-.9 2.4-2 3.2l3.3 2.6C20.4 18.4 21.5 15.9 21.5 13c0-.7-.1-1.3-.2-1.9H12z" />
-                                <path fill="#34A853"
-                                    d="M6.5 14.3l-1 3.8-3.1.1C3.5 20.7 7.4 23 12 23c3 0 5.5-1 7.3-2.7l-3.3-2.6c-1 .7-2.3 1.2-4 1.2-3.1 0-5.8-2.1-6.7-5z" />
-                                <path fill="#4A90E2"
-                                    d="M3.4 8.2 0.4 5.6C2.1 2.6 6.1 1 9.9 1c2.7 0 5 .9 6.8 2.6L14 6.4C13 5.6 11.7 5.2 10 5.2 7 5.2 4.4 7.1 3.4 8.2z" />
-                                <path fill="#FBBC05"
-                                    d="M21.5 13c0 2.9-1.1 5.4-3.1 7.1l-3.3-2.6c.9-.6 1.5-1.6 1.8-2.7H12v-3.9h9.3c.1.6.2 1.2.2 2z" />
-                            </svg>
-                        </span>
-                        <span class="text-xs">Continue with Google</span>
-                    </button>
-
-                    <button id="btnGithub" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
-                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
-                                <path
-                                    d="M12 .5C5.7.5.7 5.5.7 11.8c0 5 3.3 9.1 7.8 10.6.6.1.8-.3.8-.6v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.1-1.2-1.4-1.2-1.4-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.9 2.7 1.4.1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.8-.4s1.9.1 2.8.4C18 5 19 5.2 19 5.2c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.3.7 1 .7 2.1v3.1c0 .3.2.7.8.6 4.5-1.5 7.8-5.6 7.8-10.6C23.3 5.5 18.3.5 12 .5z" />
-                            </svg>
-                        </span>
-                        <span class="text-xs">Continue with GitHub</span>
-                    </button>
-
-                    <button id="btnTwitter" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
-                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
-                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
-                                <path
-                                    d="M18.9 3H21l-4.6 5.3L21.8 21h-4.9l-3.4-6-3.9 4.6V21H3.1l4.9-5.6L2.4 3h5l3.1 5.4L14 3h4.9zm-2.1 15.2h1.3L7.3 4.7H5.9l10.9 13.5z" />
-                            </svg>
-                        </span>
-                        <span class="text-xs">Continue with X</span>
-                    </button>
-                </div>
-
-                <div class="divider text-[11px]">or use email</div>
-
-                <!-- Email/password -->
-                <div class="space-y-3">
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text text-xs">Name</span>
-                        </label>
-                        <input id="authName" type="text" class="input input-bordered input-sm" placeholder="Neo" />
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text text-xs">Email</span>
-                        </label>
-                        <input id="authEmail" type="email" class="input input-bordered input-sm"
-                            placeholder="you@example.com" />
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text text-xs">Password</span>
-                        </label>
-                        <input id="authPass" type="password" class="input input-bordered input-sm"
-                            placeholder="••••••••" />
-                    </div>
-                </div>
-
-                <div class="modal-action flex items-center justify-between gap-2">
-                    <button id="btnAuthSubmit" class="btn btn-primary btn-sm">
-                        Sign in
-                    </button>
-                    <form method="dialog">
-                        <button class="btn btn-sm">Cancel</button>
                     </form>
+
+                    <!-- GIF picker -->
+                    <dialog id="dlgGifPicker" class="modal">
+                        <div class="modal-box max-w-sm space-y-3">
+                            <h3 class="font-bold text-sm">Send a GIF</h3>
+                            <input id="gifSearchInput" type="text" class="input input-bordered input-sm w-full"
+                                placeholder="Search GIPHY…" />
+                            <div id="gifResults" class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs">
+                            </div>
+                            <form method="dialog" class="modal-action">
+                                <button class="btn btn-xs">Close</button>
+                            </form>
+                        </div>
+                    </dialog>
+
+                    <!-- Sticker picker -->
+                    <dialog id="dlgStickerPicker" class="modal">
+                        <div class="modal-box max-w-sm space-y-3">
+                            <h3 class="font-semibold mb-1 text-sm">
+                                Choose a sticker
+                            </h3>
+
+                            <input id="stickerSearchInput" type="text" class="input input-bordered input-sm w-full"
+                                placeholder="Search stickers…" />
+
+                            <div id="stickerResults"
+                                class="mt-2 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto text-xs"></div>
+
+                            <div class="modal-action">
+                                <form method="dialog">
+                                    <button class="btn btn-sm">Close</button>
+                                </form>
+                            </div>
+                        </div>
+                    </dialog>
+                </div>
+    </div>
+    </section>
+    </main>
+
+    <!-- Details dialog (polished) -->
+    <!-- Details dialog -->
+    <dialog id="dlg" class="modal">
+        <div class="modal-box w-11/12 max-w-4xl p-0 overflow-hidden bg-base-100">
+            <!-- Close (top-right) -->
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10 text-base-content/70"
+                    aria-label="Close">
+                    ✕
+                </button>
+            </form>
+
+            <div class="flex flex-col md:flex-row">
+                <!-- Left: poster + actions -->
+                <div class="w-full md:w-1/3 lg:w-1/4 bg-base-200/40 p-6 flex flex-col gap-4 items-center text-center">
+                    <div class="w-full max-w-[220px] rounded-xl overflow-hidden bg-base-300/60 shadow-lg">
+                        <img id="dlgPoster" src="" alt="Poster" class="w-full h-full object-cover aspect-[2/3]" />
+                    </div>
+
+                    <div class="w-full flex flex-col gap-2 mt-4">
+                        <button id="btnAddFromDetails" class="btn btn-primary btn-sm w-full gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="M12 5v14" />
+                            </svg>
+                            Add to pool
+                        </button>
+
+                        <button id="btnWatched" class="btn btn-outline btn-sm w-full gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            Mark watched
+                        </button>
+
+                        <button id="btnReroll" class="btn btn-ghost btn-sm w-full gap-2 hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                                <path d="M21 21v-5h-5" />
+                            </svg>
+                            Re-roll
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: title, overview, extra sections -->
+                <div class="w-full md:w-2/3 lg:w-3/4 p-6 md:p-8 max-h-[85vh] overflow-y-auto">
+                    <h3 id="dlgTitle" class="font-headline font-bold text-2xl md:text-3xl leading-tight"></h3>
+
+                    <p id="dlgMeta"
+                        class="text-sm text-base-content/70 mt-1 mb-4 flex flex-wrap gap-x-3 gap-y-1 items-center">
+                    </p>
+
+                    <p id="dlgOverview" class="leading-relaxed text-base opacity-90 mb-6"></p>
+
+                    <!-- Trailers / providers / seasons / collection -->
+                    <div id="dlgMainExtras" class="space-y-4 mb-6"></div>
+
+                    <!-- Recommendations / similar / collections tiles -->
+                    <div id="dlgExtraContent" class="space-y-6 border-t border-base-200 pt-6"></div>
                 </div>
             </div>
-        </dialog>
-
-        <!-- Reactions menu -->
-        <div id="reactionMenu" class="reaction-menu hidden">
-            <!-- reaction icons will be injected here -->
         </div>
+    </dialog>
+
+    <!-- Auth dialog -->
+    <dialog id="dlgAuth" class="modal">
+        <div class="modal-box max-w-sm space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg">Sign in</h3>
+                <button type="button" class="btn btn-ghost btn-xs" onclick="document.getElementById('dlgAuth').close()">
+                    ✕
+                </button>
+            </div>
+
+            <p class="text-sm text-base-content/70">
+                Save your movie pool and preferences across devices.
+            </p>
+
+            <!-- Social sign in -->
+            <div class="space-y-2">
+                <button id="btnGoogleDemo" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-white">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4">
+                            <path fill="#EA4335"
+                                d="M12 10.2v3.9h5.4c-.2 1.2-.9 2.4-2 3.2l3.3 2.6C20.4 18.4 21.5 15.9 21.5 13c0-.7-.1-1.3-.2-1.9H12z" />
+                            <path fill="#34A853"
+                                d="M6.5 14.3l-1 3.8-3.1.1C3.5 20.7 7.4 23 12 23c3 0 5.5-1 7.3-2.7l-3.3-2.6c-1 .7-2.3 1.2-4 1.2-3.1 0-5.8-2.1-6.7-5z" />
+                            <path fill="#4A90E2"
+                                d="M3.4 8.2 0.4 5.6C2.1 2.6 6.1 1 9.9 1c2.7 0 5 .9 6.8 2.6L14 6.4C13 5.6 11.7 5.2 10 5.2 7 5.2 4.4 7.1 3.4 8.2z" />
+                            <path fill="#FBBC05"
+                                d="M21.5 13c0 2.9-1.1 5.4-3.1 7.1l-3.3-2.6c.9-.6 1.5-1.6 1.8-2.7H12v-3.9h9.3c.1.6.2 1.2.2 2z" />
+                        </svg>
+                    </span>
+                    <span class="text-xs">Continue with Google</span>
+                </button>
+
+                <button id="btnGithub" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                            <path
+                                d="M12 .5C5.7.5.7 5.5.7 11.8c0 5 3.3 9.1 7.8 10.6.6.1.8-.3.8-.6v-2c-3.2.7-3.8-1.4-3.8-1.4-.5-1.1-1.2-1.4-1.2-1.4-1-.7.1-.7.1-.7 1.1.1 1.7 1.1 1.7 1.1 1 .1.7 1.9 2.7 1.4.1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2.9-.3 1.9-.4 2.8-.4s1.9.1 2.8.4C18 5 19 5.2 19 5.2c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.5-2.7 5.5-5.3 5.8.4.3.7 1 .7 2.1v3.1c0 .3.2.7.8.6 4.5-1.5 7.8-5.6 7.8-10.6C23.3 5.5 18.3.5 12 .5z" />
+                        </svg>
+                    </span>
+                    <span class="text-xs">Continue with GitHub</span>
+                </button>
+
+                <button id="btnTwitter" type="button" class="btn btn-outline btn-sm w-full justify-start gap-3">
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-sm bg-base-200">
+                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="currentColor">
+                            <path
+                                d="M18.9 3H21l-4.6 5.3L21.8 21h-4.9l-3.4-6-3.9 4.6V21H3.1l4.9-5.6L2.4 3h5l3.1 5.4L14 3h4.9zm-2.1 15.2h1.3L7.3 4.7H5.9l10.9 13.5z" />
+                        </svg>
+                    </span>
+                    <span class="text-xs">Continue with X</span>
+                </button>
+            </div>
+
+            <div class="divider text-[11px]">or use email</div>
+
+            <!-- Email/password -->
+            <div class="space-y-3">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Name</span>
+                    </label>
+                    <input id="authName" type="text" class="input input-bordered input-sm" placeholder="Neo" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Email</span>
+                    </label>
+                    <input id="authEmail" type="email" class="input input-bordered input-sm"
+                        placeholder="you@example.com" />
+                </div>
+
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text text-xs">Password</span>
+                    </label>
+                    <input id="authPass" type="password" class="input input-bordered input-sm" placeholder="••••••••" />
+                </div>
+            </div>
+
+            <div class="modal-action flex items-center justify-between gap-2">
+                <button id="btnAuthSubmit" class="btn btn-primary btn-sm">
+                    Sign in
+                </button>
+                <form method="dialog">
+                    <button class="btn btn-sm">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Reactions menu -->
+    <div id="reactionMenu" class="reaction-menu hidden">
+        <!-- reaction icons will be injected here -->
+    </div>
     </div>
 
     <!-- Settings Modal (Discord Style - Works in Both Themes) -->
@@ -995,15 +1018,13 @@
 
                     <!-- Close Button -->
                     <button id="closeSettingsBtn"
-                        class="btn btn-square btn-sm btn-ghost absolute top-4 right-4 rounded-none z-10"
-                        style="color: hsl(var(--bc) / 1);">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
+                        class="btn btn-square btn-md btn-ghost absolute top-4 right-4 rounded-none z-10">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+
 
                     <!-- Tab: My Account -->
                     <div id="tab-my-account" class="settings-content active space-y-6">
