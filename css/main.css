@@ -142,3 +142,60 @@
     color: hsl(var(--bc)) !important;
     background-color: hsl(var(--b2)) !important;
 }
+
+/* ========== ROOM CHAT AVATARS ========== */
+
+/* Chat message with avatar */
+.chat-message {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 0.25rem 0;
+}
+
+.chat-message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    background-color: hsl(var(--b3));
+}
+
+.chat-message-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-message-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.125rem;
+}
+
+.chat-message-author {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: hsl(var(--bc));
+}
+
+.chat-message-time {
+    font-size: 0.625rem;
+    opacity: 0.5;
+    color: hsl(var(--bc));
+}
+
+.chat-message-text {
+    font-size: 0.875rem;
+    color: hsl(var(--bc));
+    word-wrap: break-word;
+}
+
+/* Hover effect */
+.chat-message:hover {
+    background-color: hsl(var(--b2) / 0.3);
+    border-radius: 4px;
+    margin: -2px;
+    padding: calc(0.25rem + 2px) 2px;
+}
