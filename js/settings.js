@@ -215,15 +215,13 @@ async function uploadProfilePicture(file) {
             statusText.textContent = "Processing image...";
         }
 
-        // Convert file to Base64
         const reader = new FileReader();
         reader.onload = async (e) => {
             try {
-                const base64Data = e.target.result; // This is the Base64 string
+                const base64Data = e.target.result;
 
                 if (statusText) statusText.textContent = "Saving to database...";
 
-                // Get user doc reference
                 const userRef = getUserDocRef(user.uid);
                 if (!userRef) {
                     throw new Error("Could not create user reference");
@@ -240,8 +238,8 @@ async function uploadProfilePicture(file) {
                     { merge: true }
                 );
 
-                // Update Firebase Auth profile
-                await user.updateProfile({ photoURL: base64Data });
+                // Update Firebase Auth profile - FIX HERE
+                await window.firebaseAuth.updateProfile(user, { photoURL: base64Data });
 
                 // Update UI immediately
                 const avatarEl = document.getElementById("settingsAvatar");
@@ -276,7 +274,6 @@ async function uploadProfilePicture(file) {
             }
         };
 
-        // Read file as Base64
         reader.readAsDataURL(file);
 
     } catch (error) {
@@ -292,15 +289,13 @@ async function uploadProfilePicture(file) {
 }
 
 
-// ========== HANDLE PROFILE NAME UPDATE ==========
+
 function handleProfileUpdate() {
     const btn = document.getElementById("saveNameBtn");
     const nameInput = document.getElementById("inputDisplayName");
 
     if (!btn || !nameInput) return;
 
-    // Prevent multiple listeners
-    btn.onclick = null;
     btn.onclick = async () => {
         const user = getAuthUser();
         const newName = nameInput.value.trim();
@@ -311,8 +306,8 @@ function handleProfileUpdate() {
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span>';
             btn.disabled = true;
 
-            // Update Firebase Auth
-            await user.updateProfile({ displayName: newName });
+            // Update Firebase Auth - FIX HERE
+            await window.firebaseAuth.updateProfile(user, { displayName: newName });
 
             // Update Firestore
             const userRef = getUserDocRef(user.uid);
@@ -345,6 +340,7 @@ function handleProfileUpdate() {
         }
     };
 }
+
 
 function initAvatarUpload() {
     const fileInput = document.getElementById("avatarUpload");
