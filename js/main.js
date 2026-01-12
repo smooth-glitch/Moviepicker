@@ -71,17 +71,14 @@ let audioChunks = [];
 let recordingStartTime = 0;
 let timerInterval = null;
 
-// --------------------------------------------------
-// Utility
-// --------------------------------------------------
-
 const voiceBtn = document.getElementById("roomVoiceBtn");
 const voiceUI = document.getElementById("voiceRecordingUI");
 const voiceTimer = document.getElementById("voiceTimer");
 const voiceCancelBtn = document.getElementById("voiceCancelBtn");
 const voiceSendBtn = document.getElementById("voiceSendBtn");
+const chatInput = document.getElementById("roomChatInput"); // ← DEFINE IT HERE
 
-if (voiceBtn && voiceUI) {
+if (voiceBtn && voiceUI && chatInput) {
     voiceBtn.addEventListener("click", async () => {
         if (!roomState.id) {
             toast("Join a room first.", "info");
@@ -131,7 +128,7 @@ if (voiceBtn && voiceUI) {
         }
         clearInterval(timerInterval);
         voiceUI.classList.add("hidden");
-        if (chatInput) chatInput.disabled = false;
+        chatInput.disabled = false;
         audioChunks = [];
     });
 
@@ -179,6 +176,8 @@ if (voiceBtn && voiceUI) {
                         text: currentReplyTarget.text || null,
                         gifUrl: currentReplyTarget.gifUrl || null,
                         stickerUrl: currentReplyTarget.stickerUrl || null,
+                        voiceUrl: currentReplyTarget.voiceUrl || null,
+                        voiceDuration: currentReplyTarget.voiceDuration || 0,
                     };
                 }
 
@@ -187,22 +186,31 @@ if (voiceBtn && voiceUI) {
                         fs.collection(fs.db, `rooms/${roomState.id}/messages`),
                         payload
                     );
-                    clearReplyDraft();
+
+                    // Use the clearReplyDraft function that's already defined in main.js
+                    if (typeof clearReplyDraft === "function") {
+                        clearReplyDraft();
+                    } else {
+                        currentReplyTarget = null; // Fallback
+                    }
+
                     voiceUI.classList.add("hidden");
-                    if (chatInput) chatInput.disabled = false;
+                    chatInput.disabled = false;
+                    audioChunks = [];
                 } catch (err) {
                     toast("Failed to send voice note.", "error");
                     console.warn(err);
+                    voiceUI.classList.add("hidden");
+                    chatInput.disabled = false;
                 }
             };
 
             reader.readAsDataURL(audioBlob);
         }, { once: true });
-
-        voiceUI.classList.add("hidden");
-        if (chatInput) chatInput.disabled = false;
     });
 }
+
+
 function setPageLoading(on) {
     const el = document.getElementById("pageLoader");
     if (!el) return;
