@@ -170,7 +170,6 @@ function initModalLogic() {
     });
 }
 
-// Update populateProfileData to ALWAYS prioritize Firestore
 function populateProfileData() {
     const user = getAuthUser();
     if (!user) return;
@@ -181,15 +180,15 @@ function populateProfileData() {
     const nameInput = document.getElementById("inputDisplayName");
     const uidInput = document.getElementById("inputUid");
 
-    // PRIORITY: Firestore photoURL > Google photoURL > Avatar API
+    // PRIORITY: Firestore photoURL (Base64) > Google photoURL > Avatar API
     let photoURL = window.firestoreUserData?.photoURL;
 
-    // If no Firestore photoURL, use Google's
-    if (!photoURL || photoURL.length < 100) {
+    // If no custom Firestore photo or it's not Base64, use Google's
+    if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
         photoURL = user.photoURL;
     }
 
-    // Fallback to avatar API
+    // Final fallback to avatar API
     if (!photoURL) {
         photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
     }
@@ -200,8 +199,6 @@ function populateProfileData() {
     if (nameInput) nameInput.value = user.displayName || "";
     if (uidInput) uidInput.value = user.uid;
 }
-
-
 
 async function uploadProfilePicture(file) {
     const fs = getFs();
@@ -415,7 +412,7 @@ async function loadUserProfileFromFirestore() {
 async function boot() {
     // 1. Load Firestore profile data FIRST (before anything else)
     await loadUserProfileFromFirestore();
-
+    syncUI(s);
     // 2. Load settings
     const s = await loadSettingsForUser();
 
