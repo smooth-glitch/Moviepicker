@@ -226,3 +226,126 @@
 #roomChatMessages audio::-webkit-media-controls-panel {
   background-color: hsl(var(--b2));
 }
+
+/* ========== WHATSAPP-STYLE VOICE NOTES ========== */
+
+.voice-note-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  min-width: 200px;
+  max-width: 280px;
+  margin-top: 0.25rem;
+}
+
+.voice-note-primary {
+  background-color: hsl(var(--p) / 0.15);
+  border: 1px solid hsl(var(--p) / 0.3);
+}
+
+.voice-note-neutral {
+  background-color: hsl(var(--b2));
+  border: 1px solid hsl(var(--b3));
+}
+
+/* Play Button */
+.voice-note-play-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: hsl(var(--p));
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.1s;
+}
+
+.voice-note-play-btn:hover {
+  transform: scale(1.1);
+}
+
+.voice-note-play-btn:active {
+  transform: scale(0.95);
+}
+
+.voice-play-icon,
+.voice-pause-icon {
+  width: 14px;
+  height: 14px;
+  color: white;
+}
+
+/* Waveform Container */
+.voice-note-wave-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* Waveform Bars (WhatsApp style) */
+.voice-note-waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  height: 20px;
+}
+
+.voice-wave-bar {
+  width: 3px;
+  background-color: hsl(var(--bc) / 0.4);
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.voice-note-primary .voice-wave-bar {
+  background-color: hsl(var(--p) / 0.5);
+}
+
+.voice-note-neutral .voice-wave-bar {
+  background-color: hsl(var(--bc) / 0.3);
+}
+
+/* Duration Label */
+.voice-note-duration {
+  font-size: 0.75rem;
+  color: hsl(var(--bc) / 0.7);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  min-width: 35px;
+  text-align: right;
+}
+
+/* Hide default audio controls */
+.voice-note-container audio {
+  display: none;
+}
+
+/* Recording UI Animation */
+#voiceRecordingUI {
+  animation: voicePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes voicePulse {
+  0%,
+  100% {
+    background-color: hsl(var(--er) / 0.2);
+  }
+  50% {
+    background-color: hsl(var(--er) / 0.3);
+  }
+}
+
+/* Recording timer */
+#voiceTimer {
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--er));
+  font-weight: 600;
+}

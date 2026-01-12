@@ -360,24 +360,76 @@ export async function renderRoomMessages(list) {
             img.loading = "lazy";
             bubble.appendChild(img);
         } else if (m.type === "voice" && m.voiceUrl) {
-            // ========== VOICE NOTE ==========
+            // ========== WHATSAPP-STYLE VOICE NOTE ==========
             const voiceContainer = document.createElement("div");
-            voiceContainer.className = "flex items-center gap-2 bg-base-100/50 p-2 rounded-lg mt-1";
+            voiceContainer.className = `voice-note-container ${isMe ? "voice-note-primary" : "voice-note-neutral"}`;
 
+            // Play button
+            const playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "voice-note-play-btn";
+            playBtn.innerHTML = `
+              <svg class="voice-play-icon" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
+              </svg>
+            `;
+
+            // Audio element (hidden)
             const audio = document.createElement("audio");
             audio.src = m.voiceUrl;
-            audio.controls = true;
-            audio.className = "w-full max-w-xs";
-            audio.style.height = "32px";
+            audio.preload = "metadata";
 
-            const duration = m.voiceDuration ? `${m.voiceDuration}s` : "";
-            if (duration) {
-                const durationLabel = document.createElement("span");
-                durationLabel.className = "text-xs opacity-70";
-                durationLabel.textContent = duration;
-                voiceContainer.appendChild(durationLabel);
-            }
+            // Waveform + duration container
+            const waveContainer = document.createElement("div");
+            waveContainer.className = "voice-note-wave-container";
 
+            // Waveform bars (WhatsApp style)
+            const waveform = document.createElement("div");
+            waveform.className = "voice-note-waveform";
+            const bars = [3, 8, 5, 9, 4, 7, 6, 8, 3, 9, 5, 7, 4, 8, 6, 9, 5, 7, 3, 8];
+            bars.forEach(height => {
+                const bar = document.createElement("div");
+                bar.className = "voice-wave-bar";
+                bar.style.height = `${height * 2}px`;
+                waveform.appendChild(bar);
+            });
+
+            // Duration label
+            const duration = m.voiceDuration || 0;
+            const durationLabel = document.createElement("span");
+            durationLabel.className = "voice-note-duration";
+            durationLabel.textContent = `${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`;
+
+            waveContainer.appendChild(waveform);
+            waveContainer.appendChild(durationLabel);
+
+            // Play/Pause logic
+            let isPlaying = false;
+            playBtn.addEventListener("click", () => {
+                if (isPlaying) {
+                    audio.pause();
+                    playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
+                    playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
+                    isPlaying = false;
+                } else {
+                    audio.play();
+                    playBtn.querySelector(".voice-play-icon").classList.add("hidden");
+                    playBtn.querySelector(".voice-pause-icon").classList.remove("hidden");
+                    isPlaying = true;
+                }
+            });
+
+            audio.addEventListener("ended", () => {
+                playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
+                playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
+                isPlaying = false;
+            });
+
+            voiceContainer.appendChild(playBtn);
+            voiceContainer.appendChild(waveContainer);
             voiceContainer.appendChild(audio);
             bubble.appendChild(voiceContainer);
         } else {
