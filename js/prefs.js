@@ -5,6 +5,7 @@ const PREFS_KEY = "cinecircle:prefs";
 
 export function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
+    saveJson(LSTHEME, theme);
 }
 
 export function loadPrefs() {

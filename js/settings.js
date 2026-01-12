@@ -1,6 +1,7 @@
 import { id } from "./dom.js";
 import { loadJson, saveJson, LSTHEME, LSFILTERS } from "./storage.js";
 import { normalizeFilters } from "./state.js";
+import { applyTheme } from "./prefs.js";
 
 const LSSETTINGS = "mnp_settings_v1";
 const DEFAULT_SETTINGS = {
@@ -28,11 +29,6 @@ if (!window.firestoreUserData) {
     window.firestoreUserData = {};
 }
 
-// ========== THEME MANAGEMENT ==========
-export function setTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
-    saveJson(LSTHEME, theme);
-}
 
 function applyDefaultFiltersToStorage(settings) {
     const cur = loadJson(LSFILTERS, {});
@@ -63,7 +59,7 @@ async function loadSettingsForUser() {
         const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
         const merged = { ...base, ...cloud };
 
-        setTheme(merged.theme);
+        applyTheme(merged.theme);
         applyDefaultFiltersToStorage(merged);
         return merged;
     } catch (e) {
@@ -129,46 +125,52 @@ function syncUI(s) {
 }
 
 // ========== MODAL FUNCTIONS ==========
-function initModalLogic() {
-    const modal = document.getElementById("settingsModal");
-    if (!modal) return;
+async function populateProfileData() {
+    const user = getAuthUser();
+    if (!user) return;
 
-    const openBtn = document.getElementById("btnMenuSettings");
-    const closeBtn = document.getElementById("closeSettingsBtn");
-    const backdrop = document.getElementById("settingsBackdrop");
-
-    const open = () => {
-        modal.classList.remove("hidden");
-        populateProfileData();
-    };
-
-    const close = () => modal.classList.add("hidden");
-
-    if (openBtn) openBtn.addEventListener("click", open);
-    if (closeBtn) closeBtn.addEventListener("click", close);
-    if (backdrop) backdrop.addEventListener("click", close);
-
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-            close();
+    // ========== RE-FETCH FIRESTORE DATA EVERY TIME ==========
+    const fs = getFs();
+    if (fs && user.uid) {
+        try {
+            const userRef = getUserDocRef(user.uid);
+            if (userRef) {
+                const snap = await fs.getDoc(userRef);
+                if (snap.exists()) {
+                    window.firestoreUserData = snap.data();
+                }
+            }
+        } catch (e) {
+            console.warn("Failed to refresh profile:", e);
         }
-    });
+    }
 
-    // Tab switching
-    document.querySelectorAll(".settings-tab-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            document.querySelectorAll(".settings-tab-btn").forEach((b) => {
-                b.classList.remove("active", "bg-base-300");
-            });
-            document.querySelectorAll(".settings-content").forEach((c) => {
-                c.classList.add("hidden");
-            });
-            btn.classList.add("active", "bg-base-300");
-            const target = document.getElementById(`tab-${btn.dataset.tab}`);
-            if (target) target.classList.remove("hidden");
-        });
-    });
+    const avatar = document.getElementById("settingsAvatar");
+    const name = document.getElementById("settingsDisplayName");
+    const uid = document.getElementById("settingsUidDisplay");
+    const nameInput = document.getElementById("inputDisplayName");
+    const uidInput = document.getElementById("inputUid");
+
+    // PRIORITY: Firestore photoURL (Base64) > Google photoURL > Avatar API
+    let photoURL = window.firestoreUserData?.photoURL;
+
+    // If no custom Firestore photo or it's not Base64, use Google's
+    if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
+        photoURL = user.photoURL;
+    }
+
+    // Final fallback to avatar API
+    if (!photoURL) {
+        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+    }
+
+    if (avatar) avatar.src = photoURL;
+    if (name) name.textContent = user.displayName || "Anonymous";
+    if (uid) uid.textContent = user.uid;
+    if (nameInput) nameInput.value = user.displayName || "";
+    if (uidInput) uidInput.value = user.uid;
 }
+
 
 function populateProfileData() {
     const user = getAuthUser();
@@ -409,27 +411,30 @@ async function loadUserProfileFromFirestore() {
 
 
 // Update boot() to load Firestore data FIRST
+// ========== MAIN BOOT ==========
 async function boot() {
-    // 1. Load Firestore profile data FIRST (before anything else)
+    // 1. Load Firestore profile data FIRST
     await loadUserProfileFromFirestore();
-    
+
     // 2. Load settings
     const s = await loadSettingsForUser();
 
+    // 3. Sync UI with settings
+    syncUI(s);
 
     // 4. Init modal & handlers
     initModalLogic();
     handleProfileUpdate();
     initAvatarUpload();
 
-    // 5. Watch for changes
+    // 5. Watch for changes - Use applyTheme from prefs.js
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating"].forEach((key) => {
         const el = document.getElementById(key);
         if (!el) return;
 
         el.addEventListener("change", async () => {
             const newSettings = readUI();
-            setTheme(newSettings.theme);
+            applyTheme(newSettings.theme); // ← Changed from setTheme
             applyDefaultFiltersToStorage(newSettings);
             await saveSettingsToCloud(newSettings);
         });
