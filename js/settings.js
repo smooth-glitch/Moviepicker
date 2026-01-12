@@ -24,6 +24,10 @@ function getUserDocRef(uid) {
     return fs.doc(fs.db, "users", uid);
 }
 
+if (!window.firestoreUserData) {
+    window.firestoreUserData = {};
+}
+
 // ========== THEME MANAGEMENT ==========
 export function setTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
@@ -166,6 +170,7 @@ function initModalLogic() {
     });
 }
 
+// Update populateProfileData to ALWAYS prioritize Firestore
 function populateProfileData() {
     const user = getAuthUser();
     if (!user) return;
@@ -176,21 +181,26 @@ function populateProfileData() {
     const nameInput = document.getElementById("inputDisplayName");
     const uidInput = document.getElementById("inputUid");
 
-    // PRIORITY: Firestore photoURL > Firebase Auth photoURL > Avatar API
-    let photoURL = window.firestoreUserData?.photoURL || user.photoURL;
+    // PRIORITY: Firestore photoURL > Google photoURL > Avatar API
+    let photoURL = window.firestoreUserData?.photoURL;
 
-    if (!photoURL || photoURL.length < 50) { // If it's not Base64 (too short)
+    // If no Firestore photoURL, use Google's
+    if (!photoURL || photoURL.length < 100) {
+        photoURL = user.photoURL;
+    }
+
+    // Fallback to avatar API
+    if (!photoURL) {
         photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
     }
 
-    if (avatar) {
-        avatar.src = photoURL;
-    }
+    if (avatar) avatar.src = photoURL;
     if (name) name.textContent = user.displayName || "Anonymous";
     if (uid) uid.textContent = user.uid;
     if (nameInput) nameInput.value = user.displayName || "";
     if (uidInput) uidInput.value = user.uid;
 }
+
 
 
 async function uploadProfilePicture(file) {
@@ -388,26 +398,11 @@ async function loadUserProfileFromFirestore() {
 
         const data = snap.data();
 
-        // Store Firestore data globally
+        // Store Firestore data globally (PRIORITY over Google)
         window.firestoreUserData = data;
 
-        // IMPORTANT: Override Google/Firebase Auth photoURL with Firestore one
-        if (data.photoURL) {
-            // Update the user object with Firestore photoURL
-            user.photoURL = data.photoURL;
-        }
-
-        // Update Firebase Auth displayName if exists
-        if (data.displayName && !user.displayName) {
-            try {
-                await window.firebaseAuth.updateProfile(user, { displayName: data.displayName });
-            } catch (e) {
-                console.warn("Could not update displayName:", e);
-            }
-        }
-
-        // Update UI with Firestore data
-        populateProfileData();
+        // Don't try to update Firebase Auth with Base64 (it will fail)
+        // Just keep it in window cache and Firestore
 
     } catch (e) {
         console.warn("Failed to load profile from Firestore:", e);
@@ -416,16 +411,14 @@ async function loadUserProfileFromFirestore() {
 
 
 
-// ========== MAIN BOOT ==========
+// Update boot() to load Firestore data FIRST
 async function boot() {
-    // 1. Load settings (but DON'T apply theme yet if just opening settings)
+    // 1. Load Firestore profile data FIRST (before anything else)
+    await loadUserProfileFromFirestore();
+
+    // 2. Load settings
     const s = await loadSettingsForUser();
 
-    // 2. Sync UI with settings
-    syncUI(s);
-
-    // 3. Load user profile from Firestore and OVERRIDE Google photoURL
-    await loadUserProfileFromFirestore();
 
     // 4. Init modal & handlers
     initModalLogic();

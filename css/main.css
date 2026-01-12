@@ -27,6 +27,18 @@
     animation: fadeInUp 0.2s ease-out forwards;
 }
 
+/* Backdrop - More Blur */
+#settingsBackdrop {
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Modal Animations */
+.fade-in-up {
+    animation: fadeInUp 0.2s ease-out forwards;
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -39,172 +51,94 @@
     }
 }
 
-/* Settings Modal Tabs */
-.settings-tab-btn {
-    transition: all 0.2s ease;
+/* Fix width classes (Tailwind syntax errors) */
+#settingsModal .w-13 {
+    width: 33.333333% !important;
 }
 
+#settingsModal .w-23 {
+    width: 66.666667% !important;
+}
+
+#settingsModal .min-w-200px {
+    min-width: 200px !important;
+}
+
+/* Fix height */
+#settingsModal .h-85vh {
+    height: 85vh !important;
+}
+
+#settingsModal .h-600px {
+    height: 600px !important;
+}
+
+#settingsModal .max-h-700px {
+    max-height: 700px !important;
+}
+
+/* Better Centering */
+#settingsModal h2,
+#settingsModal h3 {
+    text-align: left;
+}
+
+#settingsModal .form-control {
+    width: 100%;
+}
+
+/* Active Tab Styling */
 .settings-tab-btn.active {
     background-color: hsl(var(--b3)) !important;
     font-weight: 600;
 }
 
 .settings-tab-btn:hover {
-    background-color: hsl(var(--b3)) !important;
+    background-color: hsl(var(--b3) / 0.5) !important;
 }
 
-/* Settings Content */
-.settings-content {
-    animation: fadeInUp 0.3s ease-out;
-}
-
-/* Settings Modal Inputs */
-#settingsModal input[type="text"],
-#settingsModal input[type="email"],
-#settingsModal input[type="password"],
-#settingsModal input[type="range"],
-#settingsModal input[type="checkbox"],
-#settingsModal input[type="number"] {
+/* Light Theme Text Visibility */
+[data-theme="cupcake"] #settingsModal,
+[data-theme="cupcake"] #settingsModal * {
     color: hsl(var(--bc)) !important;
 }
 
-#settingsModal input[type="text"]::placeholder,
-#settingsModal input[type="email"]::placeholder,
-#settingsModal input[type="password"]::placeholder {
-    color: hsl(var(--bc) / 0.5) !important;
+[data-theme="cupcake"] #settingsModal .bg-base-100 {
+    background-color: #faf7f5 !important;
 }
 
-/* Settings Modal Buttons */
+[data-theme="cupcake"] #settingsModal .bg-base-200 {
+    background-color: #e9e7e7 !important;
+}
+
+[data-theme="cupcake"] #settingsModal .text-base-content\/50,
+[data-theme="cupcake"] #settingsModal .text-base-content\/60 {
+    color: #291334 !important;
+    opacity: 0.8;
+}
+
+/* Dark Theme */
+[data-theme="synthwave"] #settingsModal .bg-base-100 {
+    background-color: #1a103d !important;
+}
+
+[data-theme="synthwave"] #settingsModal .bg-base-200 {
+    background-color: #251454 !important;
+}
+
+/* Button Visibility */
 #settingsModal .btn {
     color: hsl(var(--bc)) !important;
-    border-color: hsl(var(--b3)) !important;
 }
 
 #settingsModal .btn-neutral {
     background-color: hsl(var(--b3)) !important;
     color: hsl(var(--bc)) !important;
-    border-color: hsl(var(--b3)) !important;
 }
 
-#settingsModal .btn-ghost {
+/* Input Visibility */
+#settingsModal input[type="text"],
+#settingsModal input[readonly] {
     color: hsl(var(--bc)) !important;
-}
-
-#settingsModal .btn-ghost:hover {
-    background-color: hsl(var(--b3) / 0.3) !important;
-    color: hsl(var(--bc)) !important;
-}
-
-#settingsModal .btn-error {
-    color: hsl(var(--er)) !important;
-    border-color: hsl(var(--er)) !important;
-}
-
-#settingsModal .btn-error:hover {
-    background-color: hsl(var(--er) / 0.1) !important;
-}
-
-/* Settings Modal Labels */
-#settingsModal .label-text {
-    color: hsl(var(--bc)) !important;
-}
-
-/* Settings Modal Dividers */
-#settingsModal .divider {
-    border-color: hsl(var(--b3)) !important;
-}
-
-/* Settings Modal Form Control */
-#settingsModal .form-control {
-    color: hsl(var(--bc)) !important;
-}
-
-/* Settings Modal Toggles */
-#settingsModal .toggle {
-    border-color: hsl(var(--b3)) !important;
-}
-
-#settingsModal .toggle:checked {
-    background-color: hsl(var(--p)) !important;
-    border-color: hsl(var(--p)) !important;
-}
-
-/* Settings Modal Range */
-#settingsModal .range {
-    background-color: hsl(var(--b3)) !important;
-}
-
-/* Settings Modal Avatar */
-#settingsModal .avatar img {
-    background-color: hsl(var(--b1)) !important;
-}
-
-/* Custom Scrollbar for Settings */
-#settingsModal ::-webkit-scrollbar {
-    width: 8px;
-}
-
-#settingsModal ::-webkit-scrollbar-track {
-    background: hsl(var(--b2));
-}
-
-#settingsModal ::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--b3));
-    border-radius: 4px;
-}
-
-#settingsModal ::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--b4));
-}
-
-/* Ensure text visibility in both themes */
-#settingsModal h2,
-#settingsModal h3,
-#settingsModal p,
-#settingsModal span,
-#settingsModal label {
-    color: hsl(var(--bc)) !important;
-}
-
-/* Alert styling */
-#settingsModal .alert {
     background-color: hsl(var(--b2)) !important;
-    color: hsl(var(--bc)) !important;
-    border-color: hsl(var(--b3)) !important;
-}
-
-#settingsModal .alert-info {
-    background-color: hsl(var(--i) / 0.2) !important;
-    border-color: hsl(var(--i)) !important;
-}
-
-#settingsModal .alert-success {
-    background-color: hsl(var(--su) / 0.2) !important;
-    border-color: hsl(var(--su)) !important;
-}
-
-#settingsModal .alert-error {
-    background-color: hsl(var(--er) / 0.2) !important;
-    border-color: hsl(var(--er)) !important;
-}
-
-/* Loading spinner */
-#settingsModal .loading {
-    border-color: hsl(var(--b3)) !important;
-    border-right-color: hsl(var(--bc)) !important;
-}
-
-/* Join element styling */
-#settingsModal .join {
-    gap: 0;
-}
-
-#settingsModal .join-item {
-    border-color: hsl(var(--b3)) !important;
-    background-color: hsl(var(--b2)) !important;
-    color: hsl(var(--bc)) !important;
-}
-
-#settingsModal .join-item:not(:first-child) {
-    border-left: 0;
 }
