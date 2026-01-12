@@ -185,7 +185,7 @@ function populateProfileData() {
     if (uidInput) uidInput.value = user.uid;
 }
 
-// ========== PROFILE PICTURE UPLOAD ==========
+// ========== PROFILE PICTURE UPLOAD (BASE64 IN FIRESTORE) ==========
 async function uploadProfilePicture(file) {
     const fs = getFs();
     const user = getAuthUser();
@@ -200,8 +200,8 @@ async function uploadProfilePicture(file) {
         return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-        alert("Image must be smaller than 5MB");
+    if (file.size > 1 * 1024 * 1024) {
+        alert("Image must be smaller than 1MB");
         return;
     }
 
@@ -212,56 +212,85 @@ async function uploadProfilePicture(file) {
         if (statusDiv) {
             statusDiv.classList.remove("hidden", "alert-error");
             statusDiv.classList.add("alert-info");
-            statusText.textContent = "Uploading image...";
+            statusText.textContent = "Processing image...";
         }
 
-        const fileName = `profile-${user.uid}-${Date.now()}`;
-        const storagePath = `users/${user.uid}/avatar/${fileName}`;
-        const fileRef = fs.ref(fs.storage, storagePath);
+        // Convert file to Base64
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const base64Data = e.target.result; // This is the Base64 string
 
-        await fs.uploadBytes(fileRef, file);
-        const downloadURL = await fs.getDownloadURL(fileRef);
+                if (statusText) statusText.textContent = "Saving to database...";
 
-        // Update Firebase Auth
-        await user.updateProfile({ photoURL: downloadURL });
+                // Get user doc reference
+                const userRef = getUserDocRef(user.uid);
+                if (!userRef) {
+                    throw new Error("Could not create user reference");
+                }
 
-        // Update Firestore
-        const userRef = getUserDocRef(user.uid);
-        if (userRef) {
-            await fs.setDoc(
-                userRef,
-                {
-                    photoURL: downloadURL,
-                    updatedAt: fs.serverTimestamp(),
-                },
-                { merge: true }
-            );
-        }
+                // Save Base64 to Firestore
+                await fs.setDoc(
+                    userRef,
+                    {
+                        photoURL: base64Data,
+                        photoUpdatedAt: fs.serverTimestamp(),
+                        updatedAt: fs.serverTimestamp(),
+                    },
+                    { merge: true }
+                );
 
-        // Update UI immediately
-        const avatarEl = document.getElementById("settingsAvatar");
-        if (avatarEl) {
-            avatarEl.src = downloadURL;
+                // Update Firebase Auth profile
+                await user.updateProfile({ photoURL: base64Data });
+
+                // Update UI immediately
+                const avatarEl = document.getElementById("settingsAvatar");
+                if (avatarEl) {
+                    avatarEl.src = base64Data;
+                }
+
+                // Show success
+                if (statusDiv) {
+                    statusDiv.classList.remove("alert-info");
+                    statusDiv.classList.add("alert-success");
+                    statusText.textContent = "✓ Profile picture updated!";
+                    setTimeout(() => statusDiv.classList.add("hidden"), 3000);
+                }
+
+            } catch (error) {
+                console.error("Save failed:", error);
+                if (statusDiv) {
+                    statusDiv.classList.remove("alert-info");
+                    statusDiv.classList.add("alert-error");
+                    statusText.textContent = "Save failed: " + error.message;
+                    setTimeout(() => statusDiv.classList.add("hidden"), 5000);
+                }
+            }
+        };
+
+        reader.onerror = () => {
             if (statusDiv) {
                 statusDiv.classList.remove("alert-info");
-                statusDiv.classList.add("alert-success");
-                statusText.textContent = "✓ Profile picture updated!";
-                setTimeout(() => statusDiv.classList.add("hidden"), 3000);
+                statusDiv.classList.add("alert-error");
+                statusText.textContent = "Failed to read image file";
             }
-        }
+        };
+
+        // Read file as Base64
+        reader.readAsDataURL(file);
 
     } catch (error) {
-        console.error("Upload failed:", error);
+        console.error("Upload error:", error);
         const statusDiv = document.getElementById("uploadStatus");
-        const statusText = document.getElementById("uploadStatusText");
         if (statusDiv) {
             statusDiv.classList.remove("alert-info");
             statusDiv.classList.add("alert-error");
-            statusText.textContent = "Upload failed: " + error.message;
-            setTimeout(() => statusDiv.classList.add("hidden"), 5000);
+            statusDiv.classList.remove("hidden");
+            document.getElementById("uploadStatusText").textContent = "Upload error: " + error.message;
         }
     }
 }
+
 
 // ========== HANDLE PROFILE NAME UPDATE ==========
 function handleProfileUpdate() {
