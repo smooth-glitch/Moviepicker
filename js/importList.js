@@ -20,4 +20,5 @@ export async function importSharedListToAccount() {
     renderPool();
     scheduleCloudSave();
     toast("Imported to your account.", "success");
+
 }
