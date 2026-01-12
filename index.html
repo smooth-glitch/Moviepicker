@@ -16,7 +16,7 @@
 
     <!-- Firebase (module) -->
     <script type="module" src="js/firebase-init.js"></script>
-
+    <script type="module" src="js/settings.js"></script>
     <style>
         /* Apply Sora font to headlines */
         h1,
@@ -149,33 +149,35 @@
             </div>
 
             <!-- User menu dropdown (hero) -->
-            <!-- User menu dropdown (hero) -->
-            <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end">
+            <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end dropdown-top">
+                <!-- 1. The Trigger Button -->
                 <label tabindex="0" id="btnUser"
-                    class="btn btn-md md:btn-lg gap-2 bg-base-100/95 hover:bg-base-100 border border-base-300 shadow-lg hover:shadow-xl text-base-content transition-all">
+                    class="btn btn-md md:btn-lg gap-2 bg-base-100/95 hover:bg-base-100 border border-base-300 shadow-lg hover:shadow-xl text-base-content transition-all cursor-pointer">
                     <span class="inline-flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-venetian-mask-icon lucide-venetian-mask">
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M18 11c-1.5 0-2.5.5-3 2" />
-                            <path d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2
-                         5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z" />
+                            <path
+                                d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z" />
                             <path d="M6 11c1.5 0 2.5.5 3 2" />
                         </svg>
                     </span>
-                    <span id="userChipLabel" class="text-xs md:text-sm font-medium">
-                        Save pools
-                    </span>
+                    <span id="userChipLabel" class="text-xs md:text-sm font-medium">Save pools</span>
                 </label>
 
+                <!-- 2. The Menu Content (THIS WAS LIKELY MISSING or DETACHED) -->
                 <ul tabindex="0" id="userDropdownMenu"
-                    class="dropdown-content menu menu-sm mt-2 w-56 p-2 rounded-xl border border-base-300 bg-base-100 shadow-xl z-[9999]">
-                    <li><button id="btnMenuSignIn" type="button" class="user-menu-item">Sign in</button></li>
-                    <li><button id="btnMenuSettings" type="button" class="user-menu-item">Settings</button></li>
-                    <li><button id="btnMenuCopyUid" type="button" class="user-menu-item">Copy UID</button></li>
-                    <li><button id="btnMenuSignOut" type="button" class="user-menu-item">Sign out</button></li>
+                    class="dropdown-content menu p-2 shadow-2xl bg-base-100 rounded-none border border-base-300 w-52 z-[9999]">
+                    <!-- Signed OUT state (Default) -->
+                    <li id="menuItemSignIn"><a id="btnMenuSignIn">Sign In</a></li>
+
+                    <!-- Signed IN state (Hidden by default, toggled via JS) -->
+                    <li id="menuItemSettings" class="hidden"><a id="btnMenuSettings">Settings</a></li>
+                    <li id="menuItemCopyUid" class="hidden"><a id="btnMenuCopyUid">Copy UID</a></li>
+                    <li id="menuItemSignOut" class="hidden"><a id="btnMenuSignOut" class="text-error">Sign Out</a></li>
                 </ul>
             </div>
+
         </section>
 
         <div id="roomPickBanner" class="alert alert-info hidden">
@@ -825,133 +827,6 @@
             </div>
         </dialog>
 
-
-
-        <dialog id="dlgSettings" class="modal">
-            <div class="modal-box max-w-sm space-y-4">
-                <div class="flex items-center justify-between">
-                    <h3 class="font-bold text-lg flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3" />
-                            <path
-                                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 3.6 15a1.65 1.65 0 0 0-1.51-1H2a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 3.6 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 3.6 1.65 1.65 0 0 0 9.51 2H10a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 15.4 3.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 20.4 8.6 1.65 1.65 0 0 0 21.91 10H22a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z" />
-                        </svg>
-                        Settings
-                    </h3>
-                    <form method="dialog">
-                        <button class="btn btn-ghost btn-xs" aria-label="Close">✕</button>
-                    </form>
-                </div>
-
-                <!-- Theme toggle -->
-                <div class="space-y-2">
-                    <h4 class="font-semibold text-sm flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="4" />
-                            <path d="M12 2v2" />
-                            <path d="M12 20v2" />
-                            <path d="m4.93 4.93 1.41 1.41" />
-                            <path d="m17.66 17.66 1.41 1.41" />
-                            <path d="M2 12h2" />
-                            <path d="M20 12h2" />
-                            <path d="m6.34 17.66-1.41 1.41" />
-                            <path d="m19.07 4.93-1.41 1.41" />
-                        </svg>
-                        Theme
-                    </h4>
-
-                    <div class="flex items-center justify-between gap-3 text-xs">
-                        <div class="flex items-center gap-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="5" />
-                                <path d="M12 1v2" />
-                                <path d="M12 21v2" />
-                                <path d="M4.22 4.22 5.64 5.64" />
-                                <path d="M18.36 18.36 19.78 19.78" />
-                            </svg>
-                            <span class="font-medium">Cupcake</span>
-                        </div>
-
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input id="settingsThemeToggle" type="checkbox" class="toggle toggle-sm" />
-                        </label>
-
-                        <div class="flex items-center gap-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3
-                               7 7 0 0 0 21 12.79Z" />
-                            </svg>
-                            <span class="font-medium">Synthwave</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Exclude watched toggle -->
-                <div class="space-y-2">
-                    <h4 class="font-semibold text-sm flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <path d="M7 12h5" />
-                            <path d="m16 12 3 3 3-3" />
-                        </svg>
-                        Filters
-                    </h4>
-
-                    <label class="flex items-center justify-between gap-3 text-xs">
-                        <span class="flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <path d="M9 3h10" />
-                                <path d="M9 7h10" />
-                                <path d="M3 3h2" />
-                                <path d="M3 7h2" />
-                                <circle cx="7" cy="17" r="2" />
-                                <path d="M13 17h8" />
-                            </svg>
-                            <span>Exclude watched titles</span>
-                        </span>
-
-                        <input id="settingsExcludeWatched" type="checkbox" class="toggle toggle-sm" />
-                    </label>
-                </div>
-
-                <div class="modal-action">
-                    <button id="btnSettingsSave" class="btn btn-primary btn-sm gap-2 transition-all duration-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="shrink-0">
-                            <path d="M5 3h11l3 3v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                            <path d="M9 3v5h6V3" />
-                            <path d="M9 13h6v6H9z" />
-                        </svg>
-                        <span id="lblSave">Save</span>
-                    </button>
-                    <form method="dialog">
-                        <button class="btn btn-sm btn-ghost gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="shrink-0">
-                                <line x1="18" y1="6" x2="6" y2="18" />
-                                <line x1="6" y1="6" x2="18" y2="18" />
-                            </svg>
-                            Close
-                        </button>
-                    </form>
-
-                </div>
-            </div>
-        </dialog>
-
-
-
         <!-- Auth dialog -->
         <dialog id="dlgAuth" class="modal">
             <div class="modal-box max-w-sm space-y-4">
@@ -1053,6 +928,118 @@
 
     <script type="module" src="./js/hero-fade.js"></script>
     <script type="module" src="./js/main.js"></script>
+    <!-- Settings Modal (Discord Style - Boxy & Responsive) -->
+    <div id="settingsModal" class="fixed inset-0 z-[9999] hidden font-sans" style="isolation: isolate;">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="settingsBackdrop"></div>
+
+        <!-- Modal Container -->
+        <div class="absolute inset-0 flex items-center justify-center p-4 fade-in-up">
+            <div
+                class="bg-base-100 w-full max-w-4xl h-[85vh] max-h-[700px] shadow-2xl flex overflow-hidden relative border border-base-300 pointer-events-auto">
+
+                <!-- Left Sidebar (Navigation) -->
+                <div class="w-1/3 min-w-[200px] bg-base-200 p-4 flex flex-col border-r border-base-300">
+                    <div class="text-xs font-bold text-base-content/50 px-3 mb-2 uppercase tracking-wider">User Settings
+                    </div>
+                    <nav class="space-y-1 flex-1">
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none active"
+                            data-tab="my-account">My Account</button>
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="appearance">Appearance</button>
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="privacy">Preferences</button>
+                    </nav>
+                    <div class="mt-auto pt-4 border-t border-base-300">
+                        <button id="logoutBtn" class="btn btn-error btn-outline btn-sm w-full rounded-none">Log
+                            Out</button>
+                    </div>
+                </div>
+
+                <!-- Right Content Area -->
+                <div class="w-2/3 bg-base-100 p-6 md:p-8 overflow-y-auto relative">
+                    <!-- Close Button -->
+                    <button id="closeSettingsBtn"
+                        class="btn btn-square btn-sm btn-ghost absolute top-4 right-4 rounded-none z-10">✕</button>
+
+                    <!-- Tab: My Account -->
+                    <div id="tab-my-account" class="settings-content active space-y-6">
+                        <h2 class="text-2xl font-bold font-headline mb-6">My Account</h2>
+
+                        <div class="bg-base-200 p-4 relative mb-6 border border-base-300">
+                            <div
+                                class="h-20 bg-gradient-to-r from-primary/80 to-secondary/80 absolute top-0 left-0 w-full">
+                            </div>
+                            <div class="mt-10 flex items-end gap-4 relative z-10 px-2">
+                                <div class="avatar">
+                                    <div
+                                        class="w-20 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-2 bg-base-100">
+                                        <img id="settingsAvatar" src="https://ui-avatars.com/api/?name=User" />
+                                    </div>
+                                </div>
+                                <div class="mb-1">
+                                    <h3 class="text-xl font-bold" id="settingsDisplayName">User</h3>
+                                    <p class="text-xs text-base-content/60">#<span id="settingsUidDisplay">0000</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-control w-full">
+                            <label class="label"><span
+                                    class="label-text text-xs font-bold uppercase text-base-content/60">Display
+                                    Name</span></label>
+                            <div class="flex gap-2">
+                                <input type="text" id="inputDisplayName"
+                                    class="input input-bordered w-full rounded-none" />
+                                <button id="saveNameBtn" class="btn btn-neutral rounded-none">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Appearance -->
+                    <div id="tab-appearance" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-headline mb-6">Appearance</h2>
+
+                        <div class="flex items-center justify-between p-4 bg-base-200 border border-base-300">
+                            <div>
+                                <h3 class="font-bold">Dark Mode</h3>
+                                <p class="text-xs opacity-70">Synthwave vs Cupcake</p>
+                            </div>
+                            <input type="checkbox" id="themeToggle" class="toggle theme-controller" value="synthwave" />
+                        </div>
+
+                        <div class="p-4 bg-base-200 border border-base-300">
+                            <div class="flex justify-between mb-2">
+                                <h3 class="font-bold">Text Size</h3>
+                            </div>
+                            <input type="range" id="setTextScale" min="0.8" max="1.2" step="0.1"
+                                class="range range-primary range-xs w-full" />
+                        </div>
+                    </div>
+
+                    <!-- Tab: Preferences -->
+                    <div id="tab-privacy" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-headline mb-6">Global Preferences</h2>
+
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span>Exclude Watched</span>
+                                <input type="checkbox" id="setDefaultExcludeWatched" class="toggle toggle-sm" />
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-2"><span>Min Rating Default</span></div>
+                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="1"
+                                    class="range range-secondary range-xs w-full" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

@@ -3,39 +3,26 @@ import { loadJson, saveJson, LSTHEME, LSFILTERS } from "./storage.js";
 import { normalizeFilters } from "./state.js";
 
 const LSSETTINGS = "mnp_settings_v1";
-
+// 1. Force default to match your HTML (synthwave)
 const DEFAULT_SETTINGS = {
     theme: "synthwave",
     textScale: 1,
     reduceMotion: false,
     defaultExcludeWatched: true,
-    defaultMinRating: 6,
+    defaultMinRating: 6
 };
 
-function getAuthUser() {
-    return window.firebaseAuth?.auth?.currentUser ?? null;
-}
+// --- Safe Helper ---
+const safeId = (eid) => document.getElementById(eid);
 
-function getFs() {
-    return window.firebaseStore ?? null;
-}
-
-function getUserDocRef(uid) {
-    const fs = getFs();
-    return fs.doc(fs.db, "users", uid);
-}
-
+// --- Core Logic ---
 function applyTheme(theme) {
-    document.documentElement.setAttribute("data-theme", theme);
+    // 2. COMMENTED OUT: Don't touch the HTML tag automatically
+    // document.documentElement.setAttribute("data-theme", theme);
+
     saveJson(LSTHEME, theme);
-}
-
-function applyTextScale(scale) {
-    document.documentElement.style.fontSize = `${Number(scale) * 100}%`;
-}
-
-function applyReduceMotion(on) {
-    document.documentElement.toggleAttribute("data-reduce-motion", !!on);
+    const toggle = safeId("themeToggle");
+    if (toggle) toggle.checked = (theme === "synthwave");
 }
 
 function applyDefaultFiltersToStorage(settings) {
@@ -49,100 +36,98 @@ function applyDefaultFiltersToStorage(settings) {
     return next;
 }
 
-async function loadSettingsFromCloudOrLocal() {
+// --- Boot & UI ---
+async function boot() {
     const local = loadJson(LSSETTINGS, {});
-    const mergedLocal = { ...DEFAULT_SETTINGS, ...local };
+    const s = { ...DEFAULT_SETTINGS, ...local };
 
-    const fs = getFs();
-    const user = getAuthUser();
-    if (!fs || !user) return mergedLocal;
+    // 3. CRITICAL CHANGE: Stop applying visual changes on load
+    // applyTheme(s.theme);       <-- THIS WAS CHANGING YOUR THEME
+    // applyTextScale(s.textScale); <-- THIS WAS CHANGING YOUR FONT SIZE
 
-    const snap = await fs.getDoc(getUserDocRef(user.uid));
-    const data = snap.exists() ? snap.data() : null;
-    const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
+    // Only init the modal listeners
+    if (safeId('settingsModal')) {
+        initModalLogic();
+    }
 
-    return { ...DEFAULT_SETTINGS, ...mergedLocal, ...cloud };
-}
+    // Watch for Changes (Only apply when YOU click the toggle)
+    const watchList = ["themeToggle", "setTextScale", "setDefaultExcludeWatched", "setDefaultMinRating"];
+    watchList.forEach(key => {
+        const el = safeId(key);
+        if (el) {
+            el.addEventListener("change", () => {
+                const newSettings = readUI();
+                saveJson(LSSETTINGS, newSettings);
 
-async function saveSettingsEverywhere(s) {
-    // Local cache (fast startup / offline)
-    saveJson(LSSETTINGS, s);
+                // Only apply if user explicitly changes it now
+                if (key === "themeToggle") {
+                    document.documentElement.setAttribute("data-theme", newSettings.theme);
+                }
 
-    // Apply immediately on this page
-    applyTheme(s.theme);
-    applyTextScale(s.textScale);
-    applyReduceMotion(s.reduceMotion);
-
-    // Update local filters defaults
-    const nextFilters = applyDefaultFiltersToStorage(s);
-
-    // Signed-out → done
-    const fs = getFs();
-    const user = getAuthUser();
-    if (!fs || !user) return;
-
-    // IMPORTANT: also update Firestore filters so index.html picks it up when signed in
-    const snap = await fs.getDoc(getUserDocRef(user.uid));
-    const data = snap.exists() ? snap.data() : null;
-    const curCloudFilters =
-        data?.filters && typeof data.filters === "object" ? data.filters : {};
-
-    const mergedFilters = normalizeFilters({
-        ...curCloudFilters,
-        excludeWatched: nextFilters.excludeWatched,
-        minRating: nextFilters.minRating,
+                applyDefaultFiltersToStorage(newSettings);
+            });
+        }
     });
 
-    await fs.setDoc(
-        getUserDocRef(user.uid),
-        {
-            settings: s,
-            settingsUpdatedAt: fs.serverTimestamp(),
-            filters: mergedFilters,
-            updatedAt: fs.serverTimestamp(),
-        },
-        { merge: true }
-    );
-}
-
-function syncUI(s) {
-    id("setTheme").value = s.theme;
-    id("setTextScale").value = String(s.textScale);
-    id("setReduceMotion").checked = !!s.reduceMotion;
-    id("setDefaultExcludeWatched").checked = !!s.defaultExcludeWatched;
-    id("setDefaultMinRating").value = String(s.defaultMinRating ?? 6);
+    // Logout
+    const logoutBtn = safeId('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            if (window.firebaseAuth) window.firebaseAuth.auth.signOut().then(() => window.location.reload());
+        });
+    }
 }
 
 function readUI() {
     return {
-        theme: id("setTheme").value,
-        textScale: Number(id("setTextScale").value || 1),
-        reduceMotion: !!id("setReduceMotion").checked,
-        defaultExcludeWatched: !!id("setDefaultExcludeWatched").checked,
-        defaultMinRating: Number(id("setDefaultMinRating").value || 6),
+        theme: safeId("themeToggle")?.checked ? "synthwave" : "cupcake",
+        textScale: Number(safeId("setTextScale")?.value || 1),
+        defaultExcludeWatched: !!safeId("setDefaultExcludeWatched")?.checked,
+        defaultMinRating: Number(safeId("setDefaultMinRating")?.value || 6),
     };
 }
 
-async function boot() {
-    const s = await loadSettingsFromCloudOrLocal();
-    syncUI(s);
+function initModalLogic() {
+    const modal = safeId('settingsModal');
+    const openBtn = safeId('btnMenuSettings');
+    const closeBtn = safeId('closeSettingsBtn');
+    const backdrop = safeId('settingsBackdrop');
 
-    // Apply on load (preview)
-    await saveSettingsEverywhere(s);
+    const open = () => {
+        modal.classList.remove('hidden');
+        populateProfile();
+    };
+    const close = () => modal.classList.add('hidden');
 
-    // Live preview when toggling/changing values
-    ["setTheme", "setTextScale", "setReduceMotion", "setDefaultExcludeWatched", "setDefaultMinRating"]
-        .forEach((key) => id(key)?.addEventListener("change", () => saveSettingsEverywhere(readUI())));
+    if (openBtn) openBtn.addEventListener('click', open);
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
 
-    id("btnSaveSettings")?.addEventListener("click", async () => {
-        await saveSettingsEverywhere(readUI());
-        window.location.href = "index.html";
-    });
-
-    id("btnResetSettings")?.addEventListener("click", async () => {
-        syncUI(DEFAULT_SETTINGS);
-        await saveSettingsEverywhere(DEFAULT_SETTINGS);
+    // Tabs logic
+    document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.settings-tab-btn').forEach(b => b.classList.remove('active', 'bg-base-300'));
+            document.querySelectorAll('.settings-content').forEach(c => c.classList.add('hidden'));
+            btn.classList.add('active', 'bg-base-300');
+            const target = safeId(`tab-${btn.dataset.tab}`);
+            if (target) target.classList.remove('hidden');
+        });
     });
 }
 
-boot();
+function populateProfile() {
+    const user = window.firebaseAuth?.auth?.currentUser;
+    if (!user) return;
+    const avatar = safeId('settingsAvatar');
+    const name = safeId('settingsDisplayName');
+    const uid = safeId('settingsUidDisplay');
+    const nameInput = safeId('inputDisplayName');
+
+    if (avatar) avatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}`;
+    if (name) name.textContent = user.displayName || 'Anonymous';
+    if (uid) uid.textContent = user.uid.substring(0, 4);
+    if (nameInput) nameInput.value = user.displayName || '';
+}
+
+// Start
+document.addEventListener('DOMContentLoaded', boot);

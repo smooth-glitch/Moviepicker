@@ -648,7 +648,7 @@ async function boot() {
     }
 
     const fa = window.firebaseAuth;
-    
+
 
     fa.onAuthStateChanged(fa.auth, async (user) => {
         authState.user = user || null;
