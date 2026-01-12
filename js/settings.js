@@ -171,37 +171,6 @@ async function populateProfileData() {
     if (uidInput) uidInput.value = user.uid;
 }
 
-
-function populateProfileData() {
-    const user = getAuthUser();
-    if (!user) return;
-
-    const avatar = document.getElementById("settingsAvatar");
-    const name = document.getElementById("settingsDisplayName");
-    const uid = document.getElementById("settingsUidDisplay");
-    const nameInput = document.getElementById("inputDisplayName");
-    const uidInput = document.getElementById("inputUid");
-
-    // PRIORITY: Firestore photoURL (Base64) > Google photoURL > Avatar API
-    let photoURL = window.firestoreUserData?.photoURL;
-
-    // If no custom Firestore photo or it's not Base64, use Google's
-    if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
-        photoURL = user.photoURL;
-    }
-
-    // Final fallback to avatar API
-    if (!photoURL) {
-        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
-    }
-
-    if (avatar) avatar.src = photoURL;
-    if (name) name.textContent = user.displayName || "Anonymous";
-    if (uid) uid.textContent = user.uid;
-    if (nameInput) nameInput.value = user.displayName || "";
-    if (uidInput) uidInput.value = user.uid;
-}
-
 async function uploadProfilePicture(file) {
     const fs = getFs();
     const user = getAuthUser();

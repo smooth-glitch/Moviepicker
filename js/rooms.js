@@ -122,29 +122,61 @@ function renderTextWithMentions(text, mentions) {
 }
 
 function renderReplyPreview(replyTo) {
-    if (!replyTo || (!replyTo.text && !replyTo.gifUrl && !replyTo.stickerUrl)) {
+    if (!replyTo || (!replyTo.text && !replyTo.gifUrl && !replyTo.stickerUrl && !replyTo.voiceUrl)) {
         return null;
     }
 
     const box = document.createElement("div");
-    box.className =
-        "mb-1 px-2 py-1 rounded-lg bg-base-100/30 border border-base-300/80 " +
-        "text-[0.65rem] leading-snug";
+    box.className = "mb-1 px-2 py-1 rounded-lg bg-base-100/30 border border-base-300/80 text-[0.65rem] leading-snug";
 
     const rName = replyTo.userName || "Anon";
     const label = document.createElement("div");
-    label.className = "font-semibold";
-    label.textContent = rName;
+    label.className = "font-semibold flex items-center gap-1";
+
+    // Add reply arrow icon
+    label.innerHTML = `
+      <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+      </svg>
+      <span>${rName}</span>
+    `;
     box.appendChild(label);
 
     const content = document.createElement("div");
+    content.className = "flex items-center gap-1 opacity-80 mt-0.5";
+
     if (replyTo.type === "gif" && replyTo.gifUrl) {
-        content.textContent = "GIF";
+        content.innerHTML = `
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+          <rect x="2" y="2" width="20" height="20" rx="2"/>
+          <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2"/>
+        </svg>
+        <span>GIF</span>
+      `;
     } else if (replyTo.type === "sticker" && replyTo.stickerUrl) {
-        content.textContent = "Sticker";
+        content.innerHTML = `
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+          ircle cx="9" cy="9" r="1.5"/>
+          ircle cx="15" cy="9" r="1.5"/>
+          <path d="M8 13s1.5 2 4 2 4-2 4-2"/>
+        </svg>
+        <span>Sticker</span>
+      `;
+    } else if (replyTo.type === "voice" && replyTo.voiceUrl) {
+        // ========== VOICE NOTE REPLY PREVIEW ==========
+        const voiceDuration = replyTo.voiceDuration || 0;
+        const timeLabel = `${Math.floor(voiceDuration / 60)}:${(voiceDuration % 60).toString().padStart(2, '0')}`;
+
+        content.innerHTML = `
+        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        </svg>
+        <span>Voice message (${timeLabel})</span>
+      `;
     } else {
         const t = replyTo.text || "";
-        content.textContent = t.length > 40 ? t.slice(0, 40) + "…" : t || "";
+        content.textContent = t.length > 40 ? t.slice(0, 40) + "..." : t;
     }
 
     box.appendChild(content);
