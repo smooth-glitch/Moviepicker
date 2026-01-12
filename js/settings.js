@@ -176,14 +176,18 @@ function populateProfileData() {
     const nameInput = document.getElementById("inputDisplayName");
     const uidInput = document.getElementById("inputUid");
 
+    // Get photoURL from Firestore first, then Firebase Auth
+    const photoURL = window.firestoreUserData?.photoURL || user.photoURL;
+
     if (avatar) {
-        avatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+        avatar.src = photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
     }
     if (name) name.textContent = user.displayName || "Anonymous";
     if (uid) uid.textContent = user.uid;
     if (nameInput) nameInput.value = user.displayName || "";
     if (uidInput) uidInput.value = user.uid;
 }
+
 
 // ========== PROFILE PICTURE UPLOAD (BASE64 IN FIRESTORE) ==========
 async function uploadProfilePicture(file) {
@@ -227,7 +231,7 @@ async function uploadProfilePicture(file) {
                     throw new Error("Could not create user reference");
                 }
 
-                // Save Base64 ONLY to Firestore (NOT to Firebase Auth)
+                // Save Base64 ONLY to Firestore
                 await fs.setDoc(
                     userRef,
                     {
@@ -237,6 +241,12 @@ async function uploadProfilePicture(file) {
                     },
                     { merge: true }
                 );
+
+                // Update window cache
+                if (!window.firestoreUserData) {
+                    window.firestoreUserData = {};
+                }
+                window.firestoreUserData.photoURL = base64Data;
 
                 // Update UI immediately
                 const avatarEl = document.getElementById("settingsAvatar");
@@ -284,6 +294,7 @@ async function uploadProfilePicture(file) {
         }
     }
 }
+
 
 
 
@@ -374,12 +385,8 @@ async function loadUserProfileFromFirestore() {
 
         const data = snap.data();
 
-        // Update Firebase Auth with Firestore data
+        // Update Firebase Auth with small data only (NOT Base64 photoURL)
         const updateData = {};
-
-        if (data.photoURL && !user.photoURL) {
-            updateData.photoURL = data.photoURL;
-        }
 
         if (data.displayName && !user.displayName) {
             updateData.displayName = data.displayName;
@@ -389,6 +396,9 @@ async function loadUserProfileFromFirestore() {
             await window.firebaseAuth.updateProfile(user, updateData);
         }
 
+        // Store Firestore data in window for access in populateProfileData
+        window.firestoreUserData = data;
+
         // Update UI
         populateProfileData();
 
@@ -396,6 +406,7 @@ async function loadUserProfileFromFirestore() {
         console.warn("Failed to load profile from Firestore:", e);
     }
 }
+
 
 
 // ========== MAIN BOOT ==========
