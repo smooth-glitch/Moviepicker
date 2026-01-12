@@ -412,7 +412,7 @@ async function loadUserProfileFromFirestore() {
 async function boot() {
     // 1. Load Firestore profile data FIRST (before anything else)
     await loadUserProfileFromFirestore();
-    syncUI(s);
+    
     // 2. Load settings
     const s = await loadSettingsForUser();
 
