@@ -304,7 +304,7 @@ function handleProfileUpdate() {
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span>';
             btn.disabled = true;
 
-            // Update Firebase Auth - FIX HERE
+            // Update Firebase Auth profile FIRST
             await window.firebaseAuth.updateProfile(user, { displayName: newName });
 
             // Update Firestore
@@ -321,9 +321,13 @@ function handleProfileUpdate() {
                 );
             }
 
-            // Update UI
+            // Update UI immediately in modal
             const nameDisplay = document.getElementById("settingsDisplayName");
             if (nameDisplay) nameDisplay.textContent = newName;
+
+            // Update name in user dropdown (if exists)
+            const userChipLabel = document.getElementById("userChipLabel");
+            if (userChipLabel) userChipLabel.textContent = newName;
 
             btn.innerHTML = "✓ Saved!";
             setTimeout(() => {
@@ -340,6 +344,7 @@ function handleProfileUpdate() {
 }
 
 
+
 function initAvatarUpload() {
     const fileInput = document.getElementById("avatarUpload");
     if (fileInput) {
@@ -353,12 +358,52 @@ function initAvatarUpload() {
     }
 }
 
+// ========== LOAD USER PROFILE FROM FIRESTORE ==========
+async function loadUserProfileFromFirestore() {
+    const fs = getFs();
+    const user = getAuthUser();
+
+    if (!fs || !user) return;
+
+    try {
+        const userRef = getUserDocRef(user.uid);
+        if (!userRef) return;
+
+        const snap = await fs.getDoc(userRef);
+        if (!snap.exists()) return;
+
+        const data = snap.data();
+
+        // Update Firebase Auth with Firestore data
+        const updateData = {};
+
+        if (data.photoURL && !user.photoURL) {
+            updateData.photoURL = data.photoURL;
+        }
+
+        if (data.displayName && !user.displayName) {
+            updateData.displayName = data.displayName;
+        }
+
+        if (Object.keys(updateData).length > 0) {
+            await window.firebaseAuth.updateProfile(user, updateData);
+        }
+
+        // Update UI
+        populateProfileData();
+
+    } catch (e) {
+        console.warn("Failed to load profile from Firestore:", e);
+    }
+}
+
+
 // ========== MAIN BOOT ==========
 async function boot() {
     // 1. Load settings
     const s = await loadSettingsForUser();
 
-    // 2. Sync UI
+    await loadUserProfileFromFirestore();
 
     // 3. Init modal & handlers
     initModalLogic();
