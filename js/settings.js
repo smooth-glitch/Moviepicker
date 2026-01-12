@@ -176,11 +176,15 @@ function populateProfileData() {
     const nameInput = document.getElementById("inputDisplayName");
     const uidInput = document.getElementById("inputUid");
 
-    // Get photoURL from Firestore first, then Firebase Auth
-    const photoURL = window.firestoreUserData?.photoURL || user.photoURL;
+    // PRIORITY: Firestore photoURL > Firebase Auth photoURL > Avatar API
+    let photoURL = window.firestoreUserData?.photoURL || user.photoURL;
+
+    if (!photoURL || photoURL.length < 50) { // If it's not Base64 (too short)
+        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+    }
 
     if (avatar) {
-        avatar.src = photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+        avatar.src = photoURL;
     }
     if (name) name.textContent = user.displayName || "Anonymous";
     if (uid) uid.textContent = user.uid;
@@ -189,7 +193,6 @@ function populateProfileData() {
 }
 
 
-// ========== PROFILE PICTURE UPLOAD (BASE64 IN FIRESTORE) ==========
 async function uploadProfilePicture(file) {
     const fs = getFs();
     const user = getAuthUser();
@@ -231,13 +234,12 @@ async function uploadProfilePicture(file) {
                     throw new Error("Could not create user reference");
                 }
 
-                // Save Base64 ONLY to Firestore
+                // ONLY update photoURL in Firestore, NOTHING ELSE
                 await fs.setDoc(
                     userRef,
                     {
                         photoURL: base64Data,
                         photoUpdatedAt: fs.serverTimestamp(),
-                        updatedAt: fs.serverTimestamp(),
                     },
                     { merge: true }
                 );
@@ -248,7 +250,7 @@ async function uploadProfilePicture(file) {
                 }
                 window.firestoreUserData.photoURL = base64Data;
 
-                // Update UI immediately
+                // Update UI
                 const avatarEl = document.getElementById("settingsAvatar");
                 if (avatarEl) {
                     avatarEl.src = base64Data;
@@ -294,6 +296,7 @@ async function uploadProfilePicture(file) {
         }
     }
 }
+
 
 
 
@@ -385,21 +388,25 @@ async function loadUserProfileFromFirestore() {
 
         const data = snap.data();
 
-        // Update Firebase Auth with small data only (NOT Base64 photoURL)
-        const updateData = {};
-
-        if (data.displayName && !user.displayName) {
-            updateData.displayName = data.displayName;
-        }
-
-        if (Object.keys(updateData).length > 0) {
-            await window.firebaseAuth.updateProfile(user, updateData);
-        }
-
-        // Store Firestore data in window for access in populateProfileData
+        // Store Firestore data globally
         window.firestoreUserData = data;
 
-        // Update UI
+        // IMPORTANT: Override Google/Firebase Auth photoURL with Firestore one
+        if (data.photoURL) {
+            // Update the user object with Firestore photoURL
+            user.photoURL = data.photoURL;
+        }
+
+        // Update Firebase Auth displayName if exists
+        if (data.displayName && !user.displayName) {
+            try {
+                await window.firebaseAuth.updateProfile(user, { displayName: data.displayName });
+            } catch (e) {
+                console.warn("Could not update displayName:", e);
+            }
+        }
+
+        // Update UI with Firestore data
         populateProfileData();
 
     } catch (e) {
@@ -411,17 +418,21 @@ async function loadUserProfileFromFirestore() {
 
 // ========== MAIN BOOT ==========
 async function boot() {
-    // 1. Load settings
+    // 1. Load settings (but DON'T apply theme yet if just opening settings)
     const s = await loadSettingsForUser();
 
+    // 2. Sync UI with settings
+    syncUI(s);
+
+    // 3. Load user profile from Firestore and OVERRIDE Google photoURL
     await loadUserProfileFromFirestore();
 
-    // 3. Init modal & handlers
+    // 4. Init modal & handlers
     initModalLogic();
     handleProfileUpdate();
     initAvatarUpload();
 
-    // 4. Watch for changes
+    // 5. Watch for changes
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating"].forEach((key) => {
         const el = document.getElementById(key);
         if (!el) return;
@@ -434,7 +445,7 @@ async function boot() {
         });
     });
 
-    // 5. Logout
+    // 6. Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
@@ -444,6 +455,7 @@ async function boot() {
         });
     }
 }
+
 
 // Start
 if (document.readyState === "loading") {
