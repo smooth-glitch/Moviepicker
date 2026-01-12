@@ -165,17 +165,18 @@
                     <span id="userChipLabel" class="text-xs md:text-sm font-medium">Save pools</span>
                 </label>
 
-                <!-- 2. The Menu Content (THIS WAS LIKELY MISSING or DETACHED) -->
+                <!-- PASTE THIS RIGHT AFTER </label> -->
                 <ul tabindex="0" id="userDropdownMenu"
                     class="dropdown-content menu p-2 shadow-2xl bg-base-100 rounded-none border border-base-300 w-52 z-[9999]">
-                    <!-- Signed OUT state (Default) -->
+                    <!-- Signed OUT item -->
                     <li id="menuItemSignIn"><a id="btnMenuSignIn">Sign In</a></li>
 
-                    <!-- Signed IN state (Hidden by default, toggled via JS) -->
+                    <!-- Signed IN items (Hidden by default, shown by Auth JS) -->
                     <li id="menuItemSettings" class="hidden"><a id="btnMenuSettings">Settings</a></li>
                     <li id="menuItemCopyUid" class="hidden"><a id="btnMenuCopyUid">Copy UID</a></li>
                     <li id="menuItemSignOut" class="hidden"><a id="btnMenuSignOut" class="text-error">Sign Out</a></li>
                 </ul>
+
             </div>
 
         </section>
