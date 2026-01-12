@@ -421,7 +421,7 @@ export async function renderRoomMessages(list) {
             // Waveform bars (WhatsApp style)
             const waveform = document.createElement("div");
             waveform.className = "voice-note-waveform";
-            const bars = [3, 8, 5, 9, 4, 7, 6, 8, 3, 9, 5, 7, 4, 8, 6, 9, 5, 7, 3, 8];
+            const bars = [4, 7, 5, 9, 6, 8, 7, 9, 5, 8, 6, 9, 7, 10, 6, 8];
             bars.forEach(height => {
                 const bar = document.createElement("div");
                 bar.className = "voice-wave-bar";
@@ -429,34 +429,50 @@ export async function renderRoomMessages(list) {
                 waveform.appendChild(bar);
             });
 
-            // Duration label
-            const duration = m.voiceDuration || 0;
+            // Duration/Timer label
+            const totalDuration = m.voiceDuration || 0;
             const durationLabel = document.createElement("span");
             durationLabel.className = "voice-note-duration";
-            durationLabel.textContent = `${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`;
+            durationLabel.textContent = `${Math.floor(totalDuration / 60)}:${(totalDuration % 60).toString().padStart(2, '0')}`;
 
             waveContainer.appendChild(waveform);
             waveContainer.appendChild(durationLabel);
 
-            // Play/Pause logic
+            // Play/Pause logic with timer and animation
             let isPlaying = false;
+            let progressInterval = null;
+
             playBtn.addEventListener("click", () => {
                 if (isPlaying) {
                     audio.pause();
                     playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
                     playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
+                    waveform.classList.remove("playing");
+                    clearInterval(progressInterval);
                     isPlaying = false;
                 } else {
                     audio.play();
                     playBtn.querySelector(".voice-play-icon").classList.add("hidden");
                     playBtn.querySelector(".voice-pause-icon").classList.remove("hidden");
+                    waveform.classList.add("playing");
                     isPlaying = true;
+
+                    // Update timer during playback
+                    progressInterval = setInterval(() => {
+                        const remaining = totalDuration - Math.floor(audio.currentTime);
+                        const mins = Math.floor(remaining / 60);
+                        const secs = remaining % 60;
+                        durationLabel.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+                    }, 500);
                 }
             });
 
             audio.addEventListener("ended", () => {
                 playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
                 playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
+                waveform.classList.remove("playing");
+                clearInterval(progressInterval);
+                durationLabel.textContent = `${Math.floor(totalDuration / 60)}:${(totalDuration % 60).toString().padStart(2, '0')}`;
                 isPlaying = false;
             });
 
@@ -464,6 +480,7 @@ export async function renderRoomMessages(list) {
             voiceContainer.appendChild(waveContainer);
             voiceContainer.appendChild(audio);
             bubble.appendChild(voiceContainer);
+
         } else {
             const body = renderTextWithMentions(m.text || "", m.mentions);
             body.classList.add("block", "mt-0.5");
