@@ -227,7 +227,7 @@ async function uploadProfilePicture(file) {
                     throw new Error("Could not create user reference");
                 }
 
-                // Save Base64 to Firestore
+                // Save Base64 ONLY to Firestore (NOT to Firebase Auth)
                 await fs.setDoc(
                     userRef,
                     {
@@ -237,9 +237,6 @@ async function uploadProfilePicture(file) {
                     },
                     { merge: true }
                 );
-
-                // Update Firebase Auth profile - FIX HERE
-                await window.firebaseAuth.updateProfile(user, { photoURL: base64Data });
 
                 // Update UI immediately
                 const avatarEl = document.getElementById("settingsAvatar");
@@ -287,6 +284,7 @@ async function uploadProfilePicture(file) {
         }
     }
 }
+
 
 
 
@@ -361,7 +359,6 @@ async function boot() {
     const s = await loadSettingsForUser();
 
     // 2. Sync UI
-    syncUI(s);
 
     // 3. Init modal & handlers
     initModalLogic();
