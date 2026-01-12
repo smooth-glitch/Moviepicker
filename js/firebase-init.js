@@ -27,6 +27,13 @@ import {
   deleteField,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
 const cfg =
   window.APPCONFIG?.firebaseConfig ?? window.APP_CONFIG?.firebaseConfig;
 
@@ -39,6 +46,7 @@ if (!cfg) {
   const auth = getAuth(app);
   const googleProvider = new GoogleAuthProvider();
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   window.firebaseAuth = {
     auth,
@@ -52,6 +60,7 @@ if (!cfg) {
 
   window.firebaseStore = {
     db,
+    storage,
     collection,
     doc,
     setDoc,
@@ -65,5 +74,9 @@ if (!cfg) {
     limit,
     updateDoc,
     deleteField,
+    // Storage functions
+    ref,
+    uploadBytes,
+    getDownloadURL,
   };
 }

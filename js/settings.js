@@ -20,7 +20,8 @@ function getFs() {
 
 function getUserDocRef(uid) {
     const fs = getFs();
-    return fs?.doc(fs.db, "users", uid);
+    if (!fs) return null;
+    return fs.doc(fs.db, "users", uid);
 }
 
 // ========== THEME MANAGEMENT ==========
@@ -50,7 +51,10 @@ async function loadSettingsForUser() {
     if (!fs || !user) return base;
 
     try {
-        const snap = await fs.getDoc(getUserDocRef(user.uid));
+        const userRef = getUserDocRef(user.uid);
+        if (!userRef) return base;
+
+        const snap = await fs.getDoc(userRef);
         const data = snap.exists() ? snap.data() : null;
         const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
         const merged = { ...base, ...cloud };
@@ -73,7 +77,10 @@ async function saveSettingsToCloud(settings) {
     if (!fs || !user) return;
 
     try {
-        const snap = await fs.getDoc(getUserDocRef(user.uid));
+        const userRef = getUserDocRef(user.uid);
+        if (!userRef) return;
+
+        const snap = await fs.getDoc(userRef);
         const data = snap.exists() ? snap.data() : null;
         const curCloudFilters = data?.filters && typeof data.filters === "object" ? data.filters : {};
 
@@ -84,7 +91,7 @@ async function saveSettingsToCloud(settings) {
         });
 
         await fs.setDoc(
-            getUserDocRef(user.uid),
+            userRef,
             {
                 settings,
                 settingsUpdatedAt: fs.serverTimestamp(),
@@ -95,91 +102,6 @@ async function saveSettingsToCloud(settings) {
         );
     } catch (e) {
         console.warn("Cloud save failed:", e);
-    }
-}
-
-// ========== PROFILE PICTURE UPLOAD ==========
-async function uploadProfilePicture(file) {
-    const fs = getFs();
-    const user = getAuthUser();
-
-    if (!fs || !user) {
-        alert("Not signed in or Firebase not ready");
-        return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-        alert("Please select a valid image file");
-        return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-        alert("Image must be smaller than 5MB");
-        return;
-    }
-
-    try {
-        const statusDiv = document.getElementById("uploadStatus");
-        const statusText = document.getElementById("uploadStatusText");
-
-        if (statusDiv) {
-            statusDiv.classList.remove("hidden");
-            statusDiv.classList.remove("alert-error");
-            statusDiv.classList.add("alert-info");
-            statusText.textContent = "Uploading image...";
-        }
-
-        const fileName = `profile-${user.uid}-${Date.now()}`;
-        const storagePath = `users/${user.uid}/avatar/${fileName}`;
-        const fileRef = fs.ref(fs.storage, storagePath);
-
-        // Upload file to Firebase Storage
-        await fs.uploadBytes(fileRef, file);
-
-        // Get download URL
-        const downloadURL = await fs.getDownloadURL(fileRef);
-
-        // Update Firebase Auth profile
-        await user.updateProfile({ photoURL: downloadURL });
-
-        // Update Firestore
-        const snap = await fs.getDoc(getUserDocRef(user.uid));
-        const data = snap.exists() ? snap.data() : {};
-
-        await fs.setDoc(
-            getUserDocRef(user.uid),
-            {
-                ...data,
-                photoURL: downloadURL,
-                updatedAt: fs.serverTimestamp(),
-            },
-            { merge: true }
-        );
-
-        // ===== UPDATE UI IMMEDIATELY =====
-        const avatarEl = document.getElementById("settingsAvatar");
-        if (avatarEl) {
-            avatarEl.src = downloadURL;
-            avatarEl.onload = () => {
-                if (statusDiv) {
-                    statusDiv.classList.remove("alert-info");
-                    statusDiv.classList.add("alert-success");
-                    statusText.textContent = "✓ Profile picture updated!";
-                    setTimeout(() => statusDiv.classList.add("hidden"), 3000);
-                }
-            };
-        }
-
-    } catch (error) {
-        console.error("Upload failed:", error);
-        const statusDiv = document.getElementById("uploadStatus");
-        const statusText = document.getElementById("uploadStatusText");
-        if (statusDiv) {
-            statusDiv.classList.remove("alert-info");
-            statusDiv.classList.add("alert-error");
-            statusText.textContent = "Upload failed: " + error.message;
-            setTimeout(() => statusDiv.classList.add("hidden"), 5000);
-        }
     }
 }
 
@@ -258,17 +180,99 @@ function populateProfileData() {
         avatar.src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
     }
     if (name) name.textContent = user.displayName || "Anonymous";
-    if (uid) uid.textContent = user.uid; // ===== FULL USER ID =====
+    if (uid) uid.textContent = user.uid;
     if (nameInput) nameInput.value = user.displayName || "";
-    if (uidInput) uidInput.value = user.uid; // ===== FULL USER ID IN INPUT =====
+    if (uidInput) uidInput.value = user.uid;
 }
 
+// ========== PROFILE PICTURE UPLOAD ==========
+async function uploadProfilePicture(file) {
+    const fs = getFs();
+    const user = getAuthUser();
+
+    if (!fs || !user) {
+        alert("Not signed in or Firebase not ready");
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file");
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert("Image must be smaller than 5MB");
+        return;
+    }
+
+    try {
+        const statusDiv = document.getElementById("uploadStatus");
+        const statusText = document.getElementById("uploadStatusText");
+
+        if (statusDiv) {
+            statusDiv.classList.remove("hidden", "alert-error");
+            statusDiv.classList.add("alert-info");
+            statusText.textContent = "Uploading image...";
+        }
+
+        const fileName = `profile-${user.uid}-${Date.now()}`;
+        const storagePath = `users/${user.uid}/avatar/${fileName}`;
+        const fileRef = fs.ref(fs.storage, storagePath);
+
+        await fs.uploadBytes(fileRef, file);
+        const downloadURL = await fs.getDownloadURL(fileRef);
+
+        // Update Firebase Auth
+        await user.updateProfile({ photoURL: downloadURL });
+
+        // Update Firestore
+        const userRef = getUserDocRef(user.uid);
+        if (userRef) {
+            await fs.setDoc(
+                userRef,
+                {
+                    photoURL: downloadURL,
+                    updatedAt: fs.serverTimestamp(),
+                },
+                { merge: true }
+            );
+        }
+
+        // Update UI immediately
+        const avatarEl = document.getElementById("settingsAvatar");
+        if (avatarEl) {
+            avatarEl.src = downloadURL;
+            if (statusDiv) {
+                statusDiv.classList.remove("alert-info");
+                statusDiv.classList.add("alert-success");
+                statusText.textContent = "✓ Profile picture updated!";
+                setTimeout(() => statusDiv.classList.add("hidden"), 3000);
+            }
+        }
+
+    } catch (error) {
+        console.error("Upload failed:", error);
+        const statusDiv = document.getElementById("uploadStatus");
+        const statusText = document.getElementById("uploadStatusText");
+        if (statusDiv) {
+            statusDiv.classList.remove("alert-info");
+            statusDiv.classList.add("alert-error");
+            statusText.textContent = "Upload failed: " + error.message;
+            setTimeout(() => statusDiv.classList.add("hidden"), 5000);
+        }
+    }
+}
+
+// ========== HANDLE PROFILE NAME UPDATE ==========
 function handleProfileUpdate() {
     const btn = document.getElementById("saveNameBtn");
     const nameInput = document.getElementById("inputDisplayName");
+
     if (!btn || !nameInput) return;
 
-    btn.addEventListener("click", async () => {
+    // Prevent multiple listeners
+    btn.onclick = null;
+    btn.onclick = async () => {
         const user = getAuthUser();
         const newName = nameInput.value.trim();
         if (!user || !newName) return;
@@ -276,35 +280,41 @@ function handleProfileUpdate() {
         try {
             const orig = btn.innerHTML;
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span>';
+            btn.disabled = true;
 
-            // Save display name to Firebase Auth
+            // Update Firebase Auth
             await user.updateProfile({ displayName: newName });
 
-            // Update Firestore as well
-            const snap = await getFs().getDoc(getUserDocRef(user.uid));
-            const data = snap.exists() ? snap.data() : {};
-
-            await getFs().setDoc(
-                getUserDocRef(user.uid),
-                {
-                    ...data,
-                    displayName: newName,
-                    updatedAt: getFs().serverTimestamp(),
-                },
-                { merge: true }
-            );
+            // Update Firestore
+            const userRef = getUserDocRef(user.uid);
+            if (userRef) {
+                const fs = getFs();
+                await fs.setDoc(
+                    userRef,
+                    {
+                        displayName: newName,
+                        updatedAt: fs.serverTimestamp(),
+                    },
+                    { merge: true }
+                );
+            }
 
             // Update UI
             const nameDisplay = document.getElementById("settingsDisplayName");
             if (nameDisplay) nameDisplay.textContent = newName;
 
             btn.innerHTML = "✓ Saved!";
-            setTimeout(() => (btn.innerHTML = orig), 2000);
+            setTimeout(() => {
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }, 2000);
         } catch (e) {
             console.error("Profile update failed:", e);
-            btn.innerHTML = "Error";
+            btn.innerHTML = "❌ Error";
+            btn.disabled = false;
+            setTimeout(() => (btn.innerHTML = "Save"), 2000);
         }
-    });
+    };
 }
 
 function initAvatarUpload() {
@@ -322,37 +332,31 @@ function initAvatarUpload() {
 
 // ========== MAIN BOOT ==========
 async function boot() {
-    // 1. Load settings (cloud or local)
+    // 1. Load settings
     const s = await loadSettingsForUser();
 
-    // 2. Sync UI with settings
+    // 2. Sync UI
     syncUI(s);
 
-    // 3. Init modal
+    // 3. Init modal & handlers
     initModalLogic();
     handleProfileUpdate();
     initAvatarUpload();
 
-    // 4. Watch for changes and auto-save
+    // 4. Watch for changes
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating"].forEach((key) => {
         const el = document.getElementById(key);
         if (!el) return;
 
         el.addEventListener("change", async () => {
             const newSettings = readUI();
-
-            // Apply theme immediately
             setTheme(newSettings.theme);
-
-            // Update filters
             applyDefaultFiltersToStorage(newSettings);
-
-            // Save to cloud
             await saveSettingsToCloud(newSettings);
         });
     });
 
-    // 5. Logout button
+    // 5. Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
@@ -363,7 +367,7 @@ async function boot() {
     }
 }
 
-// Start when DOM is ready
+// Start
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
 } else {
