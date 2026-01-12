@@ -1,5 +1,6 @@
 // js/prefs.js
 import { state } from "./state.js";
+import { LSTHEME, saveJson, loadJson } from "./storage.js";
 
 const PREFS_KEY = "cinecircle:prefs";
 
