@@ -378,6 +378,47 @@ async function loadUserProfileFromFirestore() {
 }
 
 
+// ========== MODAL FUNCTIONS ==========
+function initModalLogic() {
+    const modal = document.getElementById("settingsModal");
+    if (!modal) return;
+
+    const openBtn = document.getElementById("btnMenuSettings");
+    const closeBtn = document.getElementById("closeSettingsBtn");
+    const backdrop = document.getElementById("settingsBackdrop");
+
+    const open = () => {
+        modal.classList.remove("hidden");
+        populateProfileData();
+    };
+
+    const close = () => modal.classList.add("hidden");
+
+    if (openBtn) openBtn.addEventListener("click", open);
+    if (closeBtn) closeBtn.addEventListener("click", close);
+    if (backdrop) backdrop.addEventListener("click", close);
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+            close();
+        }
+    });
+
+    // Tab switching
+    document.querySelectorAll(".settings-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".settings-tab-btn").forEach((b) => {
+                b.classList.remove("active", "bg-base-300");
+            });
+            document.querySelectorAll(".settings-content").forEach((c) => {
+                c.classList.add("hidden");
+            });
+            btn.classList.add("active", "bg-base-300");
+            const target = document.getElementById(`tab-${btn.dataset.tab}`);
+            if (target) target.classList.remove("hidden");
+        });
+    });
+}
 
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
