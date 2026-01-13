@@ -1170,30 +1170,28 @@ async function boot() {
     }
 
     // Prevent duplicate message submissions
-    let isSubmitting = false;
+    let lastMessageTime = 0;
+    let lastMessageText = "";
 
     if (chatForm && chatInput) {
-        // Remove any existing listeners (prevent duplicates)
-        const oldForm = chatForm.cloneNode(true);
-        chatForm.parentNode.replaceChild(oldForm, chatForm);
-        const chatFormNew = document.getElementById("roomChatForm");
-
-        chatFormNew.addEventListener("submit", async (e) => {
+        chatForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-
-            // Prevent duplicate submissions
-            if (isSubmitting) return;
 
             const text = chatInput.value.trim();
             if (!text || !roomState.id) return;
 
-            isSubmitting = true; // Lock
-
-            const fs = window.firebaseStore;
-            if (!fs) {
-                isSubmitting = false;
+            // Prevent duplicate messages (same text within 1 second)
+            const now = Date.now();
+            if (text === lastMessageText && now - lastMessageTime < 1000) {
+                console.log("Duplicate message blocked");
                 return;
             }
+
+            lastMessageTime = now;
+            lastMessageText = text;
+
+            const fs = window.firebaseStore;
+            if (!fs) return;
 
             const u = authState.user;
             const mentions = extractMentions(text);
@@ -1232,11 +1230,10 @@ async function boot() {
             } catch (err) {
                 toast("Failed to send message.", "error");
                 console.warn(err);
-            } finally {
-                isSubmitting = false; // Unlock after completion
             }
         });
     }
+
 
 
     // Send GIF / Sticker helpers used by tray
