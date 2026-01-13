@@ -118,6 +118,8 @@ async function saveSettingsToCloud(settings) {
             userRef,
             {
                 settings,
+                profileFrame: settings.profileFrame || "none", // ← ADD THIS
+                chatBackground: settings.chatBackground || "default", // ← ADD THIS
                 settingsUpdatedAt: fs.serverTimestamp(),
                 filters: mergedFilters,
                 updatedAt: fs.serverTimestamp(),
@@ -128,6 +130,7 @@ async function saveSettingsToCloud(settings) {
         console.warn("Cloud save failed:", e);
     }
 }
+
 
 // ========== UI FUNCTIONS ==========
 function readUI() {
@@ -385,7 +388,10 @@ function handleProfileUpdate() {
                     userRef,
                     {
                         displayName: newName,
+                        photoURL: base64Data,
+                        photoUpdatedAt: fs.serverTimestamp(),
                         updatedAt: fs.serverTimestamp(),
+                        profileFrame: document.getElementById("profileFrameSelect")?.value || "none",
                     },
                     { merge: true }
                 );
@@ -592,7 +598,7 @@ async function boot() {
     initAvatarUpload();
     initFramePreview();
 
-    
+
     // 5. Watch for changes - Use applyTheme from prefs.js
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating", "profileFrameSelect", "chatBackgroundSelect"].forEach((key) => {
         const el = document.getElementById(key);
