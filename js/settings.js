@@ -543,13 +543,33 @@ function initModalLogic() {
 
 // ========== PROFILE FRAME & CHAT BACKGROUND ==========
 function applyProfileFrame(frame) {
-    // Update preview
+    // Update preview in settings
     updateFramePreview(frame);
 
-    // Update ALL avatars in chat immediately
+    // ========== UPDATE HEADER AVATAR RING IMMEDIATELY ==========
+    const headerRing = document.getElementById("headerAvatarRing");
+    if (headerRing) {
+        // Remove all frame classes
+        headerRing.classList.remove(
+            "profile-frame-gradient-spin",
+            "profile-frame-neon-pulse",
+            "profile-frame-fire-glow",
+            "profile-frame-ice-shimmer",
+            "profile-frame-gold-shine"
+        );
+
+        // Reset background
+        headerRing.style.background = "hsl(var(--b3))";
+
+        // Add new frame
+        if (frame && frame !== "none") {
+            headerRing.classList.add(`profile-frame-${frame}`);
+        }
+    }
+
+    // Update ALL chat avatars for current user
     const chatAvatars = document.querySelectorAll(".chat-message-avatar");
     chatAvatars.forEach(avatar => {
-        // Remove all frame classes
         avatar.classList.remove(
             "has-frame-gradient-spin",
             "has-frame-neon-pulse",
@@ -558,12 +578,10 @@ function applyProfileFrame(frame) {
             "has-frame-gold-shine"
         );
 
-        // Add new frame if not "none"
-        if (frame && frame !== "none") {
-            // Only update YOUR avatars (check if it's your message)
-            const messageRow = avatar.closest(".chat-message");
-            const authorSpan = messageRow?.querySelector(".chat-message-author");
-            if (authorSpan && authorSpan.textContent === "You") {
+        const messageRow = avatar.closest(".chat-message");
+        const authorSpan = messageRow?.querySelector(".chat-message-author");
+        if (authorSpan && authorSpan.textContent === "You") {
+            if (frame && frame !== "none") {
                 avatar.classList.add(`has-frame-${frame}`);
             }
         }
@@ -578,6 +596,7 @@ function applyProfileFrame(frame) {
         window.userProfileCache[myUid].profileFrame = frame;
     }
 }
+
 
 
 function applyChatBackground(bg) {

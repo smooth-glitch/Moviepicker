@@ -1011,3 +1011,27 @@
   background-size: 400% 100% !important;
   animation: goldShine 2.5s linear infinite !important;
 }
+
+/* ========== HEADER USER BUTTON STYLING ========== */
+
+/* When avatar is present, remove box styling */
+#btnUser:has(.avatar) {
+  background: transparent !important;
+  border: none !important;
+  padding: 0.5rem !important;
+  box-shadow: none !important;
+}
+
+#btnUser:has(.avatar):hover {
+  background: transparent !important;
+  transform: scale(1.05);
+}
+
+/* Ensure avatar and name align properly */
+#btnUser .avatar {
+  flex-shrink: 0;
+}
+
+#btnUser #userChipLabel {
+  margin-left: 0.5rem;
+}
