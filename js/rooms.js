@@ -395,6 +395,16 @@ export async function renderRoomMessages(list) {
             // ========== WHATSAPP-STYLE VOICE NOTE ==========
             const voiceContainer = document.createElement("div");
             voiceContainer.className = `voice-note-container ${isMe ? "voice-note-primary" : "voice-note-neutral"}`;
+            // Add click handler for reply (like other messages)
+            voiceContainer.addEventListener("click", (e) => {
+                // Don't trigger if clicking the play button
+                if (e.target.closest(".voice-note-play-btn")) return;
+
+                removeEmojiPicker();
+                if (typeof setReplyDraft === "function") {
+                    setReplyDraft(m);
+                }
+            });
 
             // Play button
             const playBtn = document.createElement("button");

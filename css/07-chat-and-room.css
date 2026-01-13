@@ -2,7 +2,7 @@
   border-radius: 999px;
 }
 
-#pool > div {
+#pool>div {
   display: grid !important;
   grid-template-columns: 3rem minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -15,18 +15,18 @@
   transition: background-color 160ms ease;
 }
 
-#pool > div:hover {
+#pool>div:hover {
   background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
 }
 
-#pool > div > :first-child {
+#pool>div> :first-child {
   width: 3rem !important;
   height: 4rem !important;
   border-radius: 0.6rem !important;
   overflow: hidden !important;
 }
 
-#pool > div > :nth-child(2) {
+#pool>div> :nth-child(2) {
   min-width: 0 !important;
 }
 
@@ -37,7 +37,7 @@
   white-space: nowrap;
 }
 
-#pool > div > :nth-child(3) {
+#pool>div> :nth-child(3) {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 0.45rem !important;
@@ -46,12 +46,12 @@
 }
 
 @media (max-width: 640px) {
-  #pool > div {
+  #pool>div {
     grid-template-columns: 3rem minmax(0, 1fr) !important;
     grid-template-rows: auto auto !important;
   }
 
-  #pool > div > :nth-child(3) {
+  #pool>div> :nth-child(3) {
     grid-column: 1 / -1 !important;
     justify-content: flex-start !important;
   }
@@ -92,7 +92,7 @@
   overflow: visible !important;
 }
 
-#roomMembersWrap .card-body > div:first-child {
+#roomMembersWrap .card-body>div:first-child {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -100,7 +100,7 @@
   overflow: visible !important;
 }
 
-#roomMembersWrap .card-body > div:first-child h3 {
+#roomMembersWrap .card-body>div:first-child h3 {
   min-width: 0 !important;
   margin: 0 !important;
 }
@@ -131,7 +131,7 @@
   overflow: auto;
 }
 
-#roomMembersList > div {
+#roomMembersList>div {
   width: 100% !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -143,11 +143,11 @@
   word-break: break-word;
 }
 
-#roomMembersList > div > .truncate {
+#roomMembersList>div>.truncate {
   min-width: 0 !important;
 }
 
-#roomMembersList > div > .badge {
+#roomMembersList>div>.badge {
   justify-self: end !important;
   white-space: nowrap !important;
 }
@@ -214,28 +214,32 @@
   position: relative;
 }
 
+/* Chat Input Buttons - Consistent Hover for All 4 */
 #roomGifBtn,
 #roomStickerBtn,
-#roomEmojiBtn {
-  transition: transform 140ms ease, background-color 140ms ease,
-    box-shadow 140ms ease;
+#roomEmojiBtn,
+#roomVoiceBtn {
+  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
   border-radius: 999px;
 }
 
 #roomGifBtn:hover,
 #roomStickerBtn:hover,
-#roomEmojiBtn:hover {
+#roomEmojiBtn:hover,
+#roomVoiceBtn:hover {
   transform: translateY(-1px) scale(1.04);
-  background-color: color-mix(in oklab, hsl(var(--b3)) 60%, transparent);
+  background-color: color-mixin(oklab, hsl(var(--b3)) 60%, transparent);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
 #roomGifBtn:active,
 #roomStickerBtn:active,
-#roomEmojiBtn {
+#roomEmojiBtn:active,
+#roomVoiceBtn:active {
   transform: translateY(0) scale(0.97);
   box-shadow: none;
 }
+
 
 #roomChatForm {
   gap: 0.5rem;
@@ -355,6 +359,7 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 
 /* Chat + members tuning on 1080p laptops */
 @media (min-width: 1440px) and (max-width: 2100px) {
+
   /* Give chat a bit more vertical space on larger laptops */
   #roomChatMessages {
     max-height: 20rem;
@@ -377,16 +382,16 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 }
 
 #poolFilters label,
-#poolFilters > div {
+#poolFilters>div {
   box-shadow: var(--ui-shadow-soft);
 }
 
 [data-theme="synthwave"] #poolFilters label,
-[data-theme="synthwave"] #poolFilters > div {
+[data-theme="synthwave"] #poolFilters>div {
   background-color: color-mixin(oklab, hsl(var(--b2)) 45%, transparent);
 }
 
 [data-theme="cupcake"] #poolFilters label,
-[data-theme="cupcake"] #poolFilters > div {
+[data-theme="cupcake"] #poolFilters>div {
   background-color: color-mixin(oklab, hsl(var(--b1)) 70%, transparent);
 }

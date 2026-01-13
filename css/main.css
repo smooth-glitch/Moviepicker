@@ -241,30 +241,31 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Cupcake (Light) Theme - Light Pink & Blue */
+/* Cupcake (Light) Theme - Lighter, More Contrasting Colors */
 [data-theme="cupcake"] .voice-note-primary {
-  background: linear-gradient(135deg, rgba(255, 182, 193, 0.25), rgba(173, 216, 230, 0.25));
-  border: 1.5px solid rgba(255, 105, 180, 0.4);
+  background: linear-gradient(135deg, rgba(255, 192, 203, 0.3), rgba(173, 216, 230, 0.3));
+  border: 1.5px solid rgba(255, 182, 193, 0.6);
 }
 
 [data-theme="cupcake"] .voice-note-neutral {
-  background-color: rgba(240, 248, 255, 0.7);
-  border: 1.5px solid rgba(173, 216, 230, 0.5);
+  background: linear-gradient(135deg, rgba(248, 248, 255, 0.95), rgba(245, 245, 250, 0.95));
+  border: 1.5px solid rgba(200, 200, 220, 0.5);
 }
 
 [data-theme="cupcake"] .voice-note-play-btn {
   background: linear-gradient(135deg, #ff69b4, #87ceeb);
-  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.35);
+  box-shadow: 0 3px 10px rgba(255, 105, 180, 0.4);
 }
 
 [data-theme="cupcake"] .voice-wave-bar {
-  background-color: rgba(255, 105, 180, 0.6);
+  background-color: rgba(255, 105, 180, 0.65);
 }
 
 [data-theme="cupcake"] .voice-note-duration {
-  color: rgba(219, 39, 119, 0.85);
-  font-weight: 600;
+  color: rgba(139, 69, 139, 0.9);
+  font-weight: 700;
 }
+
 
 /* Play Button */
 .voice-note-play-btn {
