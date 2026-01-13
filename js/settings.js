@@ -5,9 +5,11 @@ import { applyTheme } from "./prefs.js";
 
 const LSSETTINGS = "mnp_settings_v1";
 const DEFAULT_SETTINGS = {
-    theme: "synthwave",
+    theme: "cupcake",
     defaultExcludeWatched: true,
     defaultMinRating: 6,
+    profileFrame: "none",
+    chatBackground: "default",
 };
 
 // ========== FIREBASE HELPERS ==========
@@ -111,18 +113,26 @@ function readUI() {
         theme: document.getElementById("themeToggle")?.checked ? "synthwave" : "cupcake",
         defaultExcludeWatched: !!document.getElementById("setDefaultExcludeWatched")?.checked,
         defaultMinRating: Number(document.getElementById("setDefaultMinRating")?.value || 6),
+        profileFrame: document.getElementById("profileFrameSelect")?.value || "none",
+        chatBackground: document.getElementById("chatBackgroundSelect")?.value || "default",
     };
 }
+
 
 function syncUI(s) {
     const themeToggle = document.getElementById("themeToggle");
     const excludeWatched = document.getElementById("setDefaultExcludeWatched");
     const minRating = document.getElementById("setDefaultMinRating");
+    const profileFrame = document.getElementById("profileFrameSelect");
+    const chatBackground = document.getElementById("chatBackgroundSelect");
 
     if (themeToggle) themeToggle.checked = s.theme === "synthwave";
     if (excludeWatched) excludeWatched.checked = !!s.defaultExcludeWatched;
     if (minRating) minRating.value = String(s.defaultMinRating ?? 6);
+    if (profileFrame) profileFrame.value = s.profileFrame || "none";
+    if (chatBackground) chatBackground.value = s.chatBackground || "default";
 }
+
 
 // ========== MODAL FUNCTIONS ==========
 async function populateProfileData() {
@@ -420,6 +430,51 @@ function initModalLogic() {
     });
 }
 
+// ========== PROFILE FRAME & CHAT BACKGROUND ==========
+function applyProfileFrame(frame) {
+    const avatars = document.querySelectorAll(".chat-message-avatar-container");
+    avatars.forEach(container => {
+        const ring = container.querySelector(".chat-message-avatar");
+        if (!ring) return;
+
+        // Remove all frame classes
+        ring.classList.remove(
+            "profile-frame-gradient-spin",
+            "profile-frame-neon-pulse",
+            "profile-frame-fire-glow",
+            "profile-frame-ice-shimmer",
+            "profile-frame-gold-shine"
+        );
+
+        if (frame !== "none") {
+            ring.classList.add(`profile-frame-${frame}`);
+            container.classList.add("has-frame");
+        } else {
+            container.classList.remove("has-frame");
+        }
+    });
+}
+
+function applyChatBackground(bg) {
+    const chatMessages = document.getElementById("roomChatMessages");
+    if (!chatMessages) return;
+
+    // Remove all background classes
+    chatMessages.classList.remove(
+        "chat-bg-default",
+        "chat-bg-gradient-purple",
+        "chat-bg-gradient-blue",
+        "chat-bg-gradient-sunset",
+        "chat-bg-pattern-dots",
+        "chat-bg-pattern-grid",
+        "chat-bg-matrix",
+        "chat-bg-stars"
+    );
+
+    // Apply new background
+    chatMessages.classList.add(`chat-bg-${bg}`);
+}
+
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
 async function boot() {
@@ -432,19 +487,37 @@ async function boot() {
     // 3. Sync UI with settings
     syncUI(s);
 
+    applyProfileFrame(s.profileFrame || "none");
+    applyChatBackground(s.chatBackground || "default");
+
     // 4. Init modal & handlers
     initModalLogic();
     handleProfileUpdate();
     initAvatarUpload();
 
     // 5. Watch for changes - Use applyTheme from prefs.js
-    ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating"].forEach((key) => {
+    ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating", "profileFrameSelect", "chatBackgroundSelect"].forEach((key) => {
         const el = document.getElementById(key);
         if (!el) return;
 
         el.addEventListener("change", async () => {
             const newSettings = readUI();
-            applyTheme(newSettings.theme); // ← Changed from setTheme
+
+            // Apply theme
+            if (key === "themeToggle") {
+                applyTheme(newSettings.theme);
+            }
+
+            // Apply profile frame
+            if (key === "profileFrameSelect") {
+                applyProfileFrame(newSettings.profileFrame);
+            }
+
+            // Apply chat background
+            if (key === "chatBackgroundSelect") {
+                applyChatBackground(newSettings.chatBackground);
+            }
+
             applyDefaultFiltersToStorage(newSettings);
             await saveSettingsToCloud(newSettings);
         });
