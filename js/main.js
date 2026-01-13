@@ -791,60 +791,75 @@ async function boot() {
     const fa = window.firebaseAuth;
 
 
+    const fa = window.firebaseAuth;
+
     fa.onAuthStateChanged(fa.auth, async (user) => {
         authState.user = user || null;
-
         const fs = window.firebaseStore;
+
         if (user && fs) {
+            // Create/update user document
             await fs.setDoc(
                 fs.doc(fs.db, "users", user.uid),
                 { email: user.email || null, createdAt: fs.serverTimestamp() },
                 { merge: true }
             );
-        }
 
-        updateUserChip();
-        syncUserMenu();
-        updateSignOutLabel();
-        syncCreateRoomButton();
-
-        const url = new URL(window.location.href);
-        const roomId = url.searchParams.get("room");
-
-        if (roomId) {
-            joinRoom(roomId);
-            return;
-        }
-
-        // ensure we are not considered in a room before first UI update
-        roomState.id = null;
-        updateRoomUI();
-
-        if (!authState.user) return;
-
-        await ensureUserDoc();
-
-        // NEW: load prefs from user doc and apply
-        if (fs) {
+            // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========
             try {
                 const userRef = fs.doc(fs.db, "users", user.uid);
                 const snap = await fs.getDoc(userRef);
+
                 if (snap.exists()) {
                     const data = snap.data();
+
+                    // Store user data globally
+                    window.firestoreUserData = data;
+
+                    // Load preferences if they exist
                     if (data.prefs && typeof data.prefs === "object") {
                         state.prefs = { ...state.prefs, ...data.prefs };
-                        savePrefs();        // sync to localStorage
-                        applyPrefsToUI();   // update filters/controls
-                        applyTheme(state.prefs.theme); // ensure theme matches
+                        savePrefs();
+                        applyPrefsToUI();
+                        applyTheme(state.prefs.theme);
                     }
                 }
-            } catch (err) {
-                console.warn("Failed to load user prefs", err);
+            } catch (e) {
+                console.warn("Failed to load user data:", e);
             }
-        }
 
-        startUserDocListener();
+            // ========== UPDATE UI AFTER DATA IS LOADED ==========
+            updateUserChip(); // ← Now called AFTER Firestore data loads
+            syncUserMenu();
+            updateSignOutLabel();
+            syncCreateRoomButton();
+
+            // Handle room joining
+            const url = new URL(window.location.href);
+            const roomId = url.searchParams.get("room");
+
+            if (roomId) {
+                joinRoom(roomId);
+                return;
+            }
+
+            roomState.id = null;
+            updateRoomUI();
+
+            await ensureUserDoc();
+            startUserDocListener();
+
+        } else {
+            // User signed out
+            window.firestoreUserData = {};
+            roomState.id = null;
+            updateRoomUI();
+            updateUserChip();
+            syncUserMenu();
+            updateSignOutLabel();
+        }
     });
+
 
 
     const qEl = id("q");
