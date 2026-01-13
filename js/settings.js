@@ -762,14 +762,33 @@ function renderRoomsList(rooms, containerId, type) {
             const deleteBtn = document.createElement("button");
             deleteBtn.className = "btn btn-error btn-outline btn-xs rounded-none";
             deleteBtn.innerHTML = `
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-          </svg>
-        `;
-            deleteBtn.addEventListener("click", async () => {
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            `;
+            deleteBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
                 if (confirm("Delete this room? This cannot be undone.")) {
-                    await deleteRoom(room.id);
-                    loadUserRooms();
+                    // Disable button
+                    deleteBtn.disabled = true;
+                    deleteBtn.innerHTML = '<span class="loading loading-spinner loading-xs"></span>';
+
+                    const success = await deleteRoom(room.id);
+
+                    if (success) {
+                        // Reload rooms list to remove deleted room
+                        await loadUserRooms();
+                    } else {
+                        // Re-enable button if failed
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = `
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                  `;
+                    }
                 }
             });
             actions.appendChild(deleteBtn);
@@ -803,7 +822,7 @@ async function deleteRoom(roomId) {
 
     if (!fs || !user) {
         alert("Not signed in");
-        return;
+        return false; // Return false on failure
     }
 
     try {
@@ -812,26 +831,20 @@ async function deleteRoom(roomId) {
 
         if (!snap.exists()) {
             alert("Room not found");
-            return;
+            return false;
         }
 
         const roomData = snap.data();
 
-        // Debug log to check ownership
-        console.log("Deleting room:", roomId);
-        console.log("Room owner:", roomData.ownerUid);
-        console.log("Current user:", user.uid);
-        console.log("Match:", roomData.ownerUid === user.uid);
-
         if (roomData.ownerUid !== user.uid) {
             alert("You can only delete rooms you created");
-            return;
+            return false;
         }
 
-        // Delete the room
+        // Delete the room document
         await fs.deleteDoc(roomRef);
 
-        // Also delete all members
+        // Delete all members subcollection
         const membersCol = fs.collection(fs.db, `rooms/${roomId}/members`);
         const membersSnap = await fs.getDocs(membersCol);
 
@@ -841,14 +854,15 @@ async function deleteRoom(roomId) {
         });
         await Promise.all(deletePromises);
 
-        // Success message
-        alert("Room deleted successfully");
+        return true; // Return true on success
 
     } catch (e) {
         console.error("Failed to delete room:", e);
         alert(`Failed to delete room: ${e.message}`);
+        return false;
     }
 }
+
 
 function joinRoomById(roomId) {
     window.location.href = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
