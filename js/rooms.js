@@ -135,7 +135,6 @@ function renderReplyPreview(replyTo) {
     const label = document.createElement("div");
     label.className = "font-semibold flex items-center gap-1";
 
-    // Add reply arrow icon
     label.innerHTML = `
       <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
@@ -151,7 +150,6 @@ function renderReplyPreview(replyTo) {
         content.innerHTML = `
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="2"/>
-          <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2"/>
         </svg>
         <span>GIF</span>
       `;
@@ -165,7 +163,6 @@ function renderReplyPreview(replyTo) {
         <span>Sticker</span>
       `;
     } else if (replyTo.type === "voice" && replyTo.voiceUrl) {
-        // ========== VOICE NOTE REPLY PREVIEW ==========
         const voiceDuration = replyTo.voiceDuration || 0;
         const timeLabel = `${Math.floor(voiceDuration / 60)}:${(voiceDuration % 60).toString().padStart(2, '0')}`;
 
@@ -184,6 +181,7 @@ function renderReplyPreview(replyTo) {
     box.appendChild(content);
     return box;
 }
+
 
 
 // --- messages ---

@@ -3,18 +3,55 @@ import { authState } from "./state.js";
 import { toast } from "./ui.js";
 
 export function updateUserChip() {
-    const label = id("userChipLabel");
-    const btn = id("btnUser");
-    if (!label) return;
+    const label = document.getElementById("userChipLabel");
+    const btn = document.getElementById("btnUser");
+    const u = authState.user;
 
-    if (authState.user) {
-        const u = authState.user;
-        const text = u.displayName || u.email || "Signed in";
-        label.textContent = text;
-        if (btn) btn.title = text;
-    } else {
-        label.textContent = "Sign in";
-        if (btn) btn.title = "Sign in";
+    if (!u) {
+        if (label) label.textContent = "Save pools";
+        if (btn) {
+            // Reset to default icon
+            btn.innerHTML = `
+          <span class="inline-flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 11c-1.5 0-2.5.5-3 2"/>
+              <path d="M4 6a2 2 0 0 0-2 2v4a5 5 0 0 0 5 5 8 8 0 0 1 5 2 8 8 0 0 1 5-2 5 5 0 0 0 5-5V8a2 2 0 0 0-2-2h-3a8 8 0 0 0-5 2 8 8 0 0 0-5-2z"/>
+              <path d="M6 11c1.5 0 2.5.5 3 2"/>
+            </svg>
+          </span>
+          <span id="userChipLabel" class="text-xs md:text-sm font-medium">Save pools</span>
+        `;
+        }
+        return;
+    }
+
+    // User is logged in - show avatar
+    const displayName = u.displayName || u.email?.split("@")[0] || "User";
+
+    // Get avatar URL (prioritize Firestore Base64)
+    let photoURL = window.firestoreUserData?.photoURL;
+    if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
+        photoURL = u.photoURL;
+    }
+    if (!photoURL) {
+        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}`;
+    }
+
+    // Get profile frame
+    const userFrame = window.firestoreUserData?.profileFrame || "none";
+    const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
+
+    if (label) label.textContent = displayName;
+
+    if (btn) {
+        btn.innerHTML = `
+        <div class="avatar">
+          <div class="w-8 md:w-10 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-1">
+            <img src="${photoURL}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />
+          </div>
+        </div>
+        <span id="userChipLabel" class="text-xs md:text-sm font-medium">${displayName}</span>
+      `;
     }
 }
 
