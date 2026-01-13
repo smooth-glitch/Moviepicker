@@ -245,7 +245,6 @@
   font-weight: 700;
 }
 
-
 /* Play Button */
 .voice-note-play-btn {
   width: 42px;
@@ -377,7 +376,6 @@
 }
 
 @keyframes wavePlay {
-
   0%,
   100% {
     transform: scaleY(0.6);
@@ -411,7 +409,6 @@
 }
 
 @keyframes voicePulse {
-
   0%,
   100% {
     background-color: hsl(var(--er) / 0.15);
@@ -443,7 +440,14 @@
 
 /* Rainbow Spin */
 #framePreviewRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ff0080 75%, #ff8c00 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #ff0080 0%,
+    #ff8c00 25%,
+    #40e0d0 50%,
+    #ff0080 75%,
+    #ff8c00 100%
+  ) !important;
   background-size: 400% 400% !important;
   animation: rainbowSpin 3s linear infinite !important;
   border: 4px solid transparent;
@@ -467,7 +471,6 @@
 }
 
 @keyframes neonPulse {
-
   0%,
   100% {
     filter: brightness(1) drop-shadow(0 0 10px rgba(231, 56, 255, 0.9));
@@ -488,7 +491,6 @@
 }
 
 @keyframes fireGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -511,7 +513,6 @@
 }
 
 @keyframes iceShimmer {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -526,12 +527,14 @@
 
 /* Gold Shine */
 #framePreviewRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg,
-      #b8860b 0%,
-      #ffd700 25%,
-      #ffed4e 50%,
-      #ffd700 75%,
-      #b8860b 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #b8860b 0%,
+    #ffd700 25%,
+    #ffed4e 50%,
+    #ffd700 75%,
+    #b8860b 100%
+  ) !important;
   background-size: 400% 100% !important;
   animation: goldShine 2.5s linear infinite !important;
   border: 4px solid transparent;
@@ -598,7 +601,7 @@
 
 /* Background covers ENTIRE scrollable area, not just viewport */
 #roomChatMessages::before {
-  content: '';
+  content: "";
   position: fixed;
   /* Changed from absolute */
   top: 0;
@@ -627,23 +630,39 @@
 
 /* Purple Galaxy */
 #roomChatMessages.chat-bg-gradient-purple {
-  background-image: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.25) 0%,
+    rgba(118, 75, 162, 0.25) 100%
+  ) !important;
 }
 
 /* Ocean Waves */
 #roomChatMessages.chat-bg-gradient-blue {
-  background-image: linear-gradient(135deg, rgba(102, 126, 234, 0.22) 0%, rgba(67, 233, 123, 0.22) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.22) 0%,
+    rgba(67, 233, 123, 0.22) 100%
+  ) !important;
 }
 
 /* Sunset Glow */
 #roomChatMessages.chat-bg-gradient-sunset {
-  background-image: linear-gradient(135deg, rgba(250, 112, 154, 0.2) 0%, rgba(254, 225, 64, 0.2) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(250, 112, 154, 0.2) 0%,
+    rgba(254, 225, 64, 0.2) 100%
+  ) !important;
 }
 
 /* Dot Pattern - FIXED */
 #roomChatMessages.chat-bg-pattern-dots {
   background-color: transparent !important;
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.25) 2px, transparent 2px) !important;
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--bc) / 0.25) 2px,
+    transparent 2px
+  ) !important;
   background-size: 20px 20px !important;
   background-attachment: local !important;
   background-repeat: repeat !important;
@@ -652,8 +671,7 @@
 /* Grid Lines - FIXED */
 #roomChatMessages.chat-bg-pattern-grid {
   background-color: transparent !important;
-  background-image:
-    linear-gradient(hsl(var(--bc) / 0.12) 1px, transparent 1px),
+  background-image: linear-gradient(hsl(var(--bc) / 0.12) 1px, transparent 1px),
     linear-gradient(90deg, hsl(var(--bc) / 0.12) 1px, transparent 1px) !important;
   background-size: 20px 20px !important;
   background-attachment: local !important;
@@ -662,14 +680,21 @@
 
 /* Matrix Code */
 #roomChatMessages.chat-bg-matrix {
-  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 51, 0, 0.3) 100%) !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 51, 0, 0.3) 100%
+  ) !important;
 }
 
 /* Starfield - FIXED */
 #roomChatMessages.chat-bg-stars {
   background-color: rgba(10, 10, 30, 0.15) !important;
-  background-image:
-    radial-gradient(circle at 15% 25%, white 1.5px, transparent 1.5px),
+  background-image: radial-gradient(
+      circle at 15% 25%,
+      white 1.5px,
+      transparent 1.5px
+    ),
     radial-gradient(circle at 45% 15%, white 1px, transparent 1px),
     radial-gradient(circle at 75% 35%, white 1.5px, transparent 1.5px),
     radial-gradient(circle at 30% 65%, white 1px, transparent 1px),
@@ -677,31 +702,16 @@
     radial-gradient(circle at 60% 85%, white 1px, transparent 1px),
     radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
     radial-gradient(circle at 90% 20%, white 1px, transparent 1px) !important;
-  background-size:
-    200px 200px,
-    180px 180px,
-    220px 220px,
-    150px 150px,
-    190px 190px,
-    170px 170px,
-    160px 160px,
-    210px 210px !important;
-  background-position:
-    0 0,
-    50px 80px,
-    120px 40px,
-    80px 130px,
-    30px 90px,
-    140px 160px,
-    100px 20px,
-    60px 140px !important;
+  background-size: 200px 200px, 180px 180px, 220px 220px, 150px 150px,
+    190px 190px, 170px 170px, 160px 160px, 210px 210px !important;
+  background-position: 0 0, 50px 80px, 120px 40px, 80px 130px, 30px 90px,
+    140px 160px, 100px 20px, 60px 140px !important;
   background-attachment: local !important;
   background-repeat: repeat !important;
 }
 
-
 /* Ensure messages stay above background */
-#roomChatMessages>* {
+#roomChatMessages > * {
   position: relative;
   z-index: 1;
 }
@@ -729,14 +739,17 @@
 }
 
 #chatBgPreviewLayer.chat-bg-pattern-dots {
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px);
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--bc) / 0.4) 2px,
+    transparent 2px
+  );
   background-size: 24px 24px;
   opacity: 0.35;
 }
 
 #chatBgPreviewLayer.chat-bg-pattern-grid {
-  background-image:
-    linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
+  background-image: linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
     linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px);
   background-size: 24px 24px;
   opacity: 0.5;
@@ -749,8 +762,7 @@
 
 #chatBgPreviewLayer.chat-bg-stars {
   background: #000;
-  background-image:
-    radial-gradient(2px 2px at 20px 30px, white, transparent),
+  background-image: radial-gradient(2px 2px at 20px 30px, white, transparent),
     radial-gradient(2px 2px at 60px 70px, white, transparent),
     radial-gradient(1px 1px at 50px 50px, white, transparent);
   background-size: 100px 100px;
@@ -836,7 +848,6 @@
   border-color: rgba(101, 80, 225, 0.4);
   box-shadow: 0 4px 10px rgba(101, 80, 225, 0.15);
 }
-
 
 /* ========== MY ROOMS TAB STYLING ========== */
 
@@ -930,21 +941,33 @@
 
 /* Synthwave theme */
 [data-theme="synthwave"] .alert-info {
-  background: linear-gradient(135deg, rgba(69, 162, 255, 0.15), rgba(231, 56, 255, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(69, 162, 255, 0.15),
+    rgba(231, 56, 255, 0.15)
+  );
   border-color: rgba(69, 162, 255, 0.5);
   color: #45a2ff;
   box-shadow: 0 4px 12px rgba(69, 162, 255, 0.3);
 }
 
 [data-theme="synthwave"] .alert-success {
-  background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 200, 100, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 136, 0.15),
+    rgba(0, 200, 100, 0.15)
+  );
   border-color: rgba(0, 255, 136, 0.5);
   color: #00ff88;
   box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
 }
 
 [data-theme="synthwave"] .alert-error {
-  background: linear-gradient(135deg, rgba(255, 56, 96, 0.15), rgba(255, 0, 80, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 56, 96, 0.15),
+    rgba(255, 0, 80, 0.15)
+  );
   border-color: rgba(255, 56, 96, 0.5);
   color: #ff3860;
   box-shadow: 0 4px 12px rgba(255, 56, 96, 0.3);
@@ -984,14 +1007,16 @@
 }
 
 #headerAvatarRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg,
-      #ff0080 0%,
-      #ff8c00 16%,
-      #ffed4e 33%,
-      #40e0d0 50%,
-      #4169e1 66%,
-      #ff0080 83%,
-      #ff8c00 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #ff0080 0%,
+    #ff8c00 16%,
+    #ffed4e 33%,
+    #40e0d0 50%,
+    #4169e1 66%,
+    #ff0080 83%,
+    #ff8c00 100%
+  ) !important;
   background-size: 600% 100% !important;
   animation: rainbowSpin 4s linear infinite !important;
   border: 4px solid transparent;
@@ -1016,14 +1041,16 @@
 
 /* Gold Shine - FIXED */
 #headerAvatarRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg,
-      #8b6914 0%,
-      #b8860b 20%,
-      #ffd700 40%,
-      #ffed4e 50%,
-      #ffd700 60%,
-      #b8860b 80%,
-      #8b6914 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #8b6914 0%,
+    #b8860b 20%,
+    #ffd700 40%,
+    #ffed4e 50%,
+    #ffd700 60%,
+    #b8860b 80%,
+    #8b6914 100%
+  ) !important;
   background-size: 600% 100% !important;
   animation: goldShine 3s linear infinite !important;
   border: 4px solid transparent;
@@ -1105,4 +1132,289 @@
   background: linear-gradient(135deg, #6550e1, #e779c1);
   color: white;
   box-shadow: 0 2px 6px rgba(101, 80, 225, 0.3);
+}
+
+/* Add to css/main.css */
+
+#hero {
+  position: relative;
+  overflow: hidden;
+}
+
+#hero img {
+  filter: brightness(0.85) contrast(1.1);
+  transition: all 0.5s ease;
+}
+
+#hero:hover img {
+  filter: brightness(0.9) contrast(1.15);
+  transform: scale(1.02);
+}
+
+/* Add subtle glow overlay */
+#hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(231, 56, 255, 0.15),
+    transparent 60%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Add to css/main.css */
+
+/* Moving scan lines for cinema feel */
+#hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    rgba(255, 255, 255, 0.03) 2px,
+    transparent 4px
+  );
+  animation: scanlines 8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes scanlines {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* Subtle film grain overlay */
+#hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(255, 255, 255, 0.05) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px
+    );
+  background-size: 200px 200px, 300px 300px, 250px 250px;
+  background-position: 0 0, 100px 100px, 50px 150px;
+  animation: filmGrain 3s infinite;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+}
+
+@keyframes filmGrain {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Add to existing #hero h1 and p */
+
+#hero h1 {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 20px rgba(231, 56, 255, 0.3);
+  letter-spacing: -0.03em;
+}
+
+#hero p {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+/* Glowing button effect */
+#pickMeNow {
+  position: relative;
+  overflow: hidden;
+}
+
+#pickMeNow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  animation: buttonShine 3s infinite;
+}
+
+@keyframes buttonShine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Pulse on hover */
+#pickMeNow:hover {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Synthwave theme - Neon glow */
+[data-theme="synthwave"] #hero::after {
+  box-shadow: inset 0 0 100px rgba(231, 56, 255, 0.2),
+    inset 0 0 50px rgba(69, 162, 255, 0.1);
+}
+
+/* Cupcake theme - Soft vignette */
+[data-theme="cupcake"] #hero::after {
+  box-shadow: inset 0 0 80px rgba(101, 80, 225, 0.15);
+}
+
+/* Add to css/main.css */
+
+/* Animated gradient overlay */
+#hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(231, 56, 255, 0.15) 0%,
+    transparent 40%,
+    rgba(69, 162, 255, 0.1) 100%
+  );
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Glowing primary button */
+#pickMeNow {
+  box-shadow: 0 4px 14px rgba(231, 56, 255, 0.4),
+    0 0 20px rgba(231, 56, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+#pickMeNow:hover {
+  box-shadow: 0 6px 20px rgba(231, 56, 255, 0.6),
+    0 0 30px rgba(231, 56, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Outline button glow */
+#btnTrendingHero:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* Enhance hero container */
+#hero {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 80px rgba(231, 56, 255, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+#hero:hover {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4), 0 0 100px rgba(231, 56, 255, 0.25);
+}
+
+/* Glowing edges (Synthwave style) */
+[data-theme="synthwave"] #hero {
+  border: 1px solid rgba(231, 56, 255, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 0 60px rgba(231, 56, 255, 0.2);
+}
+
+/* Soft glow (Cupcake style) */
+[data-theme="cupcake"] #hero {
+  border: 1px solid rgba(101, 80, 225, 0.2);
+  box-shadow: 0 8px 32px rgba(101, 80, 225, 0.15);
+}
+
+.typing-text {
+  display: inline-block;
+  animation: fadeInText 1.2s ease-out;
+}
+
+@keyframes fadeInText {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make theme toggle more prominent */
+#themeToggleBtn {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+#themeToggleBtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 20px rgba(231, 56, 255, 0.4);
+  transform: rotate(180deg);
+}
+
+/* Polish the "Works with Netflix..." badge */
+#ad-text-id {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+#ad-text-id:hover {
+  background: rgba(0, 0, 0, 0.4);
+  border-color: rgba(231, 56, 255, 0.5);
+  box-shadow: 0 6px 16px rgba(231, 56, 255, 0.3);
 }

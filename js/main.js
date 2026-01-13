@@ -1404,6 +1404,18 @@ async function boot() {
         },
         false
     );
+    // Add to js/main.js (at the end of boot function)
+
+    window.addEventListener('scroll', () => {
+        const hero = document.getElementById('hero');
+        const scrolled = window.pageYOffset;
+
+        if (hero && scrolled < 300) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            hero.style.opacity = 1 - (scrolled / 500);
+        }
+    });
+
 }
 
 if (document.readyState === "loading")
