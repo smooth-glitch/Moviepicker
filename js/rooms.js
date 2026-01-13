@@ -271,14 +271,6 @@ function removeEmojiPicker() {
 
 export async function renderRoomMessages(list) {
     const wrap = document.getElementById("roomChatMessages");
-    const avatarDiv = document.createElement("div");
-    avatarDiv.className = "chat-message-avatar-container";
-    // Check if user has a frame
-    const userFrame = userProfile?.profileFrame || "none";
-    const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
-
-    avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />`;
-    row.appendChild(avatarDiv);
     if (!wrap) return;
 
     wrap.innerHTML = "";
