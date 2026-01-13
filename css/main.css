@@ -433,11 +433,19 @@
 
 /* ========== ANIMATED PROFILE FRAMES (DISCORD-STYLE) ========== */
 
+/* Base ring styling */
+#framePreviewRing {
+  transition: all 0.3s ease;
+  background-clip: padding-box !important;
+  position: relative;
+  border-width: 4px !important;
+}
+
 /* Rainbow Spin */
-.profile-frame-gradient-spin {
-  animation: rainbowSpin 3s linear infinite;
-  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080);
-  background-size: 300% 300%;
+#framePreviewRing.profile-frame-gradient-spin {
+  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080) !important;
+  background-size: 400% 400% !important;
+  animation: rainbowSpin 3s linear infinite !important;
 }
 
 @keyframes rainbowSpin {
@@ -455,28 +463,30 @@
 }
 
 /* Neon Pulse */
-.profile-frame-neon-pulse {
-  animation: neonPulse 2s ease-in-out infinite;
-  background: linear-gradient(135deg, #e738ff, #45a2ff);
+#framePreviewRing.profile-frame-neon-pulse {
+  background: linear-gradient(135deg, #e738ff, #45a2ff) !important;
+  animation: neonPulse 2s ease-in-out infinite !important;
 }
 
 @keyframes neonPulse {
 
   0%,
   100% {
-    filter: brightness(1) drop-shadow(0 0 8px rgba(231, 56, 255, 0.8));
+    filter: brightness(1) drop-shadow(0 0 10px rgba(231, 56, 255, 0.9));
+    box-shadow: 0 0 20px rgba(231, 56, 255, 0.6);
   }
 
   50% {
-    filter: brightness(1.3) drop-shadow(0 0 16px rgba(231, 56, 255, 1));
+    filter: brightness(1.4) drop-shadow(0 0 20px rgba(231, 56, 255, 1));
+    box-shadow: 0 0 30px rgba(231, 56, 255, 0.9);
   }
 }
 
 /* Fire Glow */
-.profile-frame-fire-glow {
-  animation: fireGlow 1.5s ease-in-out infinite;
-  background: linear-gradient(135deg, #ff4500, #ffa500, #ff6347);
-  background-size: 200% 200%;
+#framePreviewRing.profile-frame-fire-glow {
+  background: linear-gradient(135deg, #ff4500, #ffa500, #ff6347) !important;
+  background-size: 200% 200% !important;
+  animation: fireGlow 1.5s ease-in-out infinite !important;
 }
 
 @keyframes fireGlow {
@@ -485,19 +495,21 @@
   100% {
     background-position: 0% 50%;
     filter: brightness(1);
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.6);
   }
 
   50% {
     background-position: 100% 50%;
-    filter: brightness(1.2);
+    filter: brightness(1.3);
+    box-shadow: 0 0 25px rgba(255, 165, 0, 0.8);
   }
 }
 
 /* Ice Shimmer */
-.profile-frame-ice-shimmer {
-  animation: iceShimmer 2.5s ease-in-out infinite;
-  background: linear-gradient(135deg, #00ffff, #1e90ff, #87ceeb);
-  background-size: 200% 200%;
+#framePreviewRing.profile-frame-ice-shimmer {
+  background: linear-gradient(135deg, #00ffff, #1e90ff, #87ceeb) !important;
+  background-size: 200% 200% !important;
+  animation: iceShimmer 2.5s ease-in-out infinite !important;
 }
 
 @keyframes iceShimmer {
@@ -505,18 +517,20 @@
   0%,
   100% {
     background-position: 0% 50%;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
   }
 
   50% {
     background-position: 100% 50%;
+    box-shadow: 0 0 25px rgba(135, 206, 235, 0.7);
   }
 }
 
 /* Gold Shine */
-.profile-frame-gold-shine {
-  animation: goldShine 3s linear infinite;
-  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e);
-  background-size: 300% 100%;
+#framePreviewRing.profile-frame-gold-shine {
+  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e) !important;
+  background-size: 300% 100% !important;
+  animation: goldShine 3s linear infinite !important;
 }
 
 @keyframes goldShine {
@@ -529,17 +543,46 @@
   }
 }
 
-/* Apply to avatars */
-.chat-message-avatar-container.has-frame .chat-message-avatar {
-  border: 3px solid transparent;
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
+/* Apply frames to chat avatars (when user has frame enabled) */
+.chat-message-avatar.has-frame-gradient-spin {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080) border-box;
+  background-size: 100%, 400% 400%;
+  animation: rainbowSpin 3s linear infinite;
 }
 
-/* Settings preview */
-#framePreviewRing {
-  transition: all 0.3s ease;
+.chat-message-avatar.has-frame-neon-pulse {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #e738ff, #45a2ff) border-box;
+  animation: neonPulse 2s ease-in-out infinite;
 }
+
+.chat-message-avatar.has-frame-fire-glow {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #ff4500, #ffa500, #ff6347) border-box;
+  background-size: 100%, 200% 200%;
+  animation: fireGlow 1.5s ease-in-out infinite;
+}
+
+.chat-message-avatar.has-frame-ice-shimmer {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #00ffff, #1e90ff, #87ceeb) border-box;
+  background-size: 100%, 200% 200%;
+  animation: iceShimmer 2.5s ease-in-out infinite;
+}
+
+.chat-message-avatar.has-frame-gold-shine {
+  border: 4px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+    linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e) border-box;
+  background-size: 100%, 300% 100%;
+  animation: goldShine 3s linear infinite;
+}
+
 
 /* ========== ROOM CHAT BACKGROUNDS ========== */
 

@@ -179,6 +179,52 @@ async function populateProfileData() {
     if (uid) uid.textContent = user.uid;
     if (nameInput) nameInput.value = user.displayName || "";
     if (uidInput) uidInput.value = user.uid;
+
+    // Also update frame preview when modal opens
+    const frameSelect = document.getElementById("profileFrameSelect");
+    if (frameSelect) {
+        updateFramePreview(frameSelect.value);
+    }
+
+}
+
+// ========== PROFILE FRAME PREVIEW ==========
+function updateFramePreview(frame) {
+    const ring = document.getElementById("framePreviewRing");
+    const img = document.getElementById("framePreviewImg");
+
+    if (!ring) return;
+
+    // Update preview image to user's actual photo
+    const user = getAuthUser();
+    if (user && img) {
+        let photoURL = window.firestoreUserData?.photoURL;
+        if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
+            photoURL = user.photoURL;
+        }
+        if (!photoURL) {
+            photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "User")}`;
+        }
+        img.src = photoURL;
+    }
+
+    // Remove all frame classes
+    ring.classList.remove(
+        "profile-frame-gradient-spin",
+        "profile-frame-neon-pulse",
+        "profile-frame-fire-glow",
+        "profile-frame-ice-shimmer",
+        "profile-frame-gold-shine"
+    );
+
+    // Reset to default style
+    ring.style.background = "hsl(var(--b3))";
+    ring.style.animation = "none";
+
+    // Apply selected frame
+    if (frame && frame !== "none") {
+        ring.classList.add(`profile-frame-${frame}`);
+    }
 }
 
 async function uploadProfilePicture(file) {
@@ -428,6 +474,25 @@ function initModalLogic() {
             if (target) target.classList.remove("hidden");
         });
     });
+
+    // Profile Frame selector
+    const frameSelect = document.getElementById("profileFrameSelect");
+    if (frameSelect) {
+        frameSelect.addEventListener("change", () => {
+            const selectedFrame = frameSelect.value;
+            updateFramePreview(selectedFrame);
+        });
+    }
+
+    // Chat Background selector  
+    const chatBgSelect = document.getElementById("chatBackgroundSelect");
+    if (chatBgSelect) {
+        chatBgSelect.addEventListener("change", () => {
+            const selectedBg = chatBgSelect.value;
+            applyChatBackground(selectedBg);
+        });
+    }
+
 }
 
 // ========== PROFILE FRAME & CHAT BACKGROUND ==========
