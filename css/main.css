@@ -206,21 +206,19 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.625rem 0.875rem;
-  border-radius: 0.75rem;
-  min-width: 240px;
-  max-width: 320px;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  min-width: 260px;
+  max-width: 340px;
   margin-top: 0.25rem;
+  margin-left: 0.25rem;
+  /* FIX CUTOFF */
   transition: all 0.2s;
 }
 
-/* Synthwave (Dark) Theme */
+/* Synthwave (Dark) Theme - Keep as is */
 [data-theme="synthwave"] .voice-note-primary {
-  background: linear-gradient(
-    135deg,
-    rgba(231, 56, 255, 0.2),
-    rgba(69, 162, 255, 0.2)
-  );
+  background: linear-gradient(135deg, rgba(231, 56, 255, 0.2), rgba(69, 162, 255, 0.2));
   border: 1.5px solid rgba(231, 56, 255, 0.4);
 }
 
@@ -243,35 +241,35 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Cupcake (Light) Theme */
+/* Cupcake (Light) Theme - Light Pink & Blue */
 [data-theme="cupcake"] .voice-note-primary {
-  background-color: rgba(101, 80, 225, 0.12);
-  border: 1.5px solid rgba(101, 80, 225, 0.35);
+  background: linear-gradient(135deg, rgba(255, 182, 193, 0.25), rgba(173, 216, 230, 0.25));
+  border: 1.5px solid rgba(255, 105, 180, 0.4);
 }
 
 [data-theme="cupcake"] .voice-note-neutral {
-  background-color: rgba(233, 231, 231, 0.9);
-  border: 1.5px solid rgba(41, 19, 52, 0.25);
+  background-color: rgba(240, 248, 255, 0.7);
+  border: 1.5px solid rgba(173, 216, 230, 0.5);
 }
 
 [data-theme="cupcake"] .voice-note-play-btn {
-  background: linear-gradient(135deg, #6550e1, #e779c1);
-  box-shadow: 0 2px 8px rgba(101, 80, 225, 0.35);
+  background: linear-gradient(135deg, #ff69b4, #87ceeb);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.35);
 }
 
 [data-theme="cupcake"] .voice-wave-bar {
-  background-color: rgba(101, 80, 225, 0.5);
+  background-color: rgba(255, 105, 180, 0.6);
 }
 
 [data-theme="cupcake"] .voice-note-duration {
-  color: rgba(41, 19, 52, 0.85);
+  color: rgba(219, 39, 119, 0.85);
   font-weight: 600;
 }
 
 /* Play Button */
 .voice-note-play-btn {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
@@ -304,9 +302,10 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 0.625rem;
+  gap: 0.75rem;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
+  /* FIX CUTOFF */
 }
 
 /* Waveform Bars */
@@ -316,7 +315,8 @@
   gap: 3px;
   flex: 1;
   height: 28px;
-  padding: 0 4px;
+  padding: 0 6px;
+  /* MORE PADDING TO PREVENT CUTOFF */
 }
 
 .voice-wave-bar {
@@ -335,58 +335,75 @@
 .voice-note-waveform.playing .voice-wave-bar:nth-child(1) {
   animation-delay: 0s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(2) {
   animation-delay: 0.1s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(3) {
   animation-delay: 0.2s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(4) {
   animation-delay: 0.05s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(5) {
   animation-delay: 0.15s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(6) {
   animation-delay: 0.1s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(7) {
   animation-delay: 0.2s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(8) {
   animation-delay: 0s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(9) {
   animation-delay: 0.15s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(10) {
   animation-delay: 0.05s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(11) {
   animation-delay: 0.1s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(12) {
   animation-delay: 0.2s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(13) {
   animation-delay: 0.15s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(14) {
   animation-delay: 0.05s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(15) {
   animation-delay: 0.1s;
 }
+
 .voice-note-waveform.playing .voice-wave-bar:nth-child(16) {
   animation-delay: 0.2s;
 }
 
 @keyframes wavePlay {
+
   0%,
   100% {
     transform: scaleY(0.6);
     opacity: 0.7;
   }
+
   50% {
     transform: scaleY(1.3);
     opacity: 1;
@@ -398,7 +415,7 @@
   font-size: 0.8rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  min-width: 42px;
+  min-width: 44px;
   text-align: right;
   flex-shrink: 0;
 }
@@ -414,11 +431,13 @@
 }
 
 @keyframes voicePulse {
+
   0%,
   100% {
     background-color: hsl(var(--er) / 0.15);
     border-color: hsl(var(--er) / 0.4);
   }
+
   50% {
     background-color: hsl(var(--er) / 0.25);
     border-color: hsl(var(--er) / 0.6);
