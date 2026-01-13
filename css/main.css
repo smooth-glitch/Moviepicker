@@ -443,11 +443,16 @@
 
 /* Rainbow Spin */
 #framePreviewRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ff0080 75%, #ff8c00 100%) !important;
-  background-size: 400% 400% !important;
-  animation: rainbowSpin 3s linear infinite !important;
-  border: 4px solid transparent;
-  background-clip: border-box !important;
+  background: linear-gradient(90deg,
+      #ff0080 0%,
+      #ff8c00 16%,
+      #ffed4e 33%,
+      #40e0d0 50%,
+      #4169e1 66%,
+      #ff0080 83%,
+      #ff8c00 100%) !important;
+  background-size: 600% 100% !important;
+  animation: rainbowSpin 4s linear infinite !important;
 }
 
 @keyframes rainbowSpin {
@@ -527,15 +532,15 @@
 /* Gold Shine */
 #framePreviewRing.profile-frame-gold-shine {
   background: linear-gradient(90deg,
-      #b8860b 0%,
-      #ffd700 25%,
+      #8b6914 0%,
+      #b8860b 20%,
+      #ffd700 40%,
       #ffed4e 50%,
-      #ffd700 75%,
-      #b8860b 100%) !important;
-  background-size: 400% 100% !important;
-  animation: goldShine 2.5s linear infinite !important;
-  border: 4px solid transparent;
-  background-clip: border-box !important;
+      #ffd700 60%,
+      #b8860b 80%,
+      #8b6914 100%) !important;
+  background-size: 600% 100% !important;
+  animation: goldShine 3s linear infinite !important;
 }
 
 @keyframes goldShine {
@@ -980,13 +985,21 @@
 
 #headerAvatarRing {
   transition: all 0.3s ease;
+  background-clip: border-box !important;
 }
 
-/* Apply same frame animations to header avatar */
 #headerAvatarRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ff0080 75%, #ff8c00 100%) !important;
-  background-size: 400% 400% !important;
-  animation: rainbowSpin 3s linear infinite !important;
+  background: linear-gradient(90deg,
+      #ff0080 0%,
+      #ff8c00 16%,
+      #ffed4e 33%,
+      #40e0d0 50%,
+      #4169e1 66%,
+      #ff0080 83%,
+      #ff8c00 100%) !important;
+  background-size: 600% 100% !important;
+  animation: rainbowSpin 4s linear infinite !important;
+  border: 4px solid transparent;
 }
 
 #headerAvatarRing.profile-frame-neon-pulse {
@@ -1006,10 +1019,19 @@
   animation: iceShimmer 2.5s ease-in-out infinite !important;
 }
 
+/* Gold Shine - FIXED */
 #headerAvatarRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg, #b8860b 0%, #ffd700 25%, #ffed4e 50%, #ffd700 75%, #b8860b 100%) !important;
-  background-size: 400% 100% !important;
-  animation: goldShine 2.5s linear infinite !important;
+  background: linear-gradient(90deg,
+      #8b6914 0%,
+      #b8860b 20%,
+      #ffd700 40%,
+      #ffed4e 50%,
+      #ffd700 60%,
+      #b8860b 80%,
+      #8b6914 100%) !important;
+  background-size: 600% 100% !important;
+  animation: goldShine 3s linear infinite !important;
+  border: 4px solid transparent;
 }
 
 /* ========== HEADER USER BUTTON STYLING ========== */
@@ -1034,4 +1056,14 @@
 
 #btnUser #userChipLabel {
   margin-left: 0.5rem;
+}
+
+@keyframes goldShine {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 600% 50%;
+  }
 }
