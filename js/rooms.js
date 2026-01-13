@@ -66,6 +66,7 @@ async function getUserProfile(uid) {
             const profile = {
                 displayName: data.displayName || "Anonymous",
                 photoURL: data.photoURL || null,
+                profileFrame: data.profileFrame || "none", // ← ADD THIS
             };
 
             // Cache it
@@ -78,6 +79,7 @@ async function getUserProfile(uid) {
 
     return null;
 }
+
 
 // Get avatar URL with fallback
 function getAvatarUrl(uid, userName, photoURL) {
@@ -133,7 +135,6 @@ function renderReplyPreview(replyTo) {
     const label = document.createElement("div");
     label.className = "font-semibold flex items-center gap-1";
 
-    // Add reply arrow icon
     label.innerHTML = `
       <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
@@ -149,7 +150,6 @@ function renderReplyPreview(replyTo) {
         content.innerHTML = `
         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="2"/>
-          <path d="M8 12h8M12 8v8" stroke="white" stroke-width="2"/>
         </svg>
         <span>GIF</span>
       `;
@@ -163,7 +163,6 @@ function renderReplyPreview(replyTo) {
         <span>Sticker</span>
       `;
     } else if (replyTo.type === "voice" && replyTo.voiceUrl) {
-        // ========== VOICE NOTE REPLY PREVIEW ==========
         const voiceDuration = replyTo.voiceDuration || 0;
         const timeLabel = `${Math.floor(voiceDuration / 60)}:${(voiceDuration % 60).toString().padStart(2, '0')}`;
 
@@ -182,6 +181,7 @@ function renderReplyPreview(replyTo) {
     box.appendChild(content);
     return box;
 }
+
 
 
 // --- messages ---
@@ -297,11 +297,17 @@ export async function renderRoomMessages(list) {
         const row = document.createElement("div");
         row.className = "chat-message";
 
-        // Avatar
+        // Avatar with frame support
         const avatarDiv = document.createElement("div");
         avatarDiv.className = "chat-message-avatar-container";
-        avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar" />`;
+
+        // Check if user has a frame (from Firestore)
+        const userFrame = userProfile?.profileFrame || "none";
+        const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
+
+        avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />`;
         row.appendChild(avatarDiv);
+
 
         // Content wrapper
         const content = document.createElement("div");
@@ -395,6 +401,16 @@ export async function renderRoomMessages(list) {
             // ========== WHATSAPP-STYLE VOICE NOTE ==========
             const voiceContainer = document.createElement("div");
             voiceContainer.className = `voice-note-container ${isMe ? "voice-note-primary" : "voice-note-neutral"}`;
+            // Add click handler for reply (like other messages)
+            voiceContainer.addEventListener("click", (e) => {
+                // Don't trigger if clicking the play button
+                if (e.target.closest(".voice-note-play-btn")) return;
+
+                removeEmojiPicker();
+                if (typeof setReplyDraft === "function") {
+                    setReplyDraft(m);
+                }
+            });
 
             // Play button
             const playBtn = document.createElement("button");
@@ -1096,3 +1112,12 @@ export async function leaveRoom() {
         ensureUserDoc().then(startUserDocListener);
     }
 }
+// Listen for profile frame changes
+window.addEventListener('profileFrameChanged', () => {
+    // Clear cache for current user so it fetches new frame
+    const myUid = window.firebaseAuth?.auth?.currentUser?.uid;
+    if (myUid && userProfileCache[myUid]) {
+        delete userProfileCache[myUid];
+    }
+});
+

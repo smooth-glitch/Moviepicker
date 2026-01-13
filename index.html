@@ -989,6 +989,13 @@
                             Appearance
                         </button>
                         <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="rooms">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                            </svg>
+                            My Rooms
+                        </button>
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
                             data-tab="privacy" style="color: hsl(var(--bc) / 1);">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -997,6 +1004,15 @@
                             </svg>
                             Preferences
                         </button>
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="room">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                            </svg>
+                            Room Chat
+                        </button>
+
+
                     </nav>
 
                     <div class="mt-auto pt-4 border-t border-base-300">
@@ -1102,6 +1118,39 @@
                             </div>
                         </div>
                     </div>
+                    <!-- TAB: ROOM CUSTOMIZATION -->
+                    <div id="tab-room" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-sora mb-6">Room Chat Settings</h2>
+
+                        <!-- Chat Background -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-3">
+                            <h3 class="font-bold">Chat Background</h3>
+                            <p class="text-xs opacity-70">Choose a background for your room chats</p>
+
+                            <select id="chatBackgroundSelect"
+                                class="select select-bordered select-sm w-full rounded-none">
+                                <option value="default">Default (Subtle)</option>
+                                <option value="gradient-purple">🌌 Purple Galaxy</option>
+                                <option value="gradient-blue">🌊 Ocean Waves</option>
+                                <option value="gradient-sunset">🌅 Sunset Glow</option>
+                                <option value="pattern-dots">⚪ Dot Pattern</option>
+                                <option value="pattern-grid">📐 Grid Lines</option>
+                                <option value="matrix">💚 Matrix Code</option>
+                                <option value="stars">⭐ Starfield</option>
+                            </select>
+
+                            <!-- Preview Box -->
+                            <div class="relative mt-3 h-32 rounded-lg border-2 border-base-300 overflow-hidden"
+                                id="chatBgPreviewBox">
+                                <div class="absolute inset-0" id="chatBgPreviewLayer"></div>
+                                <div class="relative z-10 flex items-center justify-center h-full">
+                                    <p class="text-xs opacity-70 bg-base-100/80 px-3 py-1 rounded-full">Background
+                                        Preview</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
 
 
                     <!-- TAB: APPEARANCE -->
@@ -1115,28 +1164,126 @@
                             </div>
                             <input type="checkbox" id="themeToggle" class="toggle theme-controller" value="synthwave" />
                         </div>
+                        <!-- Profile Picture Frame -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-3">
+                            <h3 class="font-bold">Profile Picture Frame</h3>
+                            <p class="text-xs opacity-70">Animated outline for your avatar (Discord-style)</p>
+
+                            <select id="profileFrameSelect"
+                                class="select select-bordered select-sm w-full rounded-none">
+                                <option value="none">No Frame</option>
+                                <option value="gradient-spin">🌈 Rainbow Spin</option>
+                                <option value="neon-pulse">⚡ Neon Pulse</option>
+                                <option value="fire-glow">🔥 Fire Glow</option>
+                                <option value="ice-shimmer">❄️ Ice Shimmer</option>
+                                <option value="gold-shine">✨ Gold Shine</option>
+                            </select>
+
+                            <!-- Preview with User's Photo -->
+                            <div class="flex justify-center mt-4">
+                                <div class="avatar">
+                                    <div class="w-20 rounded-full ring-4 ring-offset-base-100 ring-offset-2 transition-all duration-300"
+                                        id="framePreviewRing" style="background: hsl(var(--b3));">
+                                        <img id="framePreviewImg" src="https://ui-avatars.com/api/?name=User"
+                                            class="rounded-full" />
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-center text-xs opacity-60">Preview</p>
+                        </div>
+
+
                     </div>
 
                     <!-- TAB: PREFERENCES -->
                     <div id="tab-privacy" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-sora mb-6" style="color: hsl(var(--bc) / 1);">Global
-                            Preferences</h2>
-                        <div class="p-4 border border-base-300 rounded-none space-y-4"
-                            style="background-color: hsl(var(--b2) / 1);">
-                            <div class="flex items-center justify-between" style="color: hsl(var(--bc) / 1);">
-                                <span>Exclude Watched by Default</span>
+                        <h2 class="text-2xl font-bold font-sora mb-6">Global Preferences</h2>
+
+                        <!-- Default Search Filters -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-4">
+                            <h3 class="font-bold text-sm uppercase text-base-content/60">Default Search Filters</h3>
+
+                            <!-- Exclude Watched Toggle -->
+                            <div class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
+                                <div>
+                                    <div class="font-semibold text-sm">Exclude Watched</div>
+                                    <p class="text-xs opacity-70">Hide movies you've already seen</p>
+                                </div>
                                 <input type="checkbox" id="setDefaultExcludeWatched" class="toggle toggle-sm" />
                             </div>
+
                             <div class="divider my-2"></div>
-                            <div style="color: hsl(var(--bc) / 1);">
-                                <div class="flex justify-between mb-2"><span>Min Rating Default</span></div>
-                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="1"
-                                    class="range range-secondary range-xs w-full" />
+
+                            <!-- Min Rating Slider -->
+                            <div class="p-4 bg-base-100 border border-base-300">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div>
+                                        <div class="font-bold text-sm">Minimum Rating</div>
+                                        <p class="text-xs opacity-70">Filter by TMDB rating</p>
+                                    </div>
+                                    <span class="badge badge-lg badge-primary font-mono"
+                                        id="minRatingDisplay">6.0</span>
+                                </div>
+
+                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="0.5" value="6"
+                                    class="range range-primary range-sm w-full" />
+
+                                <div class="w-full flex justify-between text-xs px-1 mt-2 opacity-60">
+                                    <span class="font-mono">0.0</span>
+                                    <span class="font-mono">5.0</span>
+                                    <span class="font-mono">9.0</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- TAB: MY ROOMS -->
+                    <div id="tab-rooms" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-sora mb-6">My Rooms</h2>
+
+                        <!-- Created Rooms Section -->
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+                                </svg>
+                                <h3 class="font-bold text-sm uppercase">Created by You</h3>
+                            </div>
+
+                            <div id="createdRoomsList" class="space-y-2">
+                                <!-- Rooms you created will be injected here -->
+                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Joined Rooms Section -->
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                </svg>
+                                <h3 class="font-bold text-sm uppercase">Joined Rooms</h3>
+                            </div>
+
+                            <div id="joinedRoomsList" class="space-y-2">
+                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    Loading...
+                                </div>
                             </div>
                         </div>
                     </div>
 
+
                 </div>
+
             </div>
         </div>
     </div>

@@ -790,61 +790,73 @@ async function boot() {
 
     const fa = window.firebaseAuth;
 
-
     fa.onAuthStateChanged(fa.auth, async (user) => {
         authState.user = user || null;
-
         const fs = window.firebaseStore;
+
         if (user && fs) {
+            // Create/update user document
             await fs.setDoc(
                 fs.doc(fs.db, "users", user.uid),
                 { email: user.email || null, createdAt: fs.serverTimestamp() },
                 { merge: true }
             );
-        }
 
-        updateUserChip();
-        syncUserMenu();
-        updateSignOutLabel();
-        syncCreateRoomButton();
-
-        const url = new URL(window.location.href);
-        const roomId = url.searchParams.get("room");
-
-        if (roomId) {
-            joinRoom(roomId);
-            return;
-        }
-
-        // ensure we are not considered in a room before first UI update
-        roomState.id = null;
-        updateRoomUI();
-
-        if (!authState.user) return;
-
-        await ensureUserDoc();
-
-        // NEW: load prefs from user doc and apply
-        if (fs) {
+            // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========
             try {
                 const userRef = fs.doc(fs.db, "users", user.uid);
                 const snap = await fs.getDoc(userRef);
+
                 if (snap.exists()) {
                     const data = snap.data();
+
+                    // Store user data globally
+                    window.firestoreUserData = data;
+
+                    // Load preferences if they exist
                     if (data.prefs && typeof data.prefs === "object") {
                         state.prefs = { ...state.prefs, ...data.prefs };
-                        savePrefs();        // sync to localStorage
-                        applyPrefsToUI();   // update filters/controls
-                        applyTheme(state.prefs.theme); // ensure theme matches
+                        savePrefs();
+                        applyPrefsToUI();
+                        applyTheme(state.prefs.theme);
                     }
                 }
-            } catch (err) {
-                console.warn("Failed to load user prefs", err);
+            } catch (e) {
+                console.warn("Failed to load user data:", e);
             }
-        }
 
-        startUserDocListener();
+            // ========== UPDATE UI AFTER DATA IS LOADED ==========
+            updateUserChip(); // ← Now called AFTER Firestore data loads
+            syncUserMenu();
+            updateSignOutLabel();
+            syncCreateRoomButton();
+
+            // Handle room joining
+            const url = new URL(window.location.href);
+            const roomId = url.searchParams.get("room");
+
+            if (roomId) {
+                joinRoom(roomId);
+                return;
+            }
+
+            roomState.id = null;
+            updateRoomUI();
+
+            await ensureUserDoc();
+            startUserDocListener();
+
+        } else {
+            // User signed out
+            window.firestoreUserData = {};
+            roomState.id = null;
+            updateRoomUI();
+            updateUserChip();
+            syncUserMenu();
+            updateSignOutLabel();
+        }
     });
+
 
 
     const qEl = id("q");
@@ -1169,16 +1181,31 @@ async function boot() {
         });
     }
 
+    // Prevent duplicate message submissions
+    let lastMessageTime = 0;
+    let lastMessageText = "";
+
     if (chatForm && chatInput) {
         chatForm.addEventListener("submit", async (e) => {
             e.preventDefault();
+
             const text = chatInput.value.trim();
             if (!text || !roomState.id) return;
 
+            // Prevent duplicate messages (same text within 1 second)
+            const now = Date.now();
+            if (text === lastMessageText && now - lastMessageTime < 1000) {
+                console.log("Duplicate message blocked");
+                return;
+            }
+
+            lastMessageTime = now;
+            lastMessageText = text;
+
             const fs = window.firebaseStore;
             if (!fs) return;
-            const u = authState.user;
 
+            const u = authState.user;
             const mentions = extractMentions(text);
 
             const payload = {
@@ -1206,7 +1233,7 @@ async function boot() {
 
             try {
                 await fs.addDoc(
-                    fs.collection(fs.db, "rooms", roomState.id, "messages"),
+                    fs.collection(fs.db, `rooms/${roomState.id}/messages`),
                     payload
                 );
                 chatInput.value = "";
@@ -1217,50 +1244,9 @@ async function boot() {
                 console.warn(err);
             }
         });
-
-        if (mentionBox) {
-            chatInput.addEventListener("input", () => {
-                const value = chatInput.value;
-                const caret = chatInput.selectionStart ?? value.length;
-
-                const atIndex = value.lastIndexOf("@", caret - 1);
-                if (atIndex === -1) {
-                    hideMentionBox();
-                    return;
-                }
-
-                const afterAt = value.slice(atIndex + 1, caret);
-                if (/\s/.test(afterAt)) {
-                    hideMentionBox();
-                    return;
-                }
-
-                const query = afterAt.toLowerCase();
-                const members = Array.isArray(roomState.members)
-                    ? roomState.members
-                    : [];
-                const selfUid = authState.user?.uid ?? null;
-
-                const candidates = members.filter((m) => {
-                    if (selfUid && m.id === selfUid) return false;
-                    return (m.name || "").toLowerCase().startsWith(query);
-                });
-
-                if (!candidates.length) {
-                    hideMentionBox();
-                    return;
-                }
-
-                mentionActive = true;
-                mentionStartIndex = atIndex;
-                renderMentionBox(candidates);
-            });
-
-            chatInput.addEventListener("blur", () => {
-                setTimeout(hideMentionBox, 150);
-            });
-        }
     }
+
+
 
     // Send GIF / Sticker helpers used by tray
     async function sendGifMessage(gif) {
