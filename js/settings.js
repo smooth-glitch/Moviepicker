@@ -620,30 +620,31 @@ async function loadUserRooms() {
     const user = getAuthUser();
 
     if (!fs || !user) {
-        document.getElementById("createdRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Sign in to see your rooms</div>';
-        document.getElementById("joinedRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Sign in to see your rooms</div>';
+        const noAuthMsg = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Sign in to see your rooms</div>';
+        document.getElementById("createdRoomsList").innerHTML = noAuthMsg;
+        document.getElementById("joinedRoomsList").innerHTML = noAuthMsg;
         return;
     }
 
     try {
         // Fetch all rooms where user is owner
-        const roomsRef = fs.collection(fs.db, "rooms");
-        const createdQuery = fs.query(roomsRef, fs.where("ownerUid", "==", user.uid));
+        const roomsCol = fs.collection(fs.db, "rooms");
+        const createdQuery = fs.query(roomsCol, fs.where("ownerUid", "==", user.uid));
         const createdSnap = await fs.getDocs(createdQuery);
 
         const createdRooms = [];
-        for (const doc of createdSnap.docs) {
-            const memberCount = await getRoomMemberCount(doc.id);
+        for (const docSnap of createdSnap.docs) {
+            const memberCount = await getRoomMemberCount(docSnap.id);
             createdRooms.push({
-                id: doc.id,
-                ...doc.data(),
+                id: docSnap.id,
+                ...docSnap.data(),
                 memberCount
             });
         }
 
         // Fetch rooms where user is a member (but not owner)
         const joinedRooms = [];
-        const allRoomsSnap = await fs.getDocs(roomsRef);
+        const allRoomsSnap = await fs.getDocs(roomsCol);
 
         for (const roomDoc of allRoomsSnap.docs) {
             const roomData = roomDoc.data();
@@ -667,8 +668,9 @@ async function loadUserRooms() {
 
     } catch (e) {
         console.error("Failed to load rooms:", e);
-        document.getElementById("createdRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Failed to load rooms</div>';
-        document.getElementById("joinedRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Failed to load rooms</div>';
+        const errorMsg = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Failed to load rooms</div>';
+        document.getElementById("createdRoomsList").innerHTML = errorMsg;
+        document.getElementById("joinedRoomsList").innerHTML = errorMsg;
     }
 }
 
@@ -677,8 +679,8 @@ async function getRoomMemberCount(roomId) {
     if (!fs) return 0;
 
     try {
-        const membersRef = fs.collection(fs.db, `rooms/${roomId}/members`);
-        const snap = await fs.getDocs(membersRef);
+        const membersCol = fs.collection(fs.db, `rooms/${roomId}/members`);
+        const snap = await fs.getDocs(membersCol);
 
         const now = Date.now();
         let onlineCount = 0;
@@ -693,6 +695,7 @@ async function getRoomMemberCount(roomId) {
 
         return onlineCount;
     } catch (e) {
+        console.warn("Failed to get member count:", e);
         return 0;
     }
 }
@@ -716,6 +719,7 @@ function renderRoomsList(rooms, containerId, type) {
         const card = document.createElement("div");
         card.className = "room-card";
 
+        // Info section
         const info = document.createElement("div");
         info.className = "room-card-info";
 
@@ -726,6 +730,7 @@ function renderRoomsList(rooms, containerId, type) {
         const meta = document.createElement("div");
         meta.className = "room-card-meta";
 
+        // Members count
         const members = document.createElement("div");
         members.className = "room-card-members";
         members.innerHTML = `
@@ -734,7 +739,9 @@ function renderRoomsList(rooms, containerId, type) {
         </svg>
         <span>${room.memberCount} online</span>
       `;
+        meta.appendChild(members);
 
+        // Created date
         const createdDate = room.createdAt?.toDate?.();
         if (createdDate) {
             const dateSpan = document.createElement("span");
@@ -743,25 +750,22 @@ function renderRoomsList(rooms, containerId, type) {
             meta.appendChild(dateSpan);
         }
 
-        meta.appendChild(members);
         info.appendChild(name);
         info.appendChild(meta);
 
+        // Actions section
         const actions = document.createElement("div");
         actions.className = "room-card-actions";
 
-        const joinBtn = document.createElement("button");
-        joinBtn.className = "btn btn-primary btn-xs rounded-none";
-        joinBtn.textContent = "Join";
-        joinBtn.addEventListener("click", () => {
-            joinRoom(room.id);
-            document.getElementById("settingsModal").classList.add("hidden");
-        });
-
+        // Delete button (only for created rooms)
         if (type === "created") {
             const deleteBtn = document.createElement("button");
             deleteBtn.className = "btn btn-error btn-outline btn-xs rounded-none";
-            deleteBtn.textContent = "Delete";
+            deleteBtn.innerHTML = `
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        `;
             deleteBtn.addEventListener("click", async () => {
                 if (confirm("Delete this room? This cannot be undone.")) {
                     await deleteRoom(room.id);
@@ -770,6 +774,20 @@ function renderRoomsList(rooms, containerId, type) {
             });
             actions.appendChild(deleteBtn);
         }
+
+        // Join button
+        const joinBtn = document.createElement("button");
+        joinBtn.className = "btn btn-primary btn-xs rounded-none";
+        joinBtn.innerHTML = `
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+        </svg>
+        <span>Join</span>
+      `;
+        joinBtn.addEventListener("click", () => {
+            joinRoomById(room.id);
+            document.getElementById("settingsModal").classList.add("hidden");
+        });
 
         actions.appendChild(joinBtn);
 
@@ -787,20 +805,23 @@ async function deleteRoom(roomId) {
 
     try {
         const roomRef = fs.doc(fs.db, "rooms", roomId);
-        await fs.deleteDoc(roomRef);
+        const snap = await fs.getDoc(roomRef);
+
+        if (snap.exists() && snap.data().ownerUid === user.uid) {
+            await fs.deleteDoc(roomRef);
+        } else {
+            alert("You can only delete rooms you created");
+        }
     } catch (e) {
         console.error("Failed to delete room:", e);
         alert("Failed to delete room");
     }
 }
 
-function joinRoom(roomId) {
-    if (typeof window.joinRoom === "function") {
-        window.joinRoom(roomId);
-    } else {
-        window.location.href = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
-    }
+function joinRoomById(roomId) {
+    window.location.href = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
 }
+
 
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
