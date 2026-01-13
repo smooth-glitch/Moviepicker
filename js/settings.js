@@ -323,6 +323,13 @@ async function uploadProfilePicture(file) {
                     avatarEl.src = base64Data;
                 }
 
+                // ========== UPDATE HEADER BUTTON IMMEDIATELY ==========
+                if (typeof window.updateUserChip === "function") {
+                    window.updateUserChip();
+                } else if (typeof updateUserChip === "function") {
+                    updateUserChip();
+                }
+                
                 // Show success
                 if (statusDiv) {
                     statusDiv.classList.remove("alert-info");
