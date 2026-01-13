@@ -588,16 +588,16 @@
   animation: goldShine 3s linear infinite;
 }
 
+/* ========== ROOM CHAT BACKGROUNDS (FIXED FOR SCROLLING) ========== */
 
-/* ========== ROOM CHAT BACKGROUNDS ========== */
-
+/* Wrapper needs to be position relative */
 #roomChatMessages {
   position: relative;
   overflow-y: auto;
 }
 
-#roomChatMessages::before,
-#chatBgPreviewLayer {
+/* Background covers ENTIRE scrollable area, not just viewport */
+#roomChatMessages::before {
   content: '';
   position: fixed;
   /* Changed from absolute */
@@ -612,71 +612,63 @@
   transition: all 0.3s ease;
 }
 
-#roomChatMessages.chat-bg-default::before,
-#chatBgPreviewLayer.chat-bg-default {
-  background: none !important;
-  opacity: 0 !important;
+/* Alternative fix - use background on container itself */
+#roomChatMessages {
+  background-attachment: local;
+  /* Scrolls with content */
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+/* Default - No background */
+#roomChatMessages.chat-bg-default {
+  background-image: none !important;
 }
 
 /* Purple Galaxy */
-#roomChatMessages.chat-bg-gradient-purple::before,
-#chatBgPreviewLayer.chat-bg-gradient-purple {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  opacity: 0.25 !important;
+#roomChatMessages.chat-bg-gradient-purple {
+  background-image: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
 }
 
-
 /* Ocean Waves */
-#roomChatMessages.chat-bg-gradient-blue::before,
-#chatBgPreviewLayer.chat-bg-gradient-blue {
-  background: linear-gradient(135deg, #667eea 0%, #43e97b 100%) !important;
-  opacity: 0.22 !important;
+#roomChatMessages.chat-bg-gradient-blue {
+  background-image: linear-gradient(135deg, rgba(102, 126, 234, 0.22) 0%, rgba(67, 233, 123, 0.22) 100%) !important;
 }
 
 /* Sunset Glow */
-#roomChatMessages.chat-bg-gradient-sunset::before,
-#chatBgPreviewLayer.chat-bg-gradient-sunset {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
-  opacity: 0.2 !important;
+#roomChatMessages.chat-bg-gradient-sunset {
+  background-image: linear-gradient(135deg, rgba(250, 112, 154, 0.2) 0%, rgba(254, 225, 64, 0.2) 100%) !important;
 }
 
 /* Dot Pattern */
-#roomChatMessages.chat-bg-pattern-dots::before,
-#chatBgPreviewLayer.chat-bg-pattern-dots {
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px) !important;
+#roomChatMessages.chat-bg-pattern-dots {
+  background-image: radial-gradient(circle, hsl(var(--bc) / 0.15) 2px, transparent 2px) !important;
   background-size: 24px 24px !important;
-  opacity: 0.35 !important;
 }
 
 /* Grid Lines */
-#roomChatMessages.chat-bg-pattern-grid::before,
-#chatBgPreviewLayer.chat-bg-pattern-grid {
+#roomChatMessages.chat-bg-pattern-grid {
   background-image:
-    linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px) !important;
+    linear-gradient(hsl(var(--bc) / 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--bc) / 0.08) 1px, transparent 1px) !important;
   background-size: 24px 24px !important;
-  opacity: 0.5 !important;
 }
 
 /* Matrix Code */
-#roomChatMessages.chat-bg-matrix::before,
-#chatBgPreviewLayer.chat-bg-matrix {
-  background: linear-gradient(180deg, #000 0%, #003300 100%) !important;
-  opacity: 0.3 !important;
+#roomChatMessages.chat-bg-matrix {
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 51, 0, 0.3) 100%) !important;
 }
 
 /* Starfield */
-#roomChatMessages.chat-bg-stars::before,
-#chatBgPreviewLayer.chat-bg-stars {
-  background: #000 !important;
+#roomChatMessages.chat-bg-stars {
+  background-color: rgba(0, 0, 0, 0.25) !important;
   background-image:
-    radial-gradient(2px 2px at 20px 30px, white, transparent),
-    radial-gradient(2px 2px at 60px 70px, white, transparent),
-    radial-gradient(1px 1px at 50px 50px, white, transparent),
-    radial-gradient(1px 1px at 80px 10px, white, transparent),
-    radial-gradient(2px 2px at 90px 60px, white, transparent) !important;
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent) !important;
   background-size: 100px 100px !important;
-  opacity: 0.25 !important;
 }
 
 /* Ensure messages stay above background */
@@ -685,48 +677,53 @@
   z-index: 1;
 }
 
-/* ========== CHAT AVATAR FRAMES ========== */
-
-.chat-message-avatar.has-frame-gradient-spin {
-  border: 3px solid transparent;
-  background:
-    linear-gradient(white, white) padding-box,
-    linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080) border-box;
-  background-size: 100%, 400% 400%;
-  animation: rainbowSpin 3s linear infinite;
+/* Preview layer (for settings modal) */
+#chatBgPreviewLayer {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
 }
 
-.chat-message-avatar.has-frame-neon-pulse {
-  border: 3px solid transparent;
-  background:
-    linear-gradient(white, white) padding-box,
-    linear-gradient(135deg, #e738ff, #45a2ff) border-box;
-  animation: neonPulse 2s ease-in-out infinite;
+#chatBgPreviewLayer.chat-bg-gradient-purple {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0.25;
 }
 
-.chat-message-avatar.has-frame-fire-glow {
-  border: 3px solid transparent;
-  background:
-    linear-gradient(white, white) padding-box,
-    linear-gradient(135deg, #ff4500, #ffa500, #ff6347) border-box;
-  background-size: 100%, 200% 200%;
-  animation: fireGlow 1.5s ease-in-out infinite;
+#chatBgPreviewLayer.chat-bg-gradient-blue {
+  background: linear-gradient(135deg, #667eea 0%, #43e97b 100%);
+  opacity: 0.22;
 }
 
-.chat-message-avatar.has-frame-ice-shimmer {
-  border: 3px solid transparent;
-  background:
-    linear-gradient(white, white) padding-box,
-    linear-gradient(135deg, #00ffff, #1e90ff, #87ceeb) border-box;
-  background-size: 100%, 200% 200%;
-  animation: iceShimmer 2.5s ease-in-out infinite;
+#chatBgPreviewLayer.chat-bg-gradient-sunset {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  opacity: 0.2;
 }
 
-.chat-message-avatar.has-frame-gold-shine {
-  border: 3px solid transparent;
-  background:
-    linear-gradient(white, white) padding-box,
-    linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e) border-box;
-  background-size: 100%, 400% 100%;
-  animation: goldShine 2.5s linear infinite;
+#chatBgPreviewLayer.chat-bg-pattern-dots {
+  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px);
+  background-size: 24px 24px;
+  opacity: 0.35;
+}
+
+#chatBgPreviewLayer.chat-bg-pattern-grid {
+  background-image:
+    linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5;
+}
+
+#chatBgPreviewLayer.chat-bg-matrix {
+  background: linear-gradient(180deg, #000 0%, #003300 100%);
+  opacity: 0.3;
+}
+
+#chatBgPreviewLayer.chat-bg-stars {
+  background: #000;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, white, transparent),
+    radial-gradient(2px 2px at 60px 70px, white, transparent),
+    radial-gradient(1px 1px at 50px 50px, white, transparent);
+  background-size: 100px 100px;
+  opacity: 0.25;
 }
