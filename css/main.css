@@ -443,22 +443,20 @@
 
 /* Rainbow Spin */
 #framePreviewRing.profile-frame-gradient-spin {
-  background: linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff0080) !important;
+  background: linear-gradient(90deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ff0080 75%, #ff8c00 100%) !important;
   background-size: 400% 400% !important;
   animation: rainbowSpin 3s linear infinite !important;
+  border: 4px solid transparent;
+  background-clip: border-box !important;
 }
 
 @keyframes rainbowSpin {
   0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
+    background-position: 0% 0%;
   }
 
   100% {
-    background-position: 0% 50%;
+    background-position: 400% 0%;
   }
 }
 
@@ -528,9 +526,16 @@
 
 /* Gold Shine */
 #framePreviewRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700, #ffed4e) !important;
-  background-size: 300% 100% !important;
-  animation: goldShine 3s linear infinite !important;
+  background: linear-gradient(90deg,
+      #b8860b 0%,
+      #ffd700 25%,
+      #ffed4e 50%,
+      #ffd700 75%,
+      #b8860b 100%) !important;
+  background-size: 400% 100% !important;
+  animation: goldShine 2.5s linear infinite !important;
+  border: 4px solid transparent;
+  background-clip: border-box !important;
 }
 
 @keyframes goldShine {
@@ -539,7 +544,7 @@
   }
 
   100% {
-    background-position: 300% 50%;
+    background-position: 400% 50%;
   }
 }
 
@@ -590,7 +595,8 @@
   position: relative;
 }
 
-#roomChatMessages::before {
+#roomChatMessages::before,
+#chatBgPreviewLayer {
   content: '';
   position: absolute;
   inset: 0;
@@ -600,57 +606,70 @@
   border-radius: 0.75rem;
 }
 
-/* Default */
-#roomChatMessages.chat-bg-default::before {
+.chat-bg-default::before,
+#chatBgPreviewLayer.chat-bg-default {
   background: none;
 }
 
 /* Purple Galaxy */
-#roomChatMessages.chat-bg-gradient-purple::before {
+.chat-bg-gradient-purple::before,
+#chatBgPreviewLayer.chat-bg-gradient-purple {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  opacity: 0.2;
+  opacity: 0.25 !important;
 }
 
+
 /* Ocean Waves */
-#roomChatMessages.chat-bg-gradient-blue::before {
+.chat-bg-gradient-blue::before,
+#chatBgPreviewLayer.chat-bg-gradient-blue {
   background: linear-gradient(135deg, #667eea 0%, #43e97b 100%);
-  opacity: 0.18;
+  opacity: 0.22 !important;
 }
 
 /* Sunset Glow */
-#roomChatMessages.chat-bg-gradient-sunset::before {
+.chat-bg-gradient-sunset::before,
+#chatBgPreviewLayer.chat-bg-gradient-sunset {
   background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  opacity: 0.15;
+  opacity: 0.2 !important;
 }
 
 /* Dot Pattern */
-#roomChatMessages.chat-bg-pattern-dots::before {
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.3) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.3;
+.chat-bg-pattern-dots::before,
+#chatBgPreviewLayer.chat-bg-pattern-dots {
+  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px);
+  background-size: 24px 24px;
+  opacity: 0.35 !important;
 }
 
 /* Grid Lines */
-#roomChatMessages.chat-bg-pattern-grid::before {
+.chat-bg-pattern-grid::before,
+#chatBgPreviewLayer.chat-bg-pattern-grid {
   background-image:
-    linear-gradient(hsl(var(--bc) / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--bc) / 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.5;
+    linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.5 !important;
 }
 
 /* Matrix Code */
-#roomChatMessages.chat-bg-matrix::before {
+.chat-bg-matrix::before,
+#chatBgPreviewLayer.chat-bg-matrix {
   background: linear-gradient(180deg, #000 0%, #003300 100%);
-  opacity: 0.25;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 255, 0, 0.1) 2px, rgba(0, 255, 0, 0.1) 4px);
+  opacity: 0.3 !important;
 }
 
 /* Starfield */
-#roomChatMessages.chat-bg-stars::before {
-  background: #000 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">ircle cx="10" cy="10" r="1" fill="white"/>ircle cx="50" cy="30" r="1" fill="white"/>ircle cx="80" cy="60" r="1" fill="white"/>ircle cx="30" cy="80" r="1" fill="white"/></svg>');
-  opacity: 0.2;
+.chat-bg-stars::before,
+#chatBgPreviewLayer.chat-bg-stars {
+  background: #000;
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, white, transparent),
+    radial-gradient(2px 2px at 60px 70px, white, transparent),
+    radial-gradient(1px 1px at 50px 50px, white, transparent),
+    radial-gradient(1px 1px at 80px 10px, white, transparent),
+    radial-gradient(2px 2px at 90px 60px, white, transparent);
+  background-size: 100px 100px;
+  opacity: 0.25 !important;
 }
 
 /* Ensure messages stay above background */

@@ -31,6 +31,23 @@ if (!window.firestoreUserData) {
     window.firestoreUserData = {};
 }
 
+// Update frame preview live
+function initFramePreview() {
+    const frameSelect = document.getElementById("profileFrameSelect");
+    const chatBgSelect = document.getElementById("chatBackgroundSelect");
+
+    if (frameSelect) {
+        frameSelect.addEventListener("change", () => {
+            updateFramePreview(frameSelect.value);
+        });
+    }
+
+    if (chatBgSelect) {
+        chatBgSelect.addEventListener("change", () => {
+            applyChatBackground(chatBgSelect.value);
+        });
+    }
+}
 
 function applyDefaultFiltersToStorage(settings) {
     const cur = loadJson(LSFILTERS, {});
@@ -61,8 +78,13 @@ async function loadSettingsForUser() {
         const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
         const merged = { ...base, ...cloud };
 
-        applyTheme(merged.theme);
+        // DON'T apply theme automatically
         applyDefaultFiltersToStorage(merged);
+
+        // Apply profile frame and chat background on load
+        applyProfileFrame(merged.profileFrame || "none");
+        applyChatBackground(merged.chatBackground || "default");
+
         return merged;
     } catch (e) {
         console.warn("Cloud load failed:", e);
@@ -522,10 +544,10 @@ function applyProfileFrame(frame) {
 
 function applyChatBackground(bg) {
     const chatMessages = document.getElementById("roomChatMessages");
-    if (!chatMessages) return;
+    const preview = document.getElementById("chatBgPreviewLayer");
 
     // Remove all background classes
-    chatMessages.classList.remove(
+    const allBgs = [
         "chat-bg-default",
         "chat-bg-gradient-purple",
         "chat-bg-gradient-blue",
@@ -534,11 +556,20 @@ function applyChatBackground(bg) {
         "chat-bg-pattern-grid",
         "chat-bg-matrix",
         "chat-bg-stars"
-    );
+    ];
 
-    // Apply new background
-    chatMessages.classList.add(`chat-bg-${bg}`);
+    if (chatMessages) {
+        allBgs.forEach(cls => chatMessages.classList.remove(cls));
+        chatMessages.classList.add(`chat-bg-${bg}`);
+    }
+
+    // Update preview
+    if (preview) {
+        allBgs.forEach(cls => preview.classList.remove(cls));
+        preview.classList.add(`chat-bg-${bg}`);
+    }
 }
+
 
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
@@ -559,7 +590,9 @@ async function boot() {
     initModalLogic();
     handleProfileUpdate();
     initAvatarUpload();
+    initFramePreview();
 
+    
     // 5. Watch for changes - Use applyTheme from prefs.js
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating", "profileFrameSelect", "chatBackgroundSelect"].forEach((key) => {
         const el = document.getElementById(key);

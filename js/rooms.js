@@ -297,11 +297,17 @@ export async function renderRoomMessages(list) {
         const row = document.createElement("div");
         row.className = "chat-message";
 
-        // Avatar
+        // Avatar with frame support
         const avatarDiv = document.createElement("div");
         avatarDiv.className = "chat-message-avatar-container";
-        avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar" />`;
+
+        // Check if user has a frame (from Firestore)
+        const userFrame = userProfile?.profileFrame || "none";
+        const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
+
+        avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />`;
         row.appendChild(avatarDiv);
+
 
         // Content wrapper
         const content = document.createElement("div");
