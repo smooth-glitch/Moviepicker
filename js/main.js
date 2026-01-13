@@ -790,9 +790,6 @@ async function boot() {
 
     const fa = window.firebaseAuth;
 
-
-    const fa = window.firebaseAuth;
-
     fa.onAuthStateChanged(fa.auth, async (user) => {
         authState.user = user || null;
         const fs = window.firebaseStore;
