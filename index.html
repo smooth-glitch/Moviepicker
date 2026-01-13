@@ -989,6 +989,13 @@
                             Appearance
                         </button>
                         <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="rooms">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                            </svg>
+                            My Rooms
+                        </button>
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
                             data-tab="privacy" style="color: hsl(var(--bc) / 1);">
                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -1207,7 +1214,131 @@
                         </div>
                     </div>
 
+                    <!-- TAB: MY ROOMS -->
+                    <div id="tab-rooms" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-sora mb-6">My Rooms</h2>
+
+                        <!-- Created Rooms Section -->
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+                                </svg>
+                                <h3 class="font-bold text-sm uppercase">Created by You</h3>
+                            </div>
+
+                            <div id="createdRoomsList" class="space-y-2">
+                                <!-- Rooms you created will be injected here -->
+                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <!-- Joined Rooms Section -->
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                                </svg>
+                                <h3 class="font-bold text-sm uppercase">Joined Rooms</h3>
+                            </div>
+
+                            <div id="joinedRoomsList" class="space-y-2">
+                                <!-- Rooms you joined will be injected here -->
+                                /* ========== MY ROOMS TAB STYLING ========== */
+
+                                .room-card {
+                                  display: flex;
+                                  align-items: center;
+                                  justify-content: space-between;
+                                  padding: 0.75rem;
+                                  border: 1.5px solid hsl(var(--b3));
+                                  background-color: hsl(var(--b2) / 0.5);
+                                  transition: all 0.2s ease;
+                                  gap: 0.75rem;
+                                }
+                                
+                                .room-card:hover {
+                                  background-color: hsl(var(--b2));
+                                  border-color: hsl(var(--bc) / 0.3);
+                                  transform: translateY(-1px);
+                                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                }
+                                
+                                .room-card-info {
+                                  flex: 1;
+                                  min-width: 0;
+                                }
+                                
+                                .room-card-name {
+                                  font-weight: 700;
+                                  font-size: 0.875rem;
+                                  color: hsl(var(--bc));
+                                  overflow: hidden;
+                                  text-overflow: ellipsis;
+                                  white-space: nowrap;
+                                }
+                                
+                                .room-card-meta {
+                                  display: flex;
+                                  align-items: center;
+                                  gap: 0.5rem;
+                                  margin-top: 0.25rem;
+                                }
+                                
+                                .room-card-members {
+                                  display: flex;
+                                  align-items: center;
+                                  gap: 0.25rem;
+                                  font-size: 0.75rem;
+                                  color: hsl(var(--bc) / 0.7);
+                                }
+                                
+                                .room-card-members svg {
+                                  width: 14px;
+                                  height: 14px;
+                                  opacity: 0.7;
+                                }
+                                
+                                .room-card-actions {
+                                  display: flex;
+                                  gap: 0.5rem;
+                                  flex-shrink: 0;
+                                }
+                                
+                                /* Theme-specific styling */
+                                [data-theme="synthwave"] .room-card {
+                                  border-color: rgba(231, 56, 255, 0.3);
+                                }
+                                
+                                [data-theme="synthwave"] .room-card:hover {
+                                  border-color: rgba(231, 56, 255, 0.5);
+                                  box-shadow: 0 4px 12px rgba(231, 56, 255, 0.2);
+                                }
+                                
+                                [data-theme="cupcake"] .room-card {
+                                  border-color: rgba(101, 80, 225, 0.25);
+                                }
+                                
+                                [data-theme="cupcake"] .room-card:hover {
+                                  border-color: rgba(101, 80, 225, 0.4);
+                                  box-shadow: 0 4px 10px rgba(101, 80, 225, 0.15);
+                                }
+                                                        <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
+
             </div>
         </div>
     </div>

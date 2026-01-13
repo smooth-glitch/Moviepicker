@@ -503,6 +503,16 @@ function initModalLogic() {
         });
     });
 
+    // Load rooms when "My Rooms" tab is clicked
+    document.querySelectorAll(".settings-tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const tabName = btn.dataset.tab;
+            if (tabName === "rooms") {
+                loadUserRooms(); // Load rooms when tab opens
+            }
+        });
+    });
+
     // Profile Frame selector
     const frameSelect = document.getElementById("profileFrameSelect");
     if (frameSelect) {
@@ -604,6 +614,193 @@ function applyChatBackground(bg) {
 }
 
 
+// ========== MY ROOMS FUNCTIONALITY ==========
+async function loadUserRooms() {
+    const fs = getFs();
+    const user = getAuthUser();
+
+    if (!fs || !user) {
+        document.getElementById("createdRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Sign in to see your rooms</div>';
+        document.getElementById("joinedRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Sign in to see your rooms</div>';
+        return;
+    }
+
+    try {
+        // Fetch all rooms where user is owner
+        const roomsRef = fs.collection(fs.db, "rooms");
+        const createdQuery = fs.query(roomsRef, fs.where("ownerUid", "==", user.uid));
+        const createdSnap = await fs.getDocs(createdQuery);
+
+        const createdRooms = [];
+        for (const doc of createdSnap.docs) {
+            const memberCount = await getRoomMemberCount(doc.id);
+            createdRooms.push({
+                id: doc.id,
+                ...doc.data(),
+                memberCount
+            });
+        }
+
+        // Fetch rooms where user is a member (but not owner)
+        const joinedRooms = [];
+        const allRoomsSnap = await fs.getDocs(roomsRef);
+
+        for (const roomDoc of allRoomsSnap.docs) {
+            const roomData = roomDoc.data();
+            if (roomData.ownerUid === user.uid) continue;
+
+            const memberRef = fs.doc(fs.db, `rooms/${roomDoc.id}/members/${user.uid}`);
+            const memberSnap = await fs.getDoc(memberRef);
+
+            if (memberSnap.exists()) {
+                const memberCount = await getRoomMemberCount(roomDoc.id);
+                joinedRooms.push({
+                    id: roomDoc.id,
+                    ...roomData,
+                    memberCount
+                });
+            }
+        }
+
+        renderRoomsList(createdRooms, "createdRoomsList", "created");
+        renderRoomsList(joinedRooms, "joinedRoomsList", "joined");
+
+    } catch (e) {
+        console.error("Failed to load rooms:", e);
+        document.getElementById("createdRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Failed to load rooms</div>';
+        document.getElementById("joinedRoomsList").innerHTML = '<div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">Failed to load rooms</div>';
+    }
+}
+
+async function getRoomMemberCount(roomId) {
+    const fs = getFs();
+    if (!fs) return 0;
+
+    try {
+        const membersRef = fs.collection(fs.db, `rooms/${roomId}/members`);
+        const snap = await fs.getDocs(membersRef);
+
+        const now = Date.now();
+        let onlineCount = 0;
+
+        snap.forEach(doc => {
+            const data = doc.data();
+            const lastSeen = data.lastSeenAt?.toMillis?.() || 0;
+            if (now - lastSeen < 70000) {
+                onlineCount++;
+            }
+        });
+
+        return onlineCount;
+    } catch (e) {
+        return 0;
+    }
+}
+
+function renderRoomsList(rooms, containerId, type) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    if (rooms.length === 0) {
+        container.innerHTML = `
+        <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+          ${type === "created" ? "You haven't created any rooms yet" : "You haven't joined any rooms yet"}
+        </div>
+      `;
+        return;
+    }
+
+    container.innerHTML = "";
+
+    rooms.forEach(room => {
+        const card = document.createElement("div");
+        card.className = "room-card";
+
+        const info = document.createElement("div");
+        info.className = "room-card-info";
+
+        const name = document.createElement("div");
+        name.className = "room-card-name";
+        name.textContent = room.name || `Room ${room.id.substring(0, 8)}`;
+
+        const meta = document.createElement("div");
+        meta.className = "room-card-meta";
+
+        const members = document.createElement("div");
+        members.className = "room-card-members";
+        members.innerHTML = `
+        <svg fill="currentColor" viewBox="0 0 20 20">
+          <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+        </svg>
+        <span>${room.memberCount} online</span>
+      `;
+
+        const createdDate = room.createdAt?.toDate?.();
+        if (createdDate) {
+            const dateSpan = document.createElement("span");
+            dateSpan.className = "text-xs opacity-50";
+            dateSpan.textContent = createdDate.toLocaleDateString();
+            meta.appendChild(dateSpan);
+        }
+
+        meta.appendChild(members);
+        info.appendChild(name);
+        info.appendChild(meta);
+
+        const actions = document.createElement("div");
+        actions.className = "room-card-actions";
+
+        const joinBtn = document.createElement("button");
+        joinBtn.className = "btn btn-primary btn-xs rounded-none";
+        joinBtn.textContent = "Join";
+        joinBtn.addEventListener("click", () => {
+            joinRoom(room.id);
+            document.getElementById("settingsModal").classList.add("hidden");
+        });
+
+        if (type === "created") {
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "btn btn-error btn-outline btn-xs rounded-none";
+            deleteBtn.textContent = "Delete";
+            deleteBtn.addEventListener("click", async () => {
+                if (confirm("Delete this room? This cannot be undone.")) {
+                    await deleteRoom(room.id);
+                    loadUserRooms();
+                }
+            });
+            actions.appendChild(deleteBtn);
+        }
+
+        actions.appendChild(joinBtn);
+
+        card.appendChild(info);
+        card.appendChild(actions);
+        container.appendChild(card);
+    });
+}
+
+async function deleteRoom(roomId) {
+    const fs = getFs();
+    const user = getAuthUser();
+
+    if (!fs || !user) return;
+
+    try {
+        const roomRef = fs.doc(fs.db, "rooms", roomId);
+        await fs.deleteDoc(roomRef);
+    } catch (e) {
+        console.error("Failed to delete room:", e);
+        alert("Failed to delete room");
+    }
+}
+
+function joinRoom(roomId) {
+    if (typeof window.joinRoom === "function") {
+        window.joinRoom(roomId);
+    } else {
+        window.location.href = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+    }
+}
 
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
