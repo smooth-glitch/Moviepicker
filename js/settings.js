@@ -329,7 +329,7 @@ async function uploadProfilePicture(file) {
                 } else if (typeof updateUserChip === "function") {
                     updateUserChip();
                 }
-                
+
                 // Show success
                 if (statusDiv) {
                     statusDiv.classList.remove("alert-info");
@@ -955,33 +955,50 @@ async function boot() {
     initFramePreview();
     initPreferenceUpdates();
 
-    // 5. Watch for changes - Use applyTheme from prefs.js
-    ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating", "profileFrameSelect", "chatBackgroundSelect"].forEach((key) => {
+    // 5. Watch for changes (SEPARATED FOR CLARITY)
+    // Theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("change", async () => {
+            const newSettings = readUI();
+            applyTheme(newSettings.theme);
+            await saveSettingsToCloud(newSettings);
+        });
+    }
+
+    // Profile frame
+    const profileFrameSelect = document.getElementById("profileFrameSelect");
+    if (profileFrameSelect) {
+        profileFrameSelect.addEventListener("change", async () => {
+            const newSettings = readUI();
+            applyProfileFrame(newSettings.profileFrame);
+            await saveSettingsToCloud(newSettings);
+        });
+    }
+
+    // Chat background (ONLY updates chat, NOT page theme)
+    const chatBackgroundSelect = document.getElementById("chatBackgroundSelect");
+    if (chatBackgroundSelect) {
+        chatBackgroundSelect.addEventListener("change", async () => {
+            const newSettings = readUI();
+            applyChatBackground(newSettings.chatBackground);
+            await saveSettingsToCloud(newSettings);
+        });
+    }
+
+    // Filter settings
+    ["setDefaultExcludeWatched", "setDefaultMinRating"].forEach((key) => {
         const el = document.getElementById(key);
         if (!el) return;
 
         el.addEventListener("change", async () => {
             const newSettings = readUI();
-
-            // Apply theme
-            if (key === "themeToggle") {
-                applyTheme(newSettings.theme);
-            }
-
-            // Apply profile frame
-            if (key === "profileFrameSelect") {
-                applyProfileFrame(newSettings.profileFrame);
-            }
-
-            // Apply chat background
-            if (key === "chatBackgroundSelect") {
-                applyChatBackground(newSettings.chatBackground);
-            }
-
             applyDefaultFiltersToStorage(newSettings);
             await saveSettingsToCloud(newSettings);
         });
     });
+
+
 
     // 6. Logout
     const logoutBtn = document.getElementById("logoutBtn");
