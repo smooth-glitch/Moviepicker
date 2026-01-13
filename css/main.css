@@ -601,74 +601,76 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0.15;
   pointer-events: none;
   border-radius: 0.75rem;
+  opacity: 0.15;
+  transition: all 0.3s ease;
 }
 
-.chat-bg-default::before,
+#roomChatMessages.chat-bg-default::before,
 #chatBgPreviewLayer.chat-bg-default {
-  background: none;
+  background: none !important;
+  opacity: 0 !important;
 }
 
 /* Purple Galaxy */
-.chat-bg-gradient-purple::before,
+#roomChatMessages.chat-bg-gradient-purple::before,
 #chatBgPreviewLayer.chat-bg-gradient-purple {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
   opacity: 0.25 !important;
 }
 
 
 /* Ocean Waves */
-.chat-bg-gradient-blue::before,
+#roomChatMessages.chat-bg-gradient-blue::before,
 #chatBgPreviewLayer.chat-bg-gradient-blue {
-  background: linear-gradient(135deg, #667eea 0%, #43e97b 100%);
+  background: linear-gradient(135deg, #667eea 0%, #43e97b 100%) !important;
   opacity: 0.22 !important;
 }
 
 /* Sunset Glow */
-.chat-bg-gradient-sunset::before,
+#roomChatMessages.chat-bg-gradient-sunset::before,
 #chatBgPreviewLayer.chat-bg-gradient-sunset {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
   opacity: 0.2 !important;
 }
 
 /* Dot Pattern */
-.chat-bg-pattern-dots::before,
+#roomChatMessages.chat-bg-pattern-dots::before,
 #chatBgPreviewLayer.chat-bg-pattern-dots {
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, hsl(var(--bc) / 0.4) 2px, transparent 2px) !important;
+  background-size: 24px 24px !important;
   opacity: 0.35 !important;
 }
 
 /* Grid Lines */
-.chat-bg-pattern-grid::before,
+#roomChatMessages.chat-bg-pattern-grid::before,
 #chatBgPreviewLayer.chat-bg-pattern-grid {
   background-image:
     linear-gradient(hsl(var(--bc) / 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px);
-  background-size: 24px 24px;
+    linear-gradient(90deg, hsl(var(--bc) / 0.15) 1px, transparent 1px) !important;
+  background-size: 24px 24px !important;
   opacity: 0.5 !important;
 }
 
 /* Matrix Code */
-.chat-bg-matrix::before,
+#roomChatMessages.chat-bg-matrix::before,
 #chatBgPreviewLayer.chat-bg-matrix {
-  background: linear-gradient(180deg, #000 0%, #003300 100%);
+  background: linear-gradient(180deg, #000 0%, #003300 100%) !important;
   opacity: 0.3 !important;
 }
 
 /* Starfield */
-.chat-bg-stars::before,
+#roomChatMessages.chat-bg-stars::before,
 #chatBgPreviewLayer.chat-bg-stars {
-  background: #000;
+  background: #000 !important;
   background-image:
     radial-gradient(2px 2px at 20px 30px, white, transparent),
     radial-gradient(2px 2px at 60px 70px, white, transparent),
     radial-gradient(1px 1px at 50px 50px, white, transparent),
     radial-gradient(1px 1px at 80px 10px, white, transparent),
-    radial-gradient(2px 2px at 90px 60px, white, transparent);
-  background-size: 100px 100px;
+    radial-gradient(2px 2px at 90px 60px, white, transparent) !important;
+  background-size: 100px 100px !important;
   opacity: 0.25 !important;
 }
 

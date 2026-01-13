@@ -525,34 +525,48 @@ function initModalLogic() {
 
 // ========== PROFILE FRAME & CHAT BACKGROUND ==========
 function applyProfileFrame(frame) {
-    const avatars = document.querySelectorAll(".chat-message-avatar-container");
-    avatars.forEach(container => {
-        const ring = container.querySelector(".chat-message-avatar");
-        if (!ring) return;
+    // Update preview
+    updateFramePreview(frame);
 
+    // Update ALL avatars in chat immediately
+    const chatAvatars = document.querySelectorAll(".chat-message-avatar");
+    chatAvatars.forEach(avatar => {
         // Remove all frame classes
-        ring.classList.remove(
-            "profile-frame-gradient-spin",
-            "profile-frame-neon-pulse",
-            "profile-frame-fire-glow",
-            "profile-frame-ice-shimmer",
-            "profile-frame-gold-shine"
+        avatar.classList.remove(
+            "has-frame-gradient-spin",
+            "has-frame-neon-pulse",
+            "has-frame-fire-glow",
+            "has-frame-ice-shimmer",
+            "has-frame-gold-shine"
         );
 
-        if (frame !== "none") {
-            ring.classList.add(`profile-frame-${frame}`);
-            container.classList.add("has-frame");
-        } else {
-            container.classList.remove("has-frame");
+        // Add new frame if not "none"
+        if (frame && frame !== "none") {
+            // Only update YOUR avatars (check if it's your message)
+            const messageRow = avatar.closest(".chat-message");
+            const authorSpan = messageRow?.querySelector(".chat-message-author");
+            if (authorSpan && authorSpan.textContent === "You") {
+                avatar.classList.add(`has-frame-${frame}`);
+            }
         }
     });
+
+    // Update cache
+    const myUid = window.firebaseAuth?.auth?.currentUser?.uid;
+    if (myUid && window.userProfileCache) {
+        if (!window.userProfileCache[myUid]) {
+            window.userProfileCache[myUid] = {};
+        }
+        window.userProfileCache[myUid].profileFrame = frame;
+    }
 }
+
 
 function applyChatBackground(bg) {
     const chatMessages = document.getElementById("roomChatMessages");
     const preview = document.getElementById("chatBgPreviewLayer");
 
-    // Remove all background classes
+    // Remove ALL background classes
     const allBgs = [
         "chat-bg-default",
         "chat-bg-gradient-purple",
@@ -565,16 +579,30 @@ function applyChatBackground(bg) {
     ];
 
     if (chatMessages) {
+        // Remove all classes
         allBgs.forEach(cls => chatMessages.classList.remove(cls));
+
+        // Force reflow to ensure CSS updates
+        void chatMessages.offsetHeight;
+
+        // Add new class
         chatMessages.classList.add(`chat-bg-${bg}`);
+
+        // Force browser to recalculate styles
+        chatMessages.style.display = 'none';
+        setTimeout(() => {
+            chatMessages.style.display = '';
+        }, 10);
     }
 
     // Update preview
     if (preview) {
         allBgs.forEach(cls => preview.classList.remove(cls));
+        void preview.offsetHeight;
         preview.classList.add(`chat-bg-${bg}`);
     }
 }
+
 
 
 // Update boot() to load Firestore data FIRST

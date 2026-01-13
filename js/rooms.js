@@ -1114,3 +1114,12 @@ export async function leaveRoom() {
         ensureUserDoc().then(startUserDocListener);
     }
 }
+// Listen for profile frame changes
+window.addEventListener('profileFrameChanged', () => {
+    // Clear cache for current user so it fetches new frame
+    const myUid = window.firebaseAuth?.auth?.currentUser?.uid;
+    if (myUid && userProfileCache[myUid]) {
+        delete userProfileCache[myUid];
+    }
+});
+
