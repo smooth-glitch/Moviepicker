@@ -1062,3 +1062,47 @@
     background-position: 600% 50%;
   }
 }
+
+/* ========== MIN RATING SLIDER STYLING ========== */
+
+#tab-privacy .range {
+  height: 6px;
+}
+
+#tab-privacy .range::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: hsl(var(--p));
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#tab-privacy .range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: hsl(var(--p));
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+#minRatingDisplay {
+  min-width: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.5rem 0.75rem;
+}
+
+/* Theme-specific badge colors */
+[data-theme="synthwave"] #minRatingDisplay {
+  background: linear-gradient(135deg, #e738ff, #45a2ff);
+  color: white;
+  box-shadow: 0 2px 8px rgba(231, 56, 255, 0.4);
+}
+
+[data-theme="cupcake"] #minRatingDisplay {
+  background: linear-gradient(135deg, #6550e1, #e779c1);
+  color: white;
+  box-shadow: 0 2px 6px rgba(101, 80, 225, 0.3);
+}
