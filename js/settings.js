@@ -150,13 +150,21 @@ function syncUI(s) {
     const minRating = document.getElementById("setDefaultMinRating");
     const profileFrame = document.getElementById("profileFrameSelect");
     const chatBackground = document.getElementById("chatBackgroundSelect");
+    const minRatingDisplay = document.getElementById("minRatingDisplay"); // ← ADD THIS
 
     if (themeToggle) themeToggle.checked = s.theme === "synthwave";
     if (excludeWatched) excludeWatched.checked = !!s.defaultExcludeWatched;
-    if (minRating) minRating.value = String(s.defaultMinRating ?? 6);
+    if (minRating) {
+        minRating.value = String(s.defaultMinRating ?? 6);
+        // Update display immediately
+        if (minRatingDisplay) {
+            minRatingDisplay.textContent = Number(s.defaultMinRating ?? 6).toFixed(1);
+        }
+    }
     if (profileFrame) profileFrame.value = s.profileFrame || "none";
     if (chatBackground) chatBackground.value = s.chatBackground || "default";
 }
+
 
 
 // ========== MODAL FUNCTIONS ==========
@@ -370,6 +378,7 @@ function handleProfileUpdate() {
     btn.onclick = async () => {
         const user = getAuthUser();
         const newName = nameInput.value.trim();
+
         if (!user || !newName) return;
 
         try {
@@ -377,7 +386,7 @@ function handleProfileUpdate() {
             btn.innerHTML = '<span class="loading loading-spinner loading-xs"></span>';
             btn.disabled = true;
 
-            // Update Firebase Auth profile FIRST
+            // Update Firebase Auth profile
             await window.firebaseAuth.updateProfile(user, { displayName: newName });
 
             // Update Firestore
@@ -388,10 +397,7 @@ function handleProfileUpdate() {
                     userRef,
                     {
                         displayName: newName,
-                        photoURL: base64Data,
-                        photoUpdatedAt: fs.serverTimestamp(),
                         updatedAt: fs.serverTimestamp(),
-                        profileFrame: document.getElementById("profileFrameSelect")?.value || "none",
                     },
                     { merge: true }
                 );
@@ -410,6 +416,7 @@ function handleProfileUpdate() {
                 btn.innerHTML = orig;
                 btn.disabled = false;
             }, 2000);
+
         } catch (e) {
             console.error("Profile update failed:", e);
             btn.innerHTML = "❌ Error";
@@ -418,6 +425,7 @@ function handleProfileUpdate() {
         }
     };
 }
+
 
 
 
@@ -868,6 +876,36 @@ function joinRoomById(roomId) {
     window.location.href = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
 }
 
+// ========== REAL-TIME PREFERENCE UPDATES ==========
+function initPreferenceUpdates() {
+    const excludeWatched = document.getElementById("setDefaultExcludeWatched");
+    const minRating = document.getElementById("setDefaultMinRating");
+    const minRatingDisplay = document.getElementById("minRatingDisplay");
+
+    // Update min rating display in real-time
+    if (minRating && minRatingDisplay) {
+        minRating.addEventListener("input", () => {
+            const value = Number(minRating.value);
+            minRatingDisplay.textContent = value.toFixed(1);
+        });
+    }
+
+    // Auto-save on change (already handled in boot, but we can add immediate visual feedback)
+    if (excludeWatched) {
+        excludeWatched.addEventListener("change", () => {
+            const isChecked = excludeWatched.checked;
+            console.log("Exclude watched changed:", isChecked);
+            // Visual feedback
+            const parent = excludeWatched.closest(".flex");
+            if (parent) {
+                parent.style.background = isChecked ? "hsl(var(--su) / 0.1)" : "";
+                setTimeout(() => {
+                    parent.style.background = "";
+                }, 300);
+            }
+        });
+    }
+}
 
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
@@ -889,7 +927,7 @@ async function boot() {
     handleProfileUpdate();
     initAvatarUpload();
     initFramePreview();
-
+    initPreferenceUpdates();
 
     // 5. Watch for changes - Use applyTheme from prefs.js
     ["themeToggle", "setDefaultExcludeWatched", "setDefaultMinRating", "profileFrameSelect", "chatBackgroundSelect"].forEach((key) => {

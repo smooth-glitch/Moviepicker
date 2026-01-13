@@ -1197,22 +1197,45 @@
 
                     <!-- TAB: PREFERENCES -->
                     <div id="tab-privacy" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-sora mb-6" style="color: hsl(var(--bc) / 1);">Global
-                            Preferences</h2>
-                        <div class="p-4 border border-base-300 rounded-none space-y-4"
-                            style="background-color: hsl(var(--b2) / 1);">
-                            <div class="flex items-center justify-between" style="color: hsl(var(--bc) / 1);">
-                                <span>Exclude Watched by Default</span>
+                        <h2 class="text-2xl font-bold font-sora mb-6">Global Preferences</h2>
+
+                        <!-- Default Search Filters -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-4">
+                            <h3 class="font-bold text-sm uppercase text-base-content/60">Default Search Filters</h3>
+
+                            <!-- Exclude Watched Toggle -->
+                            <div class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
+                                <div>
+                                    <div class="font-semibold text-sm">Exclude Watched</div>
+                                    <p class="text-xs opacity-70">Hide movies you've already seen</p>
+                                </div>
                                 <input type="checkbox" id="setDefaultExcludeWatched" class="toggle toggle-sm" />
                             </div>
+
                             <div class="divider my-2"></div>
-                            <div style="color: hsl(var(--bc) / 1);">
-                                <div class="flex justify-between mb-2"><span>Min Rating Default</span></div>
-                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="1"
-                                    class="range range-secondary range-xs w-full" />
+
+                            <!-- Min Rating Slider -->
+                            <div class="p-3 bg-base-100 border border-base-300">
+                                <div class="flex justify-between mb-2">
+                                    <div>
+                                        <div class="font-semibold text-sm">Minimum Rating</div>
+                                        <p class="text-xs opacity-70">Filter by TMDB rating</p>
+                                    </div>
+                                    <span class="badge badge-primary" id="minRatingDisplay">6.0</span>
+                                </div>
+
+                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="0.5" value="6"
+                                    class="range range-primary range-xs w-full" />
+
+                                <div class="w-full flex justify-between text-xs px-2 mt-2 opacity-50">
+                                    <span>0</span>
+                                    <span>5</span>
+                                    <span>9</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
 
                     <!-- TAB: MY ROOMS -->
                     <div id="tab-rooms" class="settings-content hidden space-y-6">
