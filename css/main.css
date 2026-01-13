@@ -836,3 +836,84 @@
   border-color: rgba(101, 80, 225, 0.4);
   box-shadow: 0 4px 10px rgba(101, 80, 225, 0.15);
 }
+
+
+/* ========== MY ROOMS TAB STYLING ========== */
+
+.room-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1.5px solid hsl(var(--b3));
+  background-color: hsl(var(--b2) / 0.5);
+  transition: all 0.2s ease;
+  gap: 0.75rem;
+}
+
+.room-card:hover {
+  background-color: hsl(var(--b2));
+  border-color: hsl(var(--bc) / 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.room-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.room-card-name {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: hsl(var(--bc));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.room-card-members {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: hsl(var(--bc) / 0.7);
+}
+
+.room-card-members svg {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+.room-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Theme-specific styling */
+[data-theme="synthwave"] .room-card {
+  border-color: rgba(231, 56, 255, 0.3);
+}
+
+[data-theme="synthwave"] .room-card:hover {
+  border-color: rgba(231, 56, 255, 0.5);
+  box-shadow: 0 4px 12px rgba(231, 56, 255, 0.2);
+}
+
+[data-theme="cupcake"] .room-card {
+  border-color: rgba(101, 80, 225, 0.25);
+}
+
+[data-theme="cupcake"] .room-card:hover {
+  border-color: rgba(101, 80, 225, 0.4);
+  box-shadow: 0 4px 10px rgba(101, 80, 225, 0.15);
+}

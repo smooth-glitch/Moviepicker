@@ -801,20 +801,52 @@ async function deleteRoom(roomId) {
     const fs = getFs();
     const user = getAuthUser();
 
-    if (!fs || !user) return;
+    if (!fs || !user) {
+        alert("Not signed in");
+        return;
+    }
 
     try {
         const roomRef = fs.doc(fs.db, "rooms", roomId);
         const snap = await fs.getDoc(roomRef);
 
-        if (snap.exists() && snap.data().ownerUid === user.uid) {
-            await fs.deleteDoc(roomRef);
-        } else {
-            alert("You can only delete rooms you created");
+        if (!snap.exists()) {
+            alert("Room not found");
+            return;
         }
+
+        const roomData = snap.data();
+
+        // Debug log to check ownership
+        console.log("Deleting room:", roomId);
+        console.log("Room owner:", roomData.ownerUid);
+        console.log("Current user:", user.uid);
+        console.log("Match:", roomData.ownerUid === user.uid);
+
+        if (roomData.ownerUid !== user.uid) {
+            alert("You can only delete rooms you created");
+            return;
+        }
+
+        // Delete the room
+        await fs.deleteDoc(roomRef);
+
+        // Also delete all members
+        const membersCol = fs.collection(fs.db, `rooms/${roomId}/members`);
+        const membersSnap = await fs.getDocs(membersCol);
+
+        const deletePromises = [];
+        membersSnap.forEach(memberDoc => {
+            deletePromises.push(fs.deleteDoc(memberDoc.ref));
+        });
+        await Promise.all(deletePromises);
+
+        // Success message
+        alert("Room deleted successfully");
+
     } catch (e) {
         console.error("Failed to delete room:", e);
-        alert("Failed to delete room");
+        alert(`Failed to delete room: ${e.message}`);
     }
 }
 
