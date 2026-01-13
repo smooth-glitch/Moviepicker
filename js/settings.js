@@ -59,7 +59,8 @@ async function loadSettingsForUser() {
         const cloud = data?.settings && typeof data.settings === "object" ? data.settings : {};
         const merged = { ...base, ...cloud };
 
-        applyTheme(merged.theme);
+        // DON'T auto-apply theme on load
+        // applyTheme(merged.theme);  ← REMOVED
         applyDefaultFiltersToStorage(merged);
         return merged;
     } catch (e) {
@@ -67,6 +68,7 @@ async function loadSettingsForUser() {
         return base;
     }
 }
+
 
 async function saveSettingsToCloud(settings) {
     const fs = getFs();
