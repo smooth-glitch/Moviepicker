@@ -35,7 +35,7 @@ A modern, responsive **movie night helper** built with **HTML**, **Tailwind + da
   <img src="https://img.shields.io/badge/SessionStorage-334155?style=for-the-badge" alt="SessionStorage"/>
 </p>
 
---
+---
 
 ## 🚀 Getting Start
 
