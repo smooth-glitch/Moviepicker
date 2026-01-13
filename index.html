@@ -83,7 +83,8 @@
     <div class="max-w-none mx-auto px-3 pt-3 pb-6 md:pt-4 md:pb-8 space-y-2 flex flex-col min-h-screen">
         <!-- Hero with logo, theme toggle, and actions -->
         <section class="relative z-50 px-0" id="hero">
-            <div class="relative w-full h-60 md:h-64 lg:h-72 rounded-none shadow-2xl overflow-visible">
+            <!-- Visual frame (clipped) -->
+            <div class="hero-frame relative w-full h-60 md:h-64 lg:h-72 rounded-none shadow-2xl overflow-hidden">
                 <!-- Background images -->
                 <img src="assets/light-logo.jpg" alt="CineCircle cupcake theme"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 theme-cupcake" />
@@ -94,9 +95,12 @@
                 <div
                     class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent pointer-events-none z-0">
                 </div>
+            </div>
 
+            <!-- UI layer (not clipped by overflow) -->
+            <div class="pointer-events-none absolute inset-0">
                 <!-- Theme toggle - Top right corner -->
-                <div class="absolute top-4 right-4 z-30 hero-fade">
+                <div class="absolute top-4 right-4 z-30 hero-fade pointer-events-auto">
                     <button id="themeToggleBtn"
                         class="theme-toggle btn btn-circle btn-md btn-outline bg-transparent border-base-300 text-base-content transition-all"
                         type="button" title="Toggle theme" aria-label="Toggle theme">
@@ -110,13 +114,12 @@
                 </div>
 
                 <!-- Content: Left-aligned, natural overlay -->
-                <div class="absolute inset-y-0 left-0 flex items-center z-10 hero-fade">
+                <div class="absolute inset-y-0 left-0 flex items-center z-10 hero-fade pointer-events-auto">
                     <div class="px-4 md:px-8 lg:px-12 max-w-md">
-
-                        <!-- Tagline (smaller, under logo) -->
+                        <!-- Tagline -->
                         <h1 class="text-xl md:text-2xl lg:text-3xl font-bold text-primary-content leading-tight mb-3"
                             style="font-family: 'Sora', sans-serif; font-weight: 700; letter-spacing: -0.02em;">
-                            <span class="typing-text">Pick together,<br>watch smarter.</span>
+                            <span class="typing-text">Pick together,<br />watch smarter.</span>
                         </h1>
 
                         <!-- Short description -->
@@ -135,14 +138,11 @@
                                 See trending
                             </button>
                         </div>
-
-                        
                     </div>
                 </div>
             </div>
 
-            <!-- User menu dropdown (hero) -->
-
+            <!-- User menu dropdown (hero) - sits above everything -->
             <div class="absolute bottom-4 right-4 z-[9999] dropdown dropdown-end" tabindex="0">
                 <!-- Trigger -->
                 <label id="btnUser"
@@ -170,10 +170,8 @@
                     <li><button id="btnMenuSignOut" type="button" class="user-menu-item">Sign out</button></li>
                 </ul>
             </div>
-
-
-
         </section>
+
 
         <div id="roomPickBanner" class="alert alert-info hidden">
             <span id="roomPickText">Tonight’s pick: —</span>

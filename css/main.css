@@ -1138,7 +1138,10 @@
 
 #hero {
   position: relative;
-  overflow: hidden;
+  /* let dropdown extend outside */
+  overflow: visible;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 80px rgba(231, 56, 255, 0.15);
+  transition: box-shadow 0.3s ease;
 }
 
 #hero img {
@@ -1149,6 +1152,10 @@
 #hero:hover img {
   filter: brightness(0.9) contrast(1.15);
   transform: scale(1.02);
+}
+
+.hero-frame {
+  overflow: hidden;           /* still clips the background visuals */
 }
 
 /* Add subtle glow overlay */
