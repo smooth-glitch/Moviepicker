@@ -971,3 +971,43 @@
   color: #dc2626;
   box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2);
 }
+
+/* ========== HEADER AVATAR WITH FRAME ========== */
+
+#btnUser .avatar {
+  flex-shrink: 0;
+}
+
+#headerAvatarRing {
+  transition: all 0.3s ease;
+}
+
+/* Apply same frame animations to header avatar */
+#headerAvatarRing.profile-frame-gradient-spin {
+  background: linear-gradient(90deg, #ff0080 0%, #ff8c00 25%, #40e0d0 50%, #ff0080 75%, #ff8c00 100%) !important;
+  background-size: 400% 400% !important;
+  animation: rainbowSpin 3s linear infinite !important;
+}
+
+#headerAvatarRing.profile-frame-neon-pulse {
+  background: linear-gradient(135deg, #e738ff, #45a2ff) !important;
+  animation: neonPulse 2s ease-in-out infinite !important;
+}
+
+#headerAvatarRing.profile-frame-fire-glow {
+  background: linear-gradient(135deg, #ff4500, #ffa500, #ff6347) !important;
+  background-size: 200% 200% !important;
+  animation: fireGlow 1.5s ease-in-out infinite !important;
+}
+
+#headerAvatarRing.profile-frame-ice-shimmer {
+  background: linear-gradient(135deg, #00ffff, #1e90ff, #87ceeb) !important;
+  background-size: 200% 200% !important;
+  animation: iceShimmer 2.5s ease-in-out infinite !important;
+}
+
+#headerAvatarRing.profile-frame-gold-shine {
+  background: linear-gradient(90deg, #b8860b 0%, #ffd700 25%, #ffed4e 50%, #ffd700 75%, #b8860b 100%) !important;
+  background-size: 400% 100% !important;
+  animation: goldShine 2.5s linear infinite !important;
+}

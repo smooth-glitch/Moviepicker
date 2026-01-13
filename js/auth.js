@@ -3,14 +3,12 @@ import { authState } from "./state.js";
 import { toast } from "./ui.js";
 
 export function updateUserChip() {
-    const label = document.getElementById("userChipLabel");
     const btn = document.getElementById("btnUser");
     const u = authState.user;
 
     if (!u) {
-        if (label) label.textContent = "Save pools";
+        // Not logged in - show default icon
         if (btn) {
-            // Reset to default icon
             btn.innerHTML = `
           <span class="inline-flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -25,35 +23,46 @@ export function updateUserChip() {
         return;
     }
 
-    // User is logged in - show avatar
+    // User is logged in - show avatar with frame
     const displayName = u.displayName || u.email?.split("@")[0] || "User";
 
-    // Get avatar URL (prioritize Firestore Base64)
+    // PRIORITY: Firestore photoURL (Base64) > Google photoURL > Avatar API
     let photoURL = window.firestoreUserData?.photoURL;
+
     if (!photoURL || (!photoURL.startsWith("data:image/") && photoURL.length < 200)) {
         photoURL = u.photoURL;
     }
+
     if (!photoURL) {
-        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}`;
+        photoURL = `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&size=80`;
     }
 
     // Get profile frame
     const userFrame = window.firestoreUserData?.profileFrame || "none";
     const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
 
-    if (label) label.textContent = displayName;
-
     if (btn) {
         btn.innerHTML = `
         <div class="avatar">
-          <div class="w-8 md:w-10 rounded-full ring ring-base-100 ring-offset-base-100 ring-offset-1">
-            <img src="${photoURL}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />
+          <div class="w-10 md:w-12 rounded-full ring-4 ring-offset-base-100 ring-offset-2" style="background: hsl(var(--b3));" id="headerAvatarRing">
+            <img src="${photoURL}" alt="${displayName}" class="rounded-full ${frameClass}" />
           </div>
         </div>
-        <span id="userChipLabel" class="text-xs md:text-sm font-medium">${displayName}</span>
+        <span id="userChipLabel" class="text-xs md:text-sm font-medium truncate max-w-[100px]">${displayName}</span>
       `;
+
+        // Apply frame animation to header avatar ring
+        if (userFrame && userFrame !== "none") {
+            setTimeout(() => {
+                const ring = document.getElementById("headerAvatarRing");
+                if (ring) {
+                    ring.classList.add(`profile-frame-${userFrame}`);
+                }
+            }, 100);
+        }
     }
 }
+
 
 export function openAuthDialog() {
     const dlg = id("dlgAuth");
