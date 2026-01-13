@@ -640,18 +640,24 @@
   background-image: linear-gradient(135deg, rgba(250, 112, 154, 0.2) 0%, rgba(254, 225, 64, 0.2) 100%) !important;
 }
 
-/* Dot Pattern */
+/* Dot Pattern - FIXED */
 #roomChatMessages.chat-bg-pattern-dots {
-  background-image: radial-gradient(circle, hsl(var(--bc) / 0.15) 2px, transparent 2px) !important;
-  background-size: 24px 24px !important;
+  background-color: transparent !important;
+  background-image: radial-gradient(circle, hsl(var(--bc) / 0.25) 2px, transparent 2px) !important;
+  background-size: 20px 20px !important;
+  background-attachment: local !important;
+  background-repeat: repeat !important;
 }
 
-/* Grid Lines */
+/* Grid Lines - FIXED */
 #roomChatMessages.chat-bg-pattern-grid {
+  background-color: transparent !important;
   background-image:
-    linear-gradient(hsl(var(--bc) / 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--bc) / 0.08) 1px, transparent 1px) !important;
-  background-size: 24px 24px !important;
+    linear-gradient(hsl(var(--bc) / 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--bc) / 0.12) 1px, transparent 1px) !important;
+  background-size: 20px 20px !important;
+  background-attachment: local !important;
+  background-repeat: repeat !important;
 }
 
 /* Matrix Code */
@@ -659,17 +665,40 @@
   background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 51, 0, 0.3) 100%) !important;
 }
 
-/* Starfield */
+/* Starfield - FIXED */
 #roomChatMessages.chat-bg-stars {
-  background-color: rgba(0, 0, 0, 0.25) !important;
+  background-color: rgba(10, 10, 30, 0.15) !important;
   background-image:
-    radial-gradient(2px 2px at 20% 30%, white, transparent),
-    radial-gradient(2px 2px at 60% 70%, white, transparent),
-    radial-gradient(1px 1px at 50% 50%, white, transparent),
-    radial-gradient(1px 1px at 80% 10%, white, transparent),
-    radial-gradient(2px 2px at 90% 60%, white, transparent) !important;
-  background-size: 100px 100px !important;
+    radial-gradient(circle at 15% 25%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 45% 15%, white 1px, transparent 1px),
+    radial-gradient(circle at 75% 35%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 30% 65%, white 1px, transparent 1px),
+    radial-gradient(circle at 85% 75%, white 1.5px, transparent 1.5px),
+    radial-gradient(circle at 60% 85%, white 1px, transparent 1px),
+    radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+    radial-gradient(circle at 90% 20%, white 1px, transparent 1px) !important;
+  background-size:
+    200px 200px,
+    180px 180px,
+    220px 220px,
+    150px 150px,
+    190px 190px,
+    170px 170px,
+    160px 160px,
+    210px 210px !important;
+  background-position:
+    0 0,
+    50px 80px,
+    120px 40px,
+    80px 130px,
+    30px 90px,
+    140px 160px,
+    100px 20px,
+    60px 140px !important;
+  background-attachment: local !important;
+  background-repeat: repeat !important;
 }
+
 
 /* Ensure messages stay above background */
 #roomChatMessages>* {
