@@ -1169,16 +1169,33 @@ async function boot() {
         });
     }
 
+    // Prevent duplicate message submissions
+    let isSubmitting = false;
+
     if (chatForm && chatInput) {
-        chatForm.addEventListener("submit", async (e) => {
+        // Remove any existing listeners (prevent duplicates)
+        const oldForm = chatForm.cloneNode(true);
+        chatForm.parentNode.replaceChild(oldForm, chatForm);
+        const chatFormNew = document.getElementById("roomChatForm");
+
+        chatFormNew.addEventListener("submit", async (e) => {
             e.preventDefault();
+
+            // Prevent duplicate submissions
+            if (isSubmitting) return;
+
             const text = chatInput.value.trim();
             if (!text || !roomState.id) return;
 
-            const fs = window.firebaseStore;
-            if (!fs) return;
-            const u = authState.user;
+            isSubmitting = true; // Lock
 
+            const fs = window.firebaseStore;
+            if (!fs) {
+                isSubmitting = false;
+                return;
+            }
+
+            const u = authState.user;
             const mentions = extractMentions(text);
 
             const payload = {
@@ -1206,7 +1223,7 @@ async function boot() {
 
             try {
                 await fs.addDoc(
-                    fs.collection(fs.db, "rooms", roomState.id, "messages"),
+                    fs.collection(fs.db, `rooms/${roomState.id}/messages`),
                     payload
                 );
                 chatInput.value = "";
@@ -1215,52 +1232,12 @@ async function boot() {
             } catch (err) {
                 toast("Failed to send message.", "error");
                 console.warn(err);
+            } finally {
+                isSubmitting = false; // Unlock after completion
             }
         });
-
-        if (mentionBox) {
-            chatInput.addEventListener("input", () => {
-                const value = chatInput.value;
-                const caret = chatInput.selectionStart ?? value.length;
-
-                const atIndex = value.lastIndexOf("@", caret - 1);
-                if (atIndex === -1) {
-                    hideMentionBox();
-                    return;
-                }
-
-                const afterAt = value.slice(atIndex + 1, caret);
-                if (/\s/.test(afterAt)) {
-                    hideMentionBox();
-                    return;
-                }
-
-                const query = afterAt.toLowerCase();
-                const members = Array.isArray(roomState.members)
-                    ? roomState.members
-                    : [];
-                const selfUid = authState.user?.uid ?? null;
-
-                const candidates = members.filter((m) => {
-                    if (selfUid && m.id === selfUid) return false;
-                    return (m.name || "").toLowerCase().startsWith(query);
-                });
-
-                if (!candidates.length) {
-                    hideMentionBox();
-                    return;
-                }
-
-                mentionActive = true;
-                mentionStartIndex = atIndex;
-                renderMentionBox(candidates);
-            });
-
-            chatInput.addEventListener("blur", () => {
-                setTimeout(hideMentionBox, 150);
-            });
-        }
     }
+
 
     // Send GIF / Sticker helpers used by tray
     async function sendGifMessage(gif) {
