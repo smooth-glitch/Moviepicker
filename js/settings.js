@@ -16,6 +16,23 @@ function getCurrentTheme() {
     return document.documentElement.getAttribute('data-theme') || 'cupcake';
 }
 
+function syncThemeToggles() {
+    const isDark = getCurrentTheme() === 'synthwave';
+
+    const heroBtn = document.getElementById('themeToggleBtn');
+    const settingsToggle = document.getElementById('themeToggle'); // the checkbox in Appearance tab
+
+    // Hero button: add/remove an "active" class if you want a visual state
+    if (heroBtn) {
+        heroBtn.classList.toggle('btn-active', isDark);
+    }
+
+    // Settings toggle: checked = dark, unchecked = light
+    if (settingsToggle) {
+        settingsToggle.checked = isDark;
+    }
+}
+
 // ========== FIREBASE HELPERS ==========
 function getAuthUser() {
     return window.firebaseAuth?.auth?.currentUser ?? null;
