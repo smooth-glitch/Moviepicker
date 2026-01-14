@@ -100,27 +100,23 @@ function spinThemeButtonOnce() {
     btn.classList.add("theme-spin-right");
 }
 
-
 const heroThemeBtn = document.getElementById("themeToggleBtn");
+
 if (heroThemeBtn) {
     heroThemeBtn.addEventListener("click", () => {
-        const current = getCurrentTheme();
-        const idx = THEME_SEQUENCE.indexOf(current);
-        const next = THEME_SEQUENCE[(idx + 1) % THEME_SEQUENCE.length];
+        const current = document.documentElement.getAttribute("data-theme") || "cupcake";
 
-        if (next === "noir") {
-            spinThemeButtonOnce();
-        }
+        const next =
+            current === "cupcake" ? "noir" :
+                current === "noir" ? "synthwave" :
+                    "cupcake";
 
-        setTheme(next);
-
-        if (typeof window.readUI === "function" &&
-            typeof window.saveSettingsToCloud === "function") {
-            const s = window.readUI();
-            window.saveSettingsToCloud(s);
-        }
+        console.log("current:", current, "next:", next);
+        document.documentElement.setAttribute("data-theme", next);
     });
 }
+
+
 
 
 if (voiceBtn && voiceUI && chatInput) {
@@ -1000,13 +996,6 @@ async function boot() {
     id("yearFilter")?.addEventListener("input", () => {
         state.filters.year = id("yearFilter").value;
         saveJson(LSFILTERS, state.filters);
-    });
-
-    id("themeToggleBtn")?.addEventListener("click", () => {
-        const next = state.prefs.theme === "synthwave" ? "cupcake" : "synthwave";
-        state.prefs.theme = next;
-        applyTheme(next);
-        savePrefs();
     });
 
     id("btnMenuSignIn")?.addEventListener("click", openAuthDialog);

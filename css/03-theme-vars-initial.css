@@ -48,26 +48,6 @@ html[data-theme="cupcake"] {
     --shadow-elevated: 0 14px 35px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
-/* Noir theme – cinematic dark */
-html[data-theme="noir"] {
-    --b1: 10 10% 8%;
-    /* page background */
-    --b2: 10 10% 12%;
-    /* cards */
-    --b3: 10 10% 18%;
-    /* borders */
-    --bc: 40 20% 92%;
-    /* text */
-    --p: 42 80% 55%;
-    /* gold primary */
-    --pf: 42 80% 55%;
-}
-
-/* Optional: tweak hero/card look in noir */
-html[data-theme="noir"] #hero {
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(250, 209, 120, 0.35);
-}
 
 .theme-spin-right {
     animation: themeSpinRight 0.35s ease-out;

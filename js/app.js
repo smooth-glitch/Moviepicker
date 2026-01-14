@@ -1944,13 +1944,6 @@
 
         btnResetFilters?.addEventListener("click", resetAllFilters);
 
-        $("themeToggleBtn")?.addEventListener("click", () => {
-            const current =
-                document.documentElement.getAttribute("data-theme") || "synthwave";
-            const next = current === "synthwave" ? "cupcake" : "synthwave";
-            applyTheme(next);
-        });
-
 
         $("btnUser")?.addEventListener("click", () => {
             if (authState.user) {

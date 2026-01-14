@@ -1398,3 +1398,148 @@
   border-color: rgba(231, 56, 255, 0.5);
   box-shadow: 0 6px 16px rgba(231, 56, 255, 0.3);
 }
+
+/* ============================
+   Neo Noir Theme (banner‑match)
+   ============================ */
+html[data-theme="noir"] {
+  /* Base surfaces */
+  --b1: 240 45% 6%;
+  /* page background: deep space navy */
+  --b2: 260 40% 10%;
+  /* cards/panels */
+  --b3: 260 35% 16%;
+  /* borders/inputs */
+
+  /* Text */
+  --bc: 0 0% 98%;
+  /* almost pure white text */
+
+  /* Brand neon pink/purple */
+  --p: 315 90% 62%;
+  /* primary: hot pink */
+  --pf: 315 90% 68%;
+  --s: 260 85% 65%;
+  /* secondary: violet */
+  --sf: 260 85% 72%;
+
+  /* Feedback colors tuned for dark space */
+  --in: 205 90% 65%;
+  /* info: cyan */
+  --su: 145 70% 55%;
+  /* success: green */
+  --er: 345 85% 60%;
+  /* error: magenta‑red */
+}
+
+/* Hero and chrome tweaks for Noir */
+html[data-theme="noir"] #hero {
+  box-shadow:
+    0 0 40px rgba(180, 90, 255, 0.5),
+    0 0 80px rgba(255, 80, 180, 0.4);
+  border-color: rgba(255, 120, 220, 0.5);
+}
+
+html[data-theme="noir"] .btn-primary {
+  background: linear-gradient(135deg, #ff4fd8, #9b6bff);
+  border: none;
+  color: #ffffff;
+  box-shadow:
+    0 0 18px rgba(255, 79, 216, 0.6),
+    0 0 28px rgba(155, 107, 255, 0.5);
+}
+
+html[data-theme="noir"] .btn-secondary {
+  background: linear-gradient(135deg, #42d9ff, #9b6bff);
+  border: none;
+  color: #ffffff;
+  box-shadow:
+    0 0 16px rgba(66, 217, 255, 0.6),
+    0 0 26px rgba(155, 107, 255, 0.5);
+}
+
+html[data-theme="noir"] .card,
+html[data-theme="noir"] .modal-box {
+  background: radial-gradient(circle at top, rgba(255, 79, 216, 0.15), transparent 55%), radial-gradient(circle at bottom, rgba(66, 217, 255, 0.12), transparent 55%), hsl(var(--b2));
+  border-color: rgba(180, 120, 255, 0.4);
+}
+
+/* Theme toggle glow in Neo Noir */
+html[data-theme="noir"] #themeToggleBtn {
+  background: rgba(8, 8, 24, 0.7);
+  border-color: rgba(255, 120, 220, 0.6);
+  box-shadow:
+    0 0 18px rgba(255, 120, 220, 0.7),
+    0 0 32px rgba(66, 217, 255, 0.5);
+  color: #ffffff;
+}
+
+/* Global text contrast in Neo Noir */
+html[data-theme="noir"],
+html[data-theme="noir"] body {
+  color: hsl(0 0% 98%);
+}
+
+html[data-theme="noir"] .text-base-content,
+html[data-theme="noir"] .text-base-content70,
+html[data-theme="noir"] .text-base-content80,
+html[data-theme="noir"] .text-primary-content {
+  color: hsl(0 0% 98%) !important;
+}
+
+/* Cards: pool, results, room, settings */
+html[data-theme="noir"] .card,
+html[data-theme="noir"] .card-body,
+html[data-theme="noir"] .modal-box {
+  background-color: hsl(240 45% 10%) !important;
+  color: hsl(0 0% 98%) !important;
+  border-color: rgba(180, 120, 255, 0.4) !important;
+}
+
+/* Pool / Room headings and labels */
+html[data-theme="noir"] h1,
+html[data-theme="noir"] h2,
+html[data-theme="noir"] h3,
+html[data-theme="noir"] h4,
+html[data-theme="noir"] .font-headline {
+  color: hsl(0 0% 100%) !important;
+}
+
+html[data-theme="noir"] #pool,
+html[data-theme="noir"] #roomChatMessages,
+html[data-theme="noir"] #roomMembersWrap,
+html[data-theme="noir"] #poolEmpty,
+html[data-theme="noir"] .chat-message-text {
+  color: hsl(0 0% 96%) !important;
+}
+
+/* Buttons: keep text bright */
+html[data-theme="noir"] .btn,
+html[data-theme="noir"] .btn-primary,
+html[data-theme="noir"] .btn-secondary,
+html[data-theme="noir"] .btn-outline {
+  color: #ffffff !important;
+}
+
+/* Inputs in cards/modals */
+html[data-theme="noir"] input,
+html[data-theme="noir"] textarea,
+html[data-theme="noir"] select {
+  background-color: hsl(240 30% 12%) !important;
+  color: hsl(0 0% 98%) !important;
+  border-color: hsl(240 25% 25%) !important;
+}
+
+/* Chat bubble + meta text */
+html[data-theme="noir"] .chat-message-author,
+html[data-theme="noir"] .chat-message-time {
+  color: hsl(0 0% 90%) !important;
+}
+
+/* Hero subtitle text in Neo Noir */
+html[data-theme="noir"] #hero p,
+html[data-theme="noir"] #hero .text-primary-content,
+html[data-theme="noir"] #hero .text-primary-content90 {
+  color: hsl(0 0% 98%) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
