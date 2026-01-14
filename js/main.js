@@ -79,19 +79,17 @@ const voiceSendBtn = document.getElementById("voiceSendBtn");
 const chatInput = document.getElementById("roomChatInput"); // ← DEFINE IT HERE
 
 
-// 3‑way theme cycle for hero toggle
 const THEME_SEQUENCE = ["cupcake", "noir", "synthwave"];
 
 function getCurrentTheme() {
-    // Prefer prefs if loaded, fall back to DOM attribute
     if (state?.prefs?.theme) return state.prefs.theme;
     return document.documentElement.getAttribute("data-theme") || "cupcake";
 }
 
 function setTheme(theme) {
-    // This will update prefs + data-theme + local storage
-    applyTheme(theme);
+    applyTheme(theme); // now also updates state.prefs + storage
 }
+
 
 
 function spinThemeButtonOnce() {
