@@ -135,35 +135,36 @@ async function saveSettingsToCloud(settings) {
 
 // ========== UI FUNCTIONS ==========
 function readUI() {
+    // FIX: Read theme directly from HTML attribute so it never gets out of sync
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'cupcake';
+
     return {
-        theme: document.getElementById("themeToggle")?.checked ? "synthwave" : "cupcake",
-        defaultExcludeWatched: !!document.getElementById("setDefaultExcludeWatched")?.checked,
-        defaultMinRating: Number(document.getElementById("setDefaultMinRating")?.value || 6),
-        profileFrame: document.getElementById("profileFrameSelect")?.value || "none",
-        chatBackground: document.getElementById("chatBackgroundSelect")?.value || "default",
+        theme: currentTheme,
+        defaultExcludeWatched: !!document.getElementById('setDefaultExcludeWatched')?.checked,
+        defaultMinRating: Number(document.getElementById('setDefaultMinRating')?.value || 6),
+        profileFrame: document.getElementById('profileFrameSelect')?.value || 'none',
+        chatBackground: document.getElementById('chatBackgroundSelect')?.value || 'default',
     };
 }
 
-
 function syncUI(s) {
-    const themeToggle = document.getElementById("themeToggle");
-    const excludeWatched = document.getElementById("setDefaultExcludeWatched");
-    const minRating = document.getElementById("setDefaultMinRating");
-    const profileFrame = document.getElementById("profileFrameSelect");
-    const chatBackground = document.getElementById("chatBackgroundSelect");
-    const minRatingDisplay = document.getElementById("minRatingDisplay"); // ← ADD THIS
+    // We no longer need to sync a theme checkbox because the button is stateless
+    // (it just toggles whatever is current).
 
-    if (themeToggle) themeToggle.checked = s.theme === "synthwave";
+    const excludeWatched = document.getElementById('setDefaultExcludeWatched');
+    const minRating = document.getElementById('setDefaultMinRating');
+    const profileFrame = document.getElementById('profileFrameSelect');
+    const chatBackground = document.getElementById('chatBackgroundSelect');
+    const minRatingDisplay = document.getElementById('minRatingDisplay'); // ADD THIS
+
     if (excludeWatched) excludeWatched.checked = !!s.defaultExcludeWatched;
-    if (minRating) {
-        minRating.value = String(s.defaultMinRating ?? 6);
-        // Update display immediately
-        if (minRatingDisplay) {
-            minRatingDisplay.textContent = Number(s.defaultMinRating ?? 6).toFixed(1);
-        }
-    }
-    if (profileFrame) profileFrame.value = s.profileFrame || "none";
-    if (chatBackground) chatBackground.value = s.chatBackground || "default";
+    if (minRating) minRating.value = String(s.defaultMinRating ?? 6);
+
+    // Update display immediately
+    if (minRatingDisplay) minRatingDisplay.textContent = (Number(s.defaultMinRating) ?? 6).toFixed(1);
+
+    if (profileFrame) profileFrame.value = s.profileFrame || 'none';
+    if (chatBackground) chatBackground.value = s.chatBackground || 'default';
 }
 
 
@@ -956,13 +957,21 @@ async function boot() {
     initFramePreview();
     initPreferenceUpdates();
 
-    // 5. Watch for changes (SEPARATED FOR CLARITY)
-    // Theme toggle
-    const themeToggle = document.getElementById("themeToggle");
-    if (themeToggle) {
-        themeToggle.addEventListener("change", async () => {
+    // FIX: New Theme Button Logic (Click instead of Change)
+    const settingsThemeBtn = document.getElementById('settingsThemeBtn');
+    if (settingsThemeBtn) {
+        settingsThemeBtn.addEventListener('click', async () => {
+            // 1. Get current state
+            const current = document.documentElement.getAttribute('data-theme') || 'cupcake';
+            // 2. Flip it
+            const next = current === 'synthwave' ? 'cupcake' : 'synthwave';
+
+            // 3. Apply
+            applyTheme(next);
+
+            // 4. Save
+            // Note: readUI() will now correctly grab 'next' because applyTheme updated the HTML tag
             const newSettings = readUI();
-            applyTheme(newSettings.theme);
             await saveSettingsToCloud(newSettings);
         });
     }
@@ -978,9 +987,11 @@ async function boot() {
     }
 
     // Chat background (ONLY updates chat, NOT page theme)
-    const chatBackgroundSelect = document.getElementById("chatBackgroundSelect");
+    // Chat background (ONLY updates chat, NOT page theme)
+    const chatBackgroundSelect = document.getElementById('chatBackgroundSelect');
     if (chatBackgroundSelect) {
-        chatBackgroundSelect.addEventListener("change", async () => {
+        chatBackgroundSelect.addEventListener('change', async () => {
+            // ...
             const newSettings = readUI();
             applyChatBackground(newSettings.chatBackground);
             await saveSettingsToCloud(newSettings);
