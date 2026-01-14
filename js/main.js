@@ -83,21 +83,25 @@ const chatInput = document.getElementById("roomChatInput"); // ← DEFINE IT HER
 const THEME_SEQUENCE = ["cupcake", "noir", "synthwave"];
 
 function getCurrentTheme() {
+    // Prefer prefs if loaded, fall back to DOM attribute
+    if (state?.prefs?.theme) return state.prefs.theme;
     return document.documentElement.getAttribute("data-theme") || "cupcake";
 }
 
 function setTheme(theme) {
-    // Use your existing helper so LS + prefs stay in sync
+    // This will update prefs + data-theme + local storage
     applyTheme(theme);
 }
+
 
 function spinThemeButtonOnce() {
     const btn = document.getElementById("themeToggleBtn");
     if (!btn) return;
     btn.classList.remove("theme-spin-right");
-    void btn.offsetWidth; // restart CSS animation
+    void btn.offsetWidth;
     btn.classList.add("theme-spin-right");
 }
+
 
 const heroThemeBtn = document.getElementById("themeToggleBtn");
 if (heroThemeBtn) {
@@ -106,14 +110,12 @@ if (heroThemeBtn) {
         const idx = THEME_SEQUENCE.indexOf(current);
         const next = THEME_SEQUENCE[(idx + 1) % THEME_SEQUENCE.length];
 
-        // Spin on the Noir step in the cycle
         if (next === "noir") {
             spinThemeButtonOnce();
         }
 
         setTheme(next);
 
-        // Optional: if settings.js exposes readUI/saveSettingsToCloud on window
         if (typeof window.readUI === "function" &&
             typeof window.saveSettingsToCloud === "function") {
             const s = window.readUI();
