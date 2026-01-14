@@ -78,6 +78,25 @@ const voiceCancelBtn = document.getElementById("voiceCancelBtn");
 const voiceSendBtn = document.getElementById("voiceSendBtn");
 const chatInput = document.getElementById("roomChatInput"); // ← DEFINE IT HERE
 
+
+const heroThemeBtn = document.getElementById("themeToggleBtn");
+
+if (heroThemeBtn) {
+    heroThemeBtn.addEventListener("click", () => {
+        const current =
+            typeof window.getCurrentTheme === "function"
+                ? window.getCurrentTheme()
+                : document.documentElement.getAttribute("data-theme") || "cupcake";
+
+        const next = current === "synthwave" ? "cupcake" : "synthwave";
+
+        applyTheme(next);              // imported from ./prefs.js
+        if (typeof window.syncThemeToggles === "function") {
+            window.syncThemeToggles(); // updates hero + settings toggle
+        }
+    });
+}
+
 if (voiceBtn && voiceUI && chatInput) {
     voiceBtn.addEventListener("click", async () => {
         if (!roomState.id) {

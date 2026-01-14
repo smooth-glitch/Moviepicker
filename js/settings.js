@@ -12,6 +12,27 @@ const DEFAULT_SETTINGS = {
     chatBackground: "default",
 };
 
+function getCurrentTheme() {
+    return document.documentElement.getAttribute('data-theme') || 'cupcake';
+}
+
+function syncThemeToggles() {
+    const isDark = getCurrentTheme() === 'synthwave';
+
+    const heroBtn = document.getElementById('themeToggleBtn');
+    const settingsToggle = document.getElementById('themeToggle'); // the checkbox in Appearance tab
+
+    // Hero button: add/remove an "active" class if you want a visual state
+    if (heroBtn) {
+        heroBtn.classList.toggle('btn-active', isDark);
+    }
+
+    // Settings toggle: checked = dark, unchecked = light
+    if (settingsToggle) {
+        settingsToggle.checked = isDark;
+    }
+}
+
 // ========== FIREBASE HELPERS ==========
 function getAuthUser() {
     return window.firebaseAuth?.auth?.currentUser ?? null;
@@ -935,6 +956,12 @@ function initPreferenceUpdates() {
     }
 }
 
+
+// make theme helpers usable from other modules (like main.js)
+window.getCurrentTheme = getCurrentTheme;
+window.syncThemeToggles = syncThemeToggles;
+
+
 // Update boot() to load Firestore data FIRST
 // ========== MAIN BOOT ==========
 async function boot() {
@@ -949,7 +976,7 @@ async function boot() {
 
     applyProfileFrame(s.profileFrame || "none");
     applyChatBackground(s.chatBackground || "default");
-
+    syncThemeToggles();
     // 4. Init modal & handlers
     initModalLogic();
     handleProfileUpdate();
@@ -958,23 +985,20 @@ async function boot() {
     initPreferenceUpdates();
 
     // FIX: New Theme Button Logic (Click instead of Change)
-    const settingsThemeBtn = document.getElementById('settingsThemeBtn');
+    const settingsThemeBtn = document.getElementById("settingsThemeBtn");
     if (settingsThemeBtn) {
-        settingsThemeBtn.addEventListener('click', async () => {
-            // 1. Get current state
-            const current = document.documentElement.getAttribute('data-theme') || 'cupcake';
-            // 2. Flip it
-            const next = current === 'synthwave' ? 'cupcake' : 'synthwave';
+        settingsThemeBtn.addEventListener("click", async () => {
+            const current = getCurrentTheme();
+            const next = current === "synthwave" ? "cupcake" : "synthwave";
 
-            // 3. Apply
-            applyTheme(next);
+            applyTheme(next);       // actually changes theme
+            syncThemeToggles();     // keep hero + settings toggles in sync
 
-            // 4. Save
-            // Note: readUI() will now correctly grab 'next' because applyTheme updated the HTML tag
             const newSettings = readUI();
             await saveSettingsToCloud(newSettings);
         });
     }
+
 
     // Profile frame
     const profileFrameSelect = document.getElementById("profileFrameSelect");
