@@ -702,6 +702,15 @@ async function boot() {
         },
     });
 
+    const minRatingPoolInput = document.getElementById('minRatingPool');
+    const minRatingPoolDisplay = document.getElementById('minRatingPoolDisplay');
+
+    if (minRatingPoolInput && minRatingPoolDisplay) {
+        minRatingPoolInput.addEventListener('input', () => {
+            minRatingPoolDisplay.textContent = Number(minRatingPoolInput.value).toFixed(1);
+        });
+    }
+
     // When opening settings, sync inputs from state
     id("btnMenuSettings")?.addEventListener("click", () => {
         const dlg = document.getElementById("dlgSettings");

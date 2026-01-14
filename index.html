@@ -444,22 +444,7 @@
                                 Import
                             </button>
 
-                            <!-- Min rating chip -->
-                            <div id="minRatingChip"
-                                class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-base-200/60 text-xs text-base-content/80 border border-base-300 shadow-sm">
-                                <span class="flex items-center gap-1 opacity-80">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <polygon
-                                            points="12 2 15 8.5 22 9.3 17 14 18.5 21 12 17.8 5.5 21 7 14 2 9.3 9 8.5 12 2" />
-                                    </svg>
-                                    <span>Min</span>
-                                </span>
-                                <input id="minRatingPool" type="number" min="0" max="10" step="0.5"
-                                    class="w-12 bg-transparent border-none focus:outline-none text-xs text-right"
-                                    value="6" />
-                            </div>
+                           
 
                             <!-- Exclude watched toggle pill -->
                             <label id="btnExcludeWatchedPool"
@@ -1201,97 +1186,56 @@
 
                     </div>
 
-                    <!-- TAB: PREFERENCES -->
-                    <div id="tab-privacy" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-sora mb-6">Global Preferences</h2>
-
-                        <!-- Default Search Filters -->
-                        <div class="p-4 bg-base-200 border border-base-300 space-y-4">
-                            <h3 class="font-bold text-sm uppercase text-base-content/60">Default Search Filters</h3>
-
-                            <!-- Exclude Watched Toggle -->
-                            <div class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
-                                <div>
-                                    <div class="font-semibold text-sm">Exclude Watched</div>
-                                    <p class="text-xs opacity-70">Hide movies you've already seen</p>
-                                </div>
-                                <input type="checkbox" id="setDefaultExcludeWatched" class="toggle toggle-sm" />
-                            </div>
-
-                            <div class="divider my-2"></div>
-
-                            <!-- Min Rating Slider -->
-                            <div class="p-4 bg-base-100 border border-base-300">
-                                <div class="flex justify-between items-center mb-3">
-                                    <div>
-                                        <div class="font-bold text-sm">Minimum Rating</div>
-                                        <p class="text-xs opacity-70">Filter by TMDB rating</p>
-                                    </div>
-                                    <span class="badge badge-lg badge-primary font-mono"
-                                        id="minRatingDisplay">6.0</span>
-                                </div>
-
-                                <input type="range" id="setDefaultMinRating" min="0" max="9" step="0.5" value="6"
-                                    class="range range-primary range-sm w-full" />
-
-                                <div class="w-full flex justify-between text-xs px-1 mt-2 opacity-60">
-                                    <span class="font-mono">0.0</span>
-                                    <span class="font-mono">5.0</span>
-                                    <span class="font-mono">9.0</span>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <!-- TAB: MY ROOMS -->
-                    <div id="tab-rooms" class="settings-content hidden space-y-6">
-                        <h2 class="text-2xl font-bold font-sora mb-6">My Rooms</h2>
-
-                        <!-- Created Rooms Section -->
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2 mb-3">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
-                                </svg>
-                                <h3 class="font-bold text-sm uppercase">Created by You</h3>
-                            </div>
-
-                            <div id="createdRoomsList" class="space-y-2">
-                                <!-- Rooms you created will be injected here -->
-                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
-                                    Loading...
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <!-- Joined Rooms Section -->
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2 mb-3">
-                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path
-                                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                                </svg>
-                                <h3 class="font-bold text-sm uppercase">Joined Rooms</h3>
-                            </div>
-
-                            <div id="joinedRoomsList" class="space-y-2">
-                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
-                                    Loading...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
                 </div>
 
+
+                <!-- TAB: MY ROOMS -->
+                <div id="tab-rooms" class="settings-content hidden space-y-6">
+                    <h2 class="text-2xl font-bold font-sora mb-6">My Rooms</h2>
+
+                    <!-- Created Rooms Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+                            </svg>
+                            <h3 class="font-bold text-sm uppercase">Created by You</h3>
+                        </div>
+
+                        <div id="createdRoomsList" class="space-y-2">
+                            <!-- Rooms you created will be injected here -->
+                            <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Joined Rooms Section -->
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-2 mb-3">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                            </svg>
+                            <h3 class="font-bold text-sm uppercase">Joined Rooms</h3>
+                        </div>
+
+                        <div id="joinedRoomsList" class="space-y-2">
+                            <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
+
         </div>
+    </div>
     </div>
 
     <script type="module" src="./js/hero-fade.js"></script>

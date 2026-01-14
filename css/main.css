@@ -1543,3 +1543,172 @@ html[data-theme="noir"] #hero .text-primary-content90 {
   color: hsl(0 0% 98%) !important;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
+
+/* Pool filter controls - match settings modal style */
+
+/* Min Rating Slider (pool) */
+#minRatingChip {
+  display: none;
+  /* hide the old chip version */
+}
+
+#minRatingPool {
+  /* Make the range slider visible with proper styling */
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+html[data-theme="noir"] #minRatingPool {
+  accent-color: hsl(42 80% 55%);
+  /* gold accent */
+  background: transparent;
+}
+
+/* Wrapper for min rating control in pool */
+.pool-min-rating-control {
+  padding: 1rem;
+  background-color: hsl(240 45% 10%);
+  border: 1px solid rgba(180, 120, 255, 0.4);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+html[data-theme="noir"] .pool-min-rating-control {
+  background: linear-gradient(135deg,
+      rgba(255, 79, 216, 0.08),
+      rgba(66, 217, 255, 0.08));
+  border-color: rgba(180, 120, 255, 0.6);
+  box-shadow: 0 0 16px rgba(255, 79, 216, 0.25), 0 0 24px rgba(66, 217, 255, 0.15);
+}
+
+.pool-min-rating-control h4 {
+  font-weight: bold;
+  color: hsl(0 0% 98%);
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.pool-min-rating-control .range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  margin-top: 0.5rem;
+  font-family: monospace;
+}
+
+/* Exclude Watched Toggle Pill (pool) */
+#btnExcludeWatchedPool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(180, 120, 255, 0.5);
+  background: rgba(0, 0, 0, 0.2);
+  color: hsl(0 0% 98%);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+html[data-theme="noir"] #btnExcludeWatchedPool {
+  background: linear-gradient(135deg, rgba(255, 79, 216, 0.15), rgba(66, 217, 255, 0.12));
+  border-color: rgba(180, 120, 255, 0.7);
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.4), 0 0 18px rgba(66, 217, 255, 0.3);
+}
+
+html[data-theme="noir"] #btnExcludeWatchedPool:hover {
+  box-shadow: 0 0 16px rgba(255, 79, 216, 0.6), 0 0 24px rgba(66, 217, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+#btnExcludeWatchedPool svg {
+  width: 0.625rem;
+  height: 0.625rem;
+  opacity: 0.85;
+}
+
+#btnExcludeWatchedPool span {
+  color: hsl(0 0% 98%);
+}
+
+/* The actual checkbox (hidden but functional) */
+#excludeWatched {
+  display: none;
+}
+
+/* Pool Filters - Override with !important */
+
+/* Min Rating Container */
+#minRatingPool {
+  accent-color: hsl(var(--p)) !important;
+  width: 100% !important;
+}
+
+#minRatingPoolDisplay {
+  background: hsl(var(--p)) !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.5rem 1rem !important;
+}
+
+/* Exclude Watched Pool - Override to Standard Toggle */
+#excludeWatchedPool {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  width: 3rem !important;
+  height: 1.5rem !important;
+  background-color: hsl(var(--b3)) !important;
+  border: 1px solid hsl(var(--b3)) !important;
+  border-radius: 999px !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  transition: background-color 160ms ease !important;
+  position: relative !important;
+}
+
+#excludeWatchedPool:checked {
+  background-color: hsl(var(--p)) !important;
+  border-color: hsl(var(--p)) !important;
+}
+
+/* Noir Theme Overrides */
+html[data-theme="noir"] #minRatingPool {
+  accent-color: hsl(42 80% 55%) !important;
+}
+
+html[data-theme="noir"] #minRatingPoolDisplay {
+  background: linear-gradient(135deg, #ff4fd8, #9b6bff) !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.6) !important;
+}
+
+html[data-theme="noir"] #excludeWatchedPool {
+  background-color: hsl(240 30% 20%) !important;
+  border-color: rgba(180, 120, 255, 0.5) !important;
+}
+
+html[data-theme="noir"] #excludeWatchedPool:checked {
+  background: linear-gradient(135deg, #ff4fd8, #9b6bff) !important;
+  border-color: rgba(255, 79, 216, 0.8) !important;
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.6) !important;
+}
+
+/* Container styling */
+.p-4.bg-base-100.border.border-base-300.rounded-lg {
+  padding: 1rem !important;
+  background-color: hsl(var(--b1)) !important;
+  border: 1px solid hsl(var(--b3)) !important;
+  border-radius: 0.5rem !important;
+}
+
+html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
+  background-color: hsl(240 45% 10%) !important;
+  border-color: rgba(180, 120, 255, 0.4) !important;
+  box-shadow: 0 0 16px rgba(255, 79, 216, 0.15) !important;
+}
+
