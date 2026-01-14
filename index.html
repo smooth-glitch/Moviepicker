@@ -46,6 +46,19 @@
             opacity: 1;
         }
 
+        /* NEW for noir */
+        html[data-theme="noir"] .theme-cupcake {
+            opacity: 0;
+        }
+
+        html[data-theme="noir"] .theme-synthwave {
+            opacity: 0;
+        }
+
+        html[data-theme="noir"] .theme-noir {
+            opacity: 1;
+        }
+
         /* subtle breathing animation for Pick me now */
         #pickMeNow {
             animation: pulsePick 1.6s ease-in-out infinite;
@@ -90,7 +103,8 @@
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 theme-cupcake" />
                 <img src="assets/dark-logo.jpg" alt="CineCircle synthwave theme"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 theme-synthwave opacity-0" />
-
+                <img src="assets/noir-logo.jpg" alt="CineCircle synthwave theme"
+                    class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 theme-synthwave opacity-0" />
                 <!-- Gradient overlay (left to right, fades out) -->
                 <div
                     class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent pointer-events-none z-0">

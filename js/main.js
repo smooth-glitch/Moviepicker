@@ -79,23 +79,49 @@ const voiceSendBtn = document.getElementById("voiceSendBtn");
 const chatInput = document.getElementById("roomChatInput"); // ← DEFINE IT HERE
 
 
-const heroThemeBtn = document.getElementById("themeToggleBtn");
+// 3‑way theme cycle for hero toggle
+const THEME_SEQUENCE = ["cupcake", "noir", "synthwave"];
 
+function getCurrentTheme() {
+    return document.documentElement.getAttribute("data-theme") || "cupcake";
+}
+
+function setTheme(theme) {
+    // Use your existing helper so LS + prefs stay in sync
+    applyTheme(theme);
+}
+
+function spinThemeButtonOnce() {
+    const btn = document.getElementById("themeToggleBtn");
+    if (!btn) return;
+    btn.classList.remove("theme-spin-right");
+    void btn.offsetWidth; // restart CSS animation
+    btn.classList.add("theme-spin-right");
+}
+
+const heroThemeBtn = document.getElementById("themeToggleBtn");
 if (heroThemeBtn) {
     heroThemeBtn.addEventListener("click", () => {
-        const current =
-            typeof window.getCurrentTheme === "function"
-                ? window.getCurrentTheme()
-                : document.documentElement.getAttribute("data-theme") || "cupcake";
+        const current = getCurrentTheme();
+        const idx = THEME_SEQUENCE.indexOf(current);
+        const next = THEME_SEQUENCE[(idx + 1) % THEME_SEQUENCE.length];
 
-        const next = current === "synthwave" ? "cupcake" : "synthwave";
+        // Spin on the Noir step in the cycle
+        if (next === "noir") {
+            spinThemeButtonOnce();
+        }
 
-        applyTheme(next);              // imported from ./prefs.js
-        if (typeof window.syncThemeToggles === "function") {
-            window.syncThemeToggles(); // updates hero + settings toggle
+        setTheme(next);
+
+        // Optional: if settings.js exposes readUI/saveSettingsToCloud on window
+        if (typeof window.readUI === "function" &&
+            typeof window.saveSettingsToCloud === "function") {
+            const s = window.readUI();
+            window.saveSettingsToCloud(s);
         }
     });
 }
+
 
 if (voiceBtn && voiceUI && chatInput) {
     voiceBtn.addEventListener("click", async () => {
