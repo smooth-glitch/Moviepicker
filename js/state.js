@@ -47,6 +47,7 @@ export const state = {
         // language: "en-US",
         // region: "IN",
     },
+    collections: [],
 };
 
 export const authState = { user: null };

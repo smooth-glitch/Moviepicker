@@ -828,6 +828,18 @@
                             </svg>
                             Re-roll
                         </button>
+                        <!-- In the details dialog, after btnWatched button -->
+                        <button id="btnAddToCollection" class="btn btn-outline btn-sm w-full gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                <polyline points="17 21 17 13 7 13 7 21" />
+                                <polyline points="7 3 7 8 15 8" />
+                            </svg>
+                            Add to Collection
+                        </button>
+
                     </div>
                 </div>
 
@@ -847,6 +859,61 @@
                     <!-- Recommendations / similar / collections tiles -->
                     <div id="dlgExtraContent" class="space-y-6 border-t border-base-200 pt-6"></div>
                 </div>
+            </div>
+        </div>
+    </dialog>
+
+
+    <!-- Collection Picker Modal -->
+    <dialog id="dlgCollectionPicker" class="modal">
+        <div class="modal-box max-w-md">
+            <h3 class="font-bold text-lg mb-4">Add to Collection</h3>
+
+            <!-- Collections list -->
+            <div id="collectionPickerList" class="space-y-2 max-h-96 overflow-y-auto">
+                <!-- Will be populated by JS -->
+            </div>
+
+            <!-- Create new collection inline -->
+            <div class="divider text-xs">or create new</div>
+            <div class="flex gap-2">
+                <input type="text" id="quickCollectionName" class="input input-bordered input-sm flex-1"
+                    placeholder="New collection name">
+                <button id="btnQuickCreate" class="btn btn-primary btn-sm">
+                    Create & Add
+                </button>
+            </div>
+
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn btn-sm">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- View Collection Modal -->
+    <dialog id="dlgViewCollection" class="modal">
+        <div class="modal-box max-w-3xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+
+            <h3 id="viewCollectionTitle" class="font-bold text-2xl mb-2">Collection</h3>
+            <p id="viewCollectionCount" class="text-sm opacity-70 mb-4">0 movies</p>
+
+            <!-- Movies grid -->
+            <div id="viewCollectionMovies" class="grid grid-cols-3 md:grid-cols-4 gap-3 max-h-96 overflow-y-auto">
+                <!-- Will be populated by JS -->
+            </div>
+
+            <div class="modal-action">
+                <button id="btnLoadCollection" class="btn btn-primary btn-sm">
+                    Load to Pool
+                </button>
+                <form method="dialog">
+                    <button class="btn btn-sm">Close</button>
+                </form>
             </div>
         </div>
     </dialog>
@@ -1008,7 +1075,14 @@
                             </svg>
                             Room Chat
                         </button>
-
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="collections" style="color: hsl(var(--bc) / 1)">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                            </svg>
+                            Collections
+                        </button>
 
                     </nav>
 
@@ -1274,6 +1348,30 @@
                                 </div>
                             </div>
 
+                        </div>
+                    </div>
+
+                    <div id="tab-collections" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-sora mb-6">My Collections</h2>
+
+                        <!-- Create New Collection -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-3">
+                            <h3 class="font-bold">Create New Collection</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="newCollectionName"
+                                    class="input input-bordered input-sm flex-1 rounded-none"
+                                    placeholder="e.g., Date Night Movies">
+                                <button id="btnCreateCollection" class="btn btn-primary btn-sm rounded-none">
+                                    Create
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Collections List -->
+                        <div id="collectionsList" class="space-y-3">
+                            <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                No collections yet. Create your first playlist!
+                            </div>
                         </div>
                     </div>
                 </div>

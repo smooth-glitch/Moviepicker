@@ -1680,3 +1680,25 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
 [data-theme="cupcake"] .btn-primary:hover {
   box-shadow: 0 4px 14px rgba(101, 80, 225, 0.3);
 }
+
+/* ===== COLLECTION PICKER - THEME FIX ===== */
+
+[data-theme="synthwave"] #collectionPickerList .badge-primary {
+  background: linear-gradient(135deg, #e738ff, #45a2ff) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 0 12px rgba(231, 56, 255, 0.6);
+}
+
+[data-theme="noir"] #collectionPickerList .badge-primary {
+  background: linear-gradient(135deg, #ff4fd8, #9b6bff) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.6);
+}
+
+/* Make text more visible */
+[data-theme="synthwave"] #collectionPickerList button,
+[data-theme="noir"] #collectionPickerList button {
+  color: hsl(var(--bc)) !important;
+}

@@ -18,7 +18,7 @@ A modern, responsive **movie night helper** built with **HTML**, **Tailwind + da
 
 ---
 
-## 🧱 Tech Stac
+## 🧱 Tech Stack
 
 <p align="center">
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"/>
@@ -35,7 +35,7 @@ A modern, responsive **movie night helper** built with **HTML**, **Tailwind + da
   <img src="https://img.shields.io/badge/SessionStorage-334155?style=for-the-badge" alt="SessionStorage"/>
 </p>
 
---
+---
 
 ## 🚀 Getting Start
 

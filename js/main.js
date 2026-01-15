@@ -60,6 +60,13 @@ import {
 import { setSyncControls } from "./rooms.js";
 import { searchGifs } from "./gif.js";
 import { searchStickers } from "./stickers.js";
+// Update your import at the top:
+import {
+    loadCollections,
+    createCollection,
+    renderCollections,
+    addToCollection  // ADD THIS
+} from "./collections.js";
 
 let liveSearchTimer = null;
 // reply draft for chat
@@ -1100,8 +1107,6 @@ function initThemeEffects() {
     // Initialize theme-specific effects
     if (theme === 'cupcake') {
         initCupcakeEffects();
-    } else if (theme === 'synthwave') {
-        initSynthwaveEffects();
     }
 }
 
@@ -1121,7 +1126,7 @@ async function boot() {
     loadPrefs();
     applyPrefsToUI();
     syncControls();
-
+    loadCollections();
     await initWatchFiltersUI({
         onChange: () => {
             if (state.lastMode !== "trending") doSearch(1);
@@ -1153,8 +1158,36 @@ async function boot() {
             document.documentElement.getAttribute("data-theme") || "synthwave";
         if (themeToggle) themeToggle.checked = currentTheme === "synthwave";
 
+        // ADD THIS - RENDER COLLECTIONS WHEN OPENING SETTINGS:
+        renderCollections();
+
         dlg.showModal();
     });
+
+    // ADD THIS - Tab switching for settings modal:
+    document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Switch active tab
+            document.querySelectorAll('.settings-tab-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            document.querySelectorAll('.settings-content').forEach(c => {
+                c.classList.add('hidden');
+            });
+
+            btn.classList.add('active');
+            const targetTab = document.getElementById(`tab-${btn.dataset.tab}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
+
+            // REFRESH COLLECTIONS WHEN COLLECTIONS TAB IS CLICKED
+            if (btn.dataset.tab === 'collections') {
+                renderCollections();
+            }
+        });
+    });
+
 
     id("btnAddFromDetails")?.addEventListener("click", async () => {
         const idNum = getCurrentDetailsId();
@@ -1170,6 +1203,25 @@ async function boot() {
         }
         document.getElementById("dlg")?.close();
     });
+
+    // Wire up create collection button
+    const btnCreateCollection = document.getElementById('btnCreateCollection');
+    const newCollectionName = document.getElementById('newCollectionName');
+
+    if (btnCreateCollection && newCollectionName) {
+        btnCreateCollection.addEventListener('click', () => {
+            const name = newCollectionName.value.trim();
+            if (createCollection(name)) {
+                newCollectionName.value = '';
+            }
+        });
+
+        newCollectionName.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                btnCreateCollection.click();
+            }
+        });
+    }
 
     id("btnSettingsToggleTheme")?.addEventListener("click", () => {
         const current =
@@ -1253,6 +1305,8 @@ async function boot() {
     syncUserMenu();
     updateSignOutLabel();
     await loadSharedListFromUrl();
+    const { importSharedCollection } = await import('./collections.js');
+    await importSharedCollection();
     syncCreateRoomButton();
 
     // in boot(), right after determining roomId
@@ -1278,6 +1332,11 @@ async function boot() {
                 { merge: true }
             );
 
+            // LOAD COLLECTIONS FROM FIRESTORE - FIX: import both functions
+            const { loadCollectionsFromCloud, renderCollections } = await import('./collections.js');
+            await loadCollectionsFromCloud();
+            renderCollections();
+
             // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========
             try {
                 const userRef = fs.doc(fs.db, "users", user.uid);
@@ -1302,7 +1361,7 @@ async function boot() {
             }
 
             // ========== UPDATE UI AFTER DATA IS LOADED ==========
-            updateUserChip(); // ← Now called AFTER Firestore data loads
+            updateUserChip();
             syncUserMenu();
             updateSignOutLabel();
             syncCreateRoomButton();
@@ -1323,15 +1382,21 @@ async function boot() {
             startUserDocListener();
 
         } else {
-            // User signed out
+            // User signed out - FIX: load from localStorage
             window.firestoreUserData = {};
             roomState.id = null;
+
+            // Load collections from localStorage when signed out
+            const { loadCollections } = await import('./collections.js');
+            loadCollections();
+
             updateRoomUI();
             updateUserChip();
             syncUserMenu();
             updateSignOutLabel();
         }
     });
+
 
 
 
@@ -1947,10 +2012,41 @@ async function boot() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     if (currentTheme === 'cupcake') {
         initCupcakeEffects();
-    } else if (currentTheme === 'synthwave') {
-        initSynthwaveEffects();
     }
 
+    // In boot() function, add:
+    const btnQuickCreate = document.getElementById('btnQuickCreate');
+    const quickCollectionName = document.getElementById('quickCollectionName');
+
+    if (btnQuickCreate && quickCollectionName) {
+        btnQuickCreate.addEventListener('click', async () => {
+            const name = quickCollectionName.value.trim();
+            if (!name) return;
+
+            const collection = createCollection(name);
+            if (collection && state.currentDetails) {
+                // Import addToCollection
+                const { addToCollection } = await import('./collections.js');
+
+                // Add current movie to new collection
+                addToCollection(collection.id, {
+                    id: state.currentDetails.id,
+                    title: state.currentDetails.title || state.currentDetails.name,
+                    posterPath: state.currentDetails.poster_path,
+                    voteAverage: state.currentDetails.vote_average,
+                    releaseDate: state.currentDetails.release_date || state.currentDetails.first_air_date,
+                    mediaType: state.currentDetails.mediaType || 'movie',
+                });
+
+                quickCollectionName.value = '';
+
+                // CLOSE THE MODAL
+                document.getElementById('dlgCollectionPicker')?.close();
+
+                toast(`Added to new collection "${name}"`, "success");
+            }
+        });
+    }
 
 }
 

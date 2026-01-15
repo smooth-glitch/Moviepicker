@@ -9,7 +9,7 @@ import { renderPool } from "./render.js";
 import { updatePlaybackFromLocal, saveTelepartyUrl } from "./rooms.js";
 import { addToPoolById } from "./pool.js";
 import { rerollPick } from "./pick.js";
-
+import { openCollectionPicker } from "./collections.js";
 
 let currentDetailsId = null;
 
@@ -406,12 +406,34 @@ export async function openDetails(idNum, opts = {}) {
             }
         }
 
-
-        dlg.showModal();
     } catch {
         toast("Failed to load details.", "error");
     } finally {
         setBusy(false);
+    }
+
+    // MOVE THE BUTTON HANDLER HERE - OUTSIDE TRY/CATCH:
+    const btnAddToCollection = document.getElementById('btnAddToCollection');
+    console.log('1. Button element:', btnAddToCollection);
+
+    if (btnAddToCollection) {
+        console.log('2. Button found, attaching handler');
+
+        btnAddToCollection.onclick = () => {
+            console.log('3. Button clicked!');
+
+            const current = state.currentDetails;
+            if (!current) return;
+
+            openCollectionPicker({
+                id: current.id,
+                title: current.title || current.name,
+                posterPath: current.poster_path,
+                voteAverage: current.vote_average,
+                releaseDate: current.release_date || current.first_air_date,
+                mediaType: current.mediaType || 'movie',
+            });
+        };
     }
 }
 
