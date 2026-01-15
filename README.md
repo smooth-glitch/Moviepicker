@@ -49,7 +49,7 @@ cd <your-repo>
 
 2. **Create / update `config.js`**
 
-> TMDB + Firebase web configs are public client keys for frontend usage. Still, secure access with sensible quotas and Firebase rules.
+> TMDB + Firebase web configs are public client keys for frontend usage. Still, secure access with sensible quotas and Firebase rules
 
 ```js
 // config.js

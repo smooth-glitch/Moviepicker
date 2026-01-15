@@ -378,3 +378,1310 @@ html[data-theme="cupcake"] #ad-text-id {
     max-width: 80px;
   }
 }
+
+/* ===== CUPCAKE THEME - COMPLETE POLISH ===== */
+
+/* Soft gradient text */
+[data-theme="cupcake"] h1,
+[data-theme="cupcake"] h2,
+[data-theme="cupcake"] h3 {
+  background: linear-gradient(135deg, #6550e1, #e779c1, #fbc2eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 200% 200%;
+  animation: cupcakeGradientShift 6s ease infinite;
+}
+
+@keyframes cupcakeGradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Soft card glow on hover */
+[data-theme="cupcake"] .card:hover {
+  box-shadow: 0 12px 28px rgba(101, 80, 225, 0.18),
+    0 4px 12px rgba(231, 121, 193, 0.12);
+  border-color: rgba(101, 80, 225, 0.3);
+}
+
+/* Button soft bounce */
+[data-theme="cupcake"] .btn-primary,
+[data-theme="cupcake"] .btn-secondary {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="cupcake"] .btn-primary:hover,
+[data-theme="cupcake"] .btn-secondary:hover {
+  box-shadow: 0 6px 18px rgba(101, 80, 225, 0.3);
+}
+
+[data-theme="cupcake"] .btn-primary:active,
+[data-theme="cupcake"] .btn-secondary:active {
+  transform: scale(0.97);
+}
+
+/* Pastel badge glow */
+[data-theme="cupcake"] .badge-primary {
+  background: linear-gradient(135deg, #6550e1, #e779c1);
+  animation: badgeGentleGlow 3s ease-in-out infinite;
+}
+
+@keyframes badgeGentleGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(101, 80, 225, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(231, 121, 193, 0.5);
+  }
+}
+
+/* Input focus soft glow */
+[data-theme="cupcake"] input:focus,
+[data-theme="cupcake"] select:focus,
+[data-theme="cupcake"] textarea:focus {
+  border-color: rgba(101, 80, 225, 0.5);
+  box-shadow: 0 0 0 3px rgba(101, 80, 225, 0.1),
+    0 4px 14px rgba(101, 80, 225, 0.15);
+}
+
+/* Toast soft appearance */
+[data-theme="cupcake"] .alert {
+  animation: cupcakeToastSlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes cupcakeToastSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Heart particle animation */
+.heart-particle {
+  position: fixed;
+  font-size: 1.5rem;
+  pointer-events: none;
+  z-index: 9999;
+  animation: heartFloat 2.5s ease-out forwards;
+  filter: drop-shadow(0 0 8px rgba(255, 105, 180, 0.6));
+}
+
+@keyframes heartFloat {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(0.5) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-150px) scale(1.8) rotate(25deg);
+  }
+}
+
+/* Pastel confetti colors */
+[data-theme="cupcake"] .confetti-piece {
+  background: linear-gradient(
+    135deg,
+    #ff9a9e,
+    #fad0c4,
+    #a18cd1,
+    #fbc2eb
+  ) !important;
+  box-shadow: 0 0 8px rgba(101, 80, 225, 0.4);
+}
+
+/* Soft sparkle on important actions */
+[data-theme="cupcake"] #pickMeNow,
+[data-theme="cupcake"] #btnPickPool {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="cupcake"] #pickMeNow::before,
+[data-theme="cupcake"] #btnPickPool::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  animation: cupcakeSparkle 3s ease infinite;
+}
+
+@keyframes cupcakeSparkle {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(200%) rotate(45deg);
+  }
+}
+
+/* ===== CUPCAKE THEME - FLOATING CLOUDS & SPARKLES ===== */
+
+/* Floating cloud effect */
+[data-theme="cupcake"] #hero::after {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: -10%;
+  width: 200px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  animation: cloudFloat 25s ease-in-out infinite;
+  pointer-events: none;
+  filter: blur(2px);
+  z-index: 1;
+}
+
+@keyframes cloudFloat {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(calc(100vw + 220px));
+  }
+}
+
+/* Second cloud - smaller, slower */
+[data-theme="cupcake"] #hero::before {
+  content: "";
+  position: absolute;
+  top: 60%;
+  right: -5%;
+  width: 150px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 75px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15),
+    inset 0 0 15px rgba(255, 255, 255, 0.08);
+  animation: cloudFloatReverse 30s ease-in-out infinite;
+  pointer-events: none;
+  filter: blur(2px);
+  z-index: 1;
+}
+
+@keyframes cloudFloatReverse {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(calc(-100vw - 170px));
+  }
+}
+
+/* Twinkling stars background */
+[data-theme="cupcake"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+      1px 1px at 20% 30%,
+      rgba(101, 80, 225, 0.4),
+      transparent
+    ),
+    radial-gradient(1px 1px at 60% 70%, rgba(231, 121, 193, 0.4), transparent),
+    radial-gradient(2px 2px at 50% 50%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 80% 10%, rgba(101, 80, 225, 0.4), transparent),
+    radial-gradient(1px 1px at 90% 60%, rgba(231, 121, 193, 0.3), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(255, 255, 255, 0.3), transparent);
+  background-size: 200px 200px;
+  background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 150px 50px,
+    90px 180px;
+  animation: twinkle 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Floating sparkle orbs */
+[data-theme="cupcake"] body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(101, 80, 225, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(231, 121, 193, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgba(251, 194, 235, 0.06) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+  animation: sparkleFloat 12s ease-in-out infinite;
+}
+
+@keyframes sparkleFloat {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(30px, -30px);
+  }
+}
+
+/* Rainbow shimmer on primary button */
+[data-theme="cupcake"] .btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: rainbowShimmer 3s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes rainbowShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* ===== CUPCAKE THEME - ADDITIONAL MAGIC ===== */
+
+/* Gentle bounce on page load */
+[data-theme="cupcake"] section.card {
+  animation: gentleBounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes gentleBounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  60% {
+    transform: scale(1.02) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Rainbow border on focus */
+[data-theme="cupcake"] input:focus,
+[data-theme="cupcake"] select:focus {
+  border-color: #6550e1;
+  box-shadow: 0 0 0 3px rgba(101, 80, 225, 0.15),
+    0 4px 14px rgba(101, 80, 225, 0.2);
+  outline: 2px solid rgba(231, 121, 193, 0.3);
+  outline-offset: 2px;
+}
+
+/* Bubble float on hover */
+[data-theme="cupcake"] .badge:hover {
+  animation: bubbleBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes bubbleBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15) translateY(-3px);
+  }
+}
+
+/* Pastel gradient on hero */
+[data-theme="cupcake"] #hero {
+  position: relative;
+}
+
+[data-theme="cupcake"] #hero .hero-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(101, 80, 225, 0.12) 0%,
+    rgba(231, 121, 193, 0.08) 50%,
+    rgba(251, 194, 235, 0.06) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+  animation: pastelPulse 8s ease-in-out infinite;
+}
+
+@keyframes pastelPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Smooth color transitions on theme elements */
+[data-theme="cupcake"] * {
+  transition: background-color 0.4s ease, color 0.4s ease,
+    border-color 0.4s ease, box-shadow 0.3s ease;
+}
+
+/* Gentle wave on scroll indicator */
+[data-theme="cupcake"] #scrollIndicator {
+  background: linear-gradient(135deg, #6550e1, #e779c1);
+  animation: gentlePulse 2s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(101, 80, 225, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(231, 121, 193, 0.7);
+    transform: scale(1.05);
+  }
+}
+
+/* Pastel modal backdrop */
+[data-theme="cupcake"] .modal:has(dialog[open])::backdrop,
+[data-theme="cupcake"] .modal::backdrop {
+  background: linear-gradient(
+    135deg,
+    rgba(101, 80, 225, 0.3),
+    rgba(231, 121, 193, 0.2)
+  );
+  backdrop-filter: blur(8px);
+}
+
+/* Checkbox cute checkmark */
+[data-theme="cupcake"] input[type="checkbox"]:checked {
+  animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkPop {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Loading spinner pastel glow */
+[data-theme="cupcake"] .loading {
+  filter: drop-shadow(0 0 12px rgba(101, 80, 225, 0.6));
+  animation: cupcakeLoadingSpin 1s linear infinite,
+    loadingGlow 2s ease-in-out infinite;
+}
+
+@keyframes loadingGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 12px rgba(101, 80, 225, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(231, 121, 193, 0.8));
+  }
+}
+
+/* Room badge soft pulse */
+[data-theme="cupcake"] #roomBadge,
+[data-theme="cupcake"] .badge-success {
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(101, 80, 225, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(101, 80, 225, 0);
+  }
+}
+
+/* Pastel glow on pool items */
+[data-theme="cupcake"] #pool > *:hover {
+  box-shadow: 0 8px 20px rgba(101, 80, 225, 0.15),
+    0 0 30px rgba(231, 121, 193, 0.1);
+  border-color: rgba(101, 80, 225, 0.25);
+}
+
+/* Button press squish effect */
+[data-theme="cupcake"] .btn:active {
+  transform: scale(0.96);
+  transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dropdown menu bounce in */
+[data-theme="cupcake"] .dropdown-content {
+  animation: dropdownBounce 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dropdownBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== SYNTHWAVE - SAFE CSS ONLY ===== */
+
+/* VHS scanlines - STATIC VERSION */
+[data-theme="synthwave"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(231, 56, 255, 0.02) 2px,
+    rgba(231, 56, 255, 0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
+}
+
+/* Retro grid - NO ANIMATION */
+[data-theme="synthwave"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(
+      0deg,
+      transparent 48%,
+      rgba(231, 56, 255, 0.05) 49%,
+      rgba(231, 56, 255, 0.05) 51%,
+      transparent 52%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 48%,
+      rgba(69, 162, 255, 0.05) 49%,
+      rgba(69, 162, 255, 0.05) 51%,
+      transparent 52%
+    );
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+}
+
+/* Neon button glow */
+[data-theme="synthwave"] .btn-primary:hover {
+  box-shadow: 0 0 20px rgba(231, 56, 255, 0.8), 0 0 40px rgba(231, 56, 255, 0.5);
+}
+
+/* Card neon glow */
+[data-theme="synthwave"] .card:hover {
+  box-shadow: 0 8px 24px rgba(231, 56, 255, 0.3),
+    0 0 20px rgba(69, 162, 255, 0.2);
+}
+
+/* ===== SYNTHWAVE - SAFE GPU-ACCELERATED ONLY ===== */
+
+/* Neon text glow - SAFE (text-shadow doesn't reflow) */
+[data-theme="synthwave"] h1,
+[data-theme="synthwave"] h2,
+[data-theme="synthwave"] h3 {
+  text-shadow: 0 0 10px rgba(231, 56, 255, 0.8),
+    0 0 20px rgba(231, 56, 255, 0.5), 0 0 30px rgba(69, 162, 255, 0.3);
+}
+
+/* Neon button glow - SAFE (box-shadow only) */
+[data-theme="synthwave"] .btn-primary:hover {
+  box-shadow: 0 0 20px rgba(231, 56, 255, 0.8), 0 0 40px rgba(231, 56, 255, 0.5);
+}
+
+/* Card neon glow - SAFE */
+[data-theme="synthwave"] .card:hover {
+  box-shadow: 0 8px 24px rgba(231, 56, 255, 0.3),
+    0 0 20px rgba(69, 162, 255, 0.2);
+  border-color: rgba(231, 56, 255, 0.4);
+}
+
+/* Input neon glow - SAFE */
+[data-theme="synthwave"] input:focus,
+[data-theme="synthwave"] select:focus {
+  border-color: rgba(231, 56, 255, 0.6);
+  box-shadow: 0 0 0 3px rgba(231, 56, 255, 0.2),
+    0 0 20px rgba(69, 162, 255, 0.3);
+}
+
+/* Loading spinner glow - SAFE (filter on small element) */
+[data-theme="synthwave"] .loading {
+  filter: drop-shadow(0 0 20px rgba(231, 56, 255, 0.8));
+}
+
+/* Pool items glow - SAFE */
+[data-theme="synthwave"] #pool > *:hover {
+  box-shadow: 0 8px 24px rgba(231, 56, 255, 0.3),
+    0 0 20px rgba(69, 162, 255, 0.2);
+}
+
+/* ===== SYNTHWAVE - ADDITIONAL SAFE EFFECTS ===== */
+
+/* Neon border pulse on primary buttons - SAFE */
+[data-theme="synthwave"] .btn-primary {
+  box-shadow: 0 0 10px rgba(231, 56, 255, 0.4), 0 0 20px rgba(231, 56, 255, 0.2);
+  animation: neonPulse 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(231, 56, 255, 0.4),
+      0 0 20px rgba(231, 56, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(231, 56, 255, 0.7),
+      0 0 40px rgba(231, 56, 255, 0.4);
+  }
+}
+
+/* Neon badges pulse - SAFE */
+[data-theme="synthwave"] .badge-primary,
+[data-theme="synthwave"] .badge-success {
+  animation: badgeNeonPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes badgeNeonPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(231, 56, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(231, 56, 255, 0.9);
+  }
+}
+
+/* Hero neon glow overlay - SAFE (on hero only) */
+[data-theme="synthwave"] #hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 80%,
+    rgba(231, 56, 255, 0.15) 0%,
+    rgba(69, 162, 255, 0.1) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: heroNeonGlow 4s ease-in-out infinite;
+}
+
+@keyframes heroNeonGlow {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+/* Neon border on focused elements - SAFE */
+[data-theme="synthwave"] *:focus-visible {
+  outline: 2px solid rgba(231, 56, 255, 0.8);
+  outline-offset: 3px;
+  box-shadow: 0 0 15px rgba(231, 56, 255, 0.5);
+}
+
+/* Room badge neon pulse - SAFE */
+[data-theme="synthwave"] #roomBadge,
+[data-theme="synthwave"] #roomOnlineCount {
+  animation: neonTextPulse 3s ease-in-out infinite;
+}
+
+@keyframes neonTextPulse {
+  0%,
+  100% {
+    text-shadow: 0 0 8px rgba(231, 56, 255, 0.6);
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(231, 56, 255, 1);
+  }
+}
+
+/* Toast neon effect - SAFE */
+[data-theme="synthwave"] .alert-info {
+  box-shadow: 0 4px 12px rgba(69, 162, 255, 0.3),
+    0 0 20px rgba(231, 56, 255, 0.2);
+}
+
+[data-theme="synthwave"] .alert-success {
+  box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3), 0 0 20px rgba(0, 255, 136, 0.2);
+}
+
+/* ===== SYNTHWAVE - RETRO GRID & SCANLINES ===== */
+
+/* Retro grid background - SAFE (fixed position, GPU accelerated) */
+[data-theme="synthwave"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(231, 56, 255, 0.04) 25%,
+      rgba(231, 56, 255, 0.04) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(231, 56, 255, 0.04) 75%,
+      rgba(231, 56, 255, 0.04) 76%,
+      transparent 77%
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(69, 162, 255, 0.04) 25%,
+      rgba(69, 162, 255, 0.04) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(69, 162, 255, 0.04) 75%,
+      rgba(69, 162, 255, 0.04) 76%,
+      transparent 77%
+    );
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ===== SYNTHWAVE - VISIBLE SCANLINES ===== */
+
+/* Replace the scanlines rule with this: */
+[data-theme="synthwave"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0.4) 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlineMove 8s linear infinite;
+  opacity: 0.15;
+  will-change: transform;
+  mix-blend-mode: multiply;
+}
+
+@keyframes scanlineMove {
+  0% {
+    transform: translateY(0) translateZ(0);
+  }
+  100% {
+    transform: translateY(100px) translateZ(0);
+  }
+}
+
+/* Subtle chromatic aberration on hover - SAFE */
+[data-theme="synthwave"] .card:hover {
+  filter: drop-shadow(1px 0 0 rgba(231, 56, 255, 0.3))
+    drop-shadow(-1px 0 0 rgba(69, 162, 255, 0.3));
+}
+
+/* Neon confetti - SAFE */
+[data-theme="synthwave"] .confetti-piece {
+  background: linear-gradient(135deg, #e738ff, #45a2ff, #ff3860) !important;
+  box-shadow: 0 0 12px rgba(231, 56, 255, 0.8);
+}
+
+/* Online badge neon pulse - SAFE */
+[data-theme="synthwave"] .badge-success {
+  animation: onlineNeonPulse 2s ease-in-out infinite;
+}
+
+@keyframes onlineNeonPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(0, 255, 136, 1);
+  }
+}
+
+/* ===== SYNTHWAVE - FINAL TOUCHES ===== */
+
+/* Retro sun glow behind hero - SAFE */
+[data-theme="synthwave"] #hero .hero-frame::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(
+    circle,
+    rgba(231, 56, 255, 0.25) 0%,
+    rgba(69, 162, 255, 0.15) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+  animation: retroSunPulse 5s ease-in-out infinite;
+}
+
+@keyframes retroSunPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) scale(1.15);
+  }
+}
+
+/* Retro grid background - TIC-TAC-TOE LINES */
+[data-theme="synthwave"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent calc(50px - 1px),
+      rgba(231, 56, 255, 0.2) calc(50px - 1px),
+      rgba(231, 56, 255, 0.2) 50px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent calc(50px - 1px),
+      rgba(69, 162, 255, 0.2) calc(50px - 1px),
+      rgba(69, 162, 255, 0.2) 50px
+    );
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* Button neon shimmer - SAFE */
+[data-theme="synthwave"] .btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: neonShimmer 3s ease infinite;
+  pointer-events: none;
+}
+
+@keyframes neonShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Neon outline on hover - SAFE */
+[data-theme="synthwave"] .card:hover {
+  outline: 1px solid rgba(231, 56, 255, 0.5);
+  outline-offset: -1px;
+}
+
+/* Modal neon edge - SAFE */
+[data-theme="synthwave"] .modal-box {
+  box-shadow: 0 0 30px rgba(231, 56, 255, 0.3),
+    inset 0 0 20px rgba(69, 162, 255, 0.1);
+}
+
+/* Card holographic effect - STRONGER */
+[data-theme="noir"] .card:hover {
+  box-shadow: 0 10px 32px rgba(255, 79, 216, 0.5),
+    0 0 40px rgba(66, 217, 255, 0.4), inset 0 0 30px rgba(255, 79, 216, 0.15);
+  border-color: rgba(255, 79, 216, 0.8);
+  filter: brightness(1.1);
+}
+
+/* Button cyberpunk glow - STRONGER */
+[data-theme="noir"] .btn-primary {
+  animation: cyberPulseStrong 2s ease-in-out infinite;
+}
+
+@keyframes cyberPulseStrong {
+  0%,
+  100% {
+    box-shadow: 0 0 25px rgba(255, 79, 216, 0.9),
+      0 0 45px rgba(155, 107, 255, 0.7), 0 0 60px rgba(66, 217, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(255, 79, 216, 1),
+      0 0 70px rgba(155, 107, 255, 0.9), 0 0 100px rgba(66, 217, 255, 0.7);
+  }
+}
+
+/* Hero neon glow - STRONGER */
+[data-theme="noir"] #hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(255, 79, 216, 0.35) 0%,
+    rgba(66, 217, 255, 0.25) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 2;
+  animation: noirGlowPulseStrong 3s ease-in-out infinite;
+}
+
+@keyframes noirGlowPulseStrong {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Input cyber glow - STRONGER */
+[data-theme="noir"] input:focus,
+[data-theme="noir"] select:focus {
+  border-color: rgba(255, 79, 216, 1);
+  box-shadow: 0 0 0 4px rgba(255, 79, 216, 0.3),
+    0 0 30px rgba(66, 217, 255, 0.5), 0 0 50px rgba(255, 79, 216, 0.4);
+}
+
+/* Neon badge pulse - STRONGER */
+[data-theme="noir"] .badge-primary {
+  animation: noirBadgePulseStrong 1.5s ease-in-out infinite;
+}
+
+@keyframes noirBadgePulseStrong {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(255, 79, 216, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 79, 216, 1), 0 0 45px rgba(66, 217, 255, 0.8);
+  }
+}
+
+/* Pool items cyber glow - STRONGER */
+[data-theme="noir"] #pool > *:hover {
+  box-shadow: 0 10px 32px rgba(255, 79, 216, 0.5),
+    0 0 35px rgba(66, 217, 255, 0.4);
+  border-color: rgba(255, 79, 216, 0.8);
+}
+
+/* Loading spinner cyber glow - STRONGER */
+[data-theme="noir"] .loading {
+  filter: drop-shadow(0 0 30px rgba(255, 79, 216, 1));
+  animation: cyberLoadingGlowStrong 1s ease-in-out infinite;
+}
+
+@keyframes cyberLoadingGlowStrong {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 20px rgba(255, 79, 216, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 45px rgba(255, 79, 216, 1));
+  }
+}
+
+/* Online badge cyber pulse - STRONGER */
+[data-theme="noir"] .badge-success {
+  animation: onlineCyberPulse 2s ease-in-out infinite;
+}
+
+@keyframes onlineCyberPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.8), 0 0 24px rgba(0, 255, 136, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(0, 255, 136, 1), 0 0 40px rgba(0, 255, 136, 0.8);
+  }
+}
+
+/* Digital grid overlay - VISIBLE MOVING LINES */
+[data-theme="noir"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent calc(60px - 1px),
+      rgba(255, 79, 216, 0.25) calc(60px - 1px),
+      rgba(255, 79, 216, 0.25) 60px
+    ),
+    linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent calc(60px - 1px),
+      rgba(66, 217, 255, 0.25) calc(60px - 1px),
+      rgba(66, 217, 255, 0.25) 60px
+    );
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+  animation: gridMove 20s linear infinite;
+  will-change: transform;
+}
+
+@keyframes gridMove {
+  0% {
+    background-position: 0 0, 0 0;
+  }
+  100% {
+    background-position: 60px 60px, 60px 60px;
+  }
+}
+
+/* Glitch effect on button click - SAFE */
+[data-theme="noir"] .btn:active {
+  animation: cyberGlitch 0.3s steps(2);
+}
+
+@keyframes cyberGlitch {
+  0%,
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: translate(-2px, 2px);
+    filter: hue-rotate(5deg);
+  }
+  75% {
+    transform: translate(2px, -2px);
+    filter: hue-rotate(-5deg);
+  }
+}
+
+/* Neon confetti - SAFE */
+[data-theme="noir"] .confetti-piece {
+  background: linear-gradient(135deg, #ff4fd8, #42d9ff, #9b6bff) !important;
+  box-shadow: 0 0 20px rgba(255, 79, 216, 1), 0 0 35px rgba(66, 217, 255, 0.8);
+}
+
+/* Holographic shimmer on cards - SAFE */
+[data-theme="noir"] .card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 79, 216, 0.15) 48%,
+    rgba(66, 217, 255, 0.15) 52%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: holographicSweep 5s linear infinite;
+  pointer-events: none;
+  opacity: 0;
+}
+
+[data-theme="noir"] .card:hover::before {
+  opacity: 1;
+}
+
+@keyframes holographicSweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(45deg);
+  }
+}
+
+/* Cyber focus ring - SAFE */
+[data-theme="noir"] *:focus-visible {
+  outline: 2px solid rgba(255, 79, 216, 1);
+  outline-offset: 4px;
+  box-shadow: 0 0 20px rgba(255, 79, 216, 0.8), 0 0 35px rgba(66, 217, 255, 0.5);
+}
+
+/* ===== CUPCAKE THEME - ULTRA GIRLY ===== */
+
+/* Pink gradient text */
+[data-theme="cupcake"] h1,
+[data-theme="cupcake"] h2,
+[data-theme="cupcake"] h3 {
+  background: linear-gradient(135deg, #ff69b4, #ff1493, #ff69b4, #ffb6c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: pinkGradientFlow 5s ease infinite;
+}
+
+@keyframes pinkGradientFlow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Pink sparkle clouds - STRONGER */
+[data-theme="cupcake"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(255, 105, 180, 0.25) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(255, 182, 193, 0.25) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 192, 203, 0.2) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 70% 20%,
+      rgba(255, 105, 180, 0.2) 0%,
+      transparent 35%
+    );
+  pointer-events: none;
+  z-index: 1;
+  animation: pinkSparkleFloat 12s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes pinkSparkleFloat {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: translate(0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(50px, -50px);
+  }
+}
+
+/* Pink button glow */
+[data-theme="cupcake"] .btn-primary {
+  background: linear-gradient(135deg, #ff69b4, #ff1493) !important;
+  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.4),
+    0 0 20px rgba(255, 20, 147, 0.3);
+  animation: pinkButtonGlow 2s ease-in-out infinite;
+}
+
+@keyframes pinkButtonGlow {
+  0%,
+  100% {
+    box-shadow: 0 4px 14px rgba(255, 105, 180, 0.4),
+      0 0 20px rgba(255, 20, 147, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6),
+      0 0 35px rgba(255, 20, 147, 0.5);
+  }
+}
+
+/* Pink card glow */
+[data-theme="cupcake"] .card:hover {
+  box-shadow: 0 12px 28px rgba(255, 105, 180, 0.25),
+    0 0 40px rgba(255, 182, 193, 0.2);
+  border-color: rgba(255, 105, 180, 0.4);
+}
+
+/* Pink input glow */
+[data-theme="cupcake"] input:focus,
+[data-theme="cupcake"] select:focus {
+  border-color: rgba(255, 105, 180, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 182, 193, 0.3),
+    0 0 20px rgba(255, 105, 180, 0.4);
+}
+
+/* Pink badge glow */
+[data-theme="cupcake"] .badge-primary {
+  background: linear-gradient(135deg, #ff69b4, #ffb6c1) !important;
+  animation: pinkBadgeGlow 2.5s ease-in-out infinite;
+}
+
+@keyframes pinkBadgeGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 182, 193, 0.8);
+  }
+}
+
+/* Pink loading spinner */
+[data-theme="cupcake"] .loading {
+  filter: drop-shadow(0 0 15px rgba(255, 105, 180, 0.8));
+  animation: pinkLoadingGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes pinkLoadingGlow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 12px rgba(255, 105, 180, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255, 105, 180, 1));
+  }
+}
+
+/* Pink pool glow */
+[data-theme="cupcake"] #pool > *:hover {
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.2),
+    0 0 30px rgba(255, 182, 193, 0.15);
+  border-color: rgba(255, 105, 180, 0.3);
+}
+
+/* Pink hero glow */
+[data-theme="cupcake"] #hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 182, 193, 0.2) 0%,
+    rgba(255, 105, 180, 0.15) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  animation: pinkGlowPulse 4s ease-in-out infinite;
+}
+
+@keyframes pinkGlowPulse {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ===== SYNTHWAVE - NEON PURPLE/CYAN TEXT ===== */
+
+[data-theme="synthwave"] h1,
+[data-theme="synthwave"] h2,
+[data-theme="synthwave"] h3 {
+  background: linear-gradient(135deg, #e738ff, #45a2ff, #ff3860, #e738ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: synthwaveGradient 5s ease infinite;
+}
+
+@keyframes synthwaveGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ===== NOIR - CYBERPUNK PINK/CYAN TEXT ===== */
+
+[data-theme="noir"] h1,
+[data-theme="noir"] h2,
+[data-theme="noir"] h3 {
+  background: linear-gradient(135deg, #ff4fd8, #42d9ff, #9b6bff, #ff4fd8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: noirGradient 6s ease infinite;
+}
+
+@keyframes noirGradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

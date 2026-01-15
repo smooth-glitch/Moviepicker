@@ -33,13 +33,11 @@ export function addToPoolById(id) {
 
     state.pool.unshift(pickFields(m));
     saveJson(LSPOOL, state.pool);
-    // After adding to pool, trigger effects:
-    const event = new CustomEvent('poolItemAdded', { detail: { id } });
-    document.dispatchEvent(event);
     renderPool();
     renderResults(state.results);
     scheduleCloudSave();
     toast("Added to pool", "success");
+    triggerHeartParticles();
 }
 
 export function removeFromPool(id) {

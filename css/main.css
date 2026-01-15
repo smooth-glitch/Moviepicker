@@ -1660,3 +1660,23 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
   border-color: rgba(255, 79, 216, 0.7);
   box-shadow: 0 0 16px rgba(255, 79, 216, 0.3);
 }
+
+/* ===== CUPCAKE THEME - SAFE POLISH ===== */
+
+/* Soft gradient text - NO ANIMATION */
+[data-theme="cupcake"] h1,
+[data-theme="cupcake"] h2 {
+  background: linear-gradient(135deg, #6550e1, #e779c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Gentle glow on hover - NO TRANSFORM */
+[data-theme="cupcake"] .card:hover {
+  box-shadow: 0 8px 20px rgba(101, 80, 225, 0.2);
+}
+
+[data-theme="cupcake"] .btn-primary:hover {
+  box-shadow: 0 4px 14px rgba(101, 80, 225, 0.3);
+}

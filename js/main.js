@@ -90,6 +90,20 @@ function setTheme(theme) {
     applyTheme(theme); // now also updates state.prefs + storage
 }
 
+function initScrollIndicator() {
+    const indicator = document.createElement('div');
+    indicator.id = 'scrollIndicator';
+    indicator.innerHTML = '↑';
+    document.body.appendChild(indicator);
+
+    window.addEventListener('scroll', () => {
+        indicator.classList.toggle('visible', window.scrollY > 300);
+    });
+
+    indicator.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
 // ===== CHAT ENHANCEMENTS =====
 
 // 1. Send button pulse when input has text
@@ -241,22 +255,6 @@ function initChatResizeEffects() {
         resizeHandle.style.animation = 'resizeFlash 0.4s ease';
     });
 }
-// 1. SCROLL TO TOP INDICATOR
-function initScrollIndicator() {
-    // Create scroll to top button
-    const indicator = document.createElement('div');
-    indicator.id = 'scrollIndicator';
-    indicator.innerHTML = '↑';
-    document.body.appendChild(indicator);
-
-    window.addEventListener('scroll', () => {
-        indicator.classList.toggle('visible', window.scrollY > 300);
-    });
-
-    indicator.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
 
 // 2. CONFETTI ON ADD TO POOL
 function triggerConfetti(x, y) {
@@ -399,6 +397,7 @@ if (heroThemeBtn) {
 
         console.log("current:", current, "next:", next);
         document.documentElement.setAttribute("data-theme", next);
+        document.dispatchEvent(new Event('themeChanged'));
     });
 }
 
@@ -899,6 +898,95 @@ function positionPopupUnderChat(el) {
     }
 }
 
+function createBubbleParticles() {
+    if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
+
+    const bubble = document.createElement('div');
+    bubble.style.cssText = `
+      position: fixed;
+      bottom: -50px;
+      left: ${Math.random() * 100}%;
+      width: ${20 + Math.random() * 30}px;
+      height: ${20 + Math.random() * 30}px;
+      background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.4),
+        rgba(101, 80, 225, 0.15)
+      );
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.6;
+      animation: bubbleRise ${8 + Math.random() * 4}s ease-in-out forwards;
+      box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.3);
+    `;
+
+    document.body.appendChild(bubble);
+    setTimeout(() => bubble.remove(), 12000);
+}
+
+// CSS for bubble animation
+const bubbleStyle = document.createElement('style');
+bubbleStyle.textContent = `
+    @keyframes bubbleRise {
+      0% {
+        bottom: -50px;
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        bottom: 110vh;
+        opacity: 0;
+        transform: translateX(${(Math.random() - 0.5) * 100}px);
+      }
+    }
+  `;
+document.head.appendChild(bubbleStyle);
+
+// Start bubble generator for cupcake theme
+let bubbleInterval;
+
+function startBubbles() {
+    if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
+
+    // Create initial bubbles
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => createBubbleParticles(), i * 800);
+    }
+
+    // Create new bubbles periodically
+    bubbleInterval = setInterval(() => {
+        if (document.documentElement.getAttribute('data-theme') === 'cupcake') {
+            createBubbleParticles();
+        }
+    }, 3000);
+}
+
+function stopBubbles() {
+    clearInterval(bubbleInterval);
+    document.querySelectorAll('[style*="bubbleRise"]').forEach(el => el.remove());
+}
+
+// Update initCupcakeEffects:
+function initCupcakeEffects() {
+    console.log('Cupcake theme effects initialized');
+
+    // Heart particles on add to pool
+    const poolItemHandler = (e) => {
+        if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
+        triggerHeartParticles();
+    };
+
+    document.addEventListener('poolItemAdded', poolItemHandler);
+
+    // Start floating bubbles
+    startBubbles();
+}
 // --------------------------------------------------
 // Boot
 // --------------------------------------------------
@@ -969,6 +1057,54 @@ function applyPrefsToUI() {
         excludePoolEl.checked = state.prefs.poolExcludeWatched;
     }
 }
+
+// ===== CUPCAKE THEME EFFECTS =====
+
+function triggerHeartParticles() {
+    if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
+
+    const hearts = ['💖', '💗', '💕', '💓', '💝'];
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
+    hearts.forEach((emoji, i) => {
+        const heart = document.createElement('div');
+        heart.className = 'heart-particle';
+        heart.textContent = emoji;
+
+        // Spread them out in a circle pattern
+        const angle = (Math.PI * 2 * i) / hearts.length;
+        const distance = 50;
+        const offsetX = Math.cos(angle) * distance;
+
+        heart.style.left = (centerX + offsetX) + 'px';
+        heart.style.top = centerY + 'px';
+        heart.style.animationDelay = (i * 0.1) + 's';
+
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 2500);
+    });
+}
+
+function initThemeEffects() {
+    const theme = document.documentElement.getAttribute('data-theme');
+
+    // Clean up old effects
+    document.querySelectorAll('.heart-particle').forEach(el => el.remove());
+    stopBubbles();
+
+    // Remove old tracking line
+    const oldLine = document.getElementById('vhsTrackingLine');
+    if (oldLine) oldLine.remove();
+
+    // Initialize theme-specific effects
+    if (theme === 'cupcake') {
+        initCupcakeEffects();
+    } else if (theme === 'synthwave') {
+        initSynthwaveEffects();
+    }
+}
+
 
 async function boot() {
     await loadTmdbConfig();
@@ -1311,7 +1447,6 @@ async function boot() {
         }
     });
 
-    id("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
     id("btnAuthSubmit")?.addEventListener("click", handleAuthSubmit);
     id("btnGoogleDemo")?.addEventListener("click", handleGoogleSignIn);
     id("btnGithub")?.addEventListener("click", handleGithubSignIn);
@@ -1789,6 +1924,34 @@ async function boot() {
             addReactionAnimation(reactionBtn);
         }
     });
+
+    // At END of boot() - ONLY listen for changes, don't init immediately
+    document.addEventListener('themeChanged', () => {
+        const theme = document.documentElement.getAttribute('data-theme');
+
+        // Clean up old effects
+        document.querySelectorAll('.heart-particle').forEach(el => el.remove());
+        stopBubbles();
+        const oldLine = document.getElementById('vhsTrackingLine');
+        if (oldLine) oldLine.remove();
+
+        // Initialize NEW theme effects
+        if (theme === 'cupcake') {
+            initCupcakeEffects();
+        } else if (theme === 'synthwave') {
+            initSynthwaveEffects();
+        }
+    });
+
+    // Initialize for current theme ONCE on page load
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    if (currentTheme === 'cupcake') {
+        initCupcakeEffects();
+    } else if (currentTheme === 'synthwave') {
+        initSynthwaveEffects();
+    }
+
+
 }
 
 if (document.readyState === "loading")
