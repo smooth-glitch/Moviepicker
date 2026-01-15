@@ -158,6 +158,11 @@ export function renderResults(list) {
 
     });
 
+    // After rendering, add stagger animation
+    const cards = document.querySelectorAll('#results .card');
+    cards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.05}s`;
+    });
     wrap.appendChild(card);
   }
 

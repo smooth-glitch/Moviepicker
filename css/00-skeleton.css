@@ -1,0 +1,903 @@
+/* ===== SKELETON LOADING STATES ===== */
+
+.skeleton-loading {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--b2)) 0%,
+    hsl(var(--b3)) 50%,
+    hsl(var(--b2)) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Apply to loading cards */
+#results.loading .card,
+#pool.loading > * {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ===== SMOOTH PAGE SCROLL ===== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll reveal animation for sections */
+section {
+  animation: fadeInUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+section:nth-child(1) {
+  animation-delay: 0.1s;
+}
+section:nth-child(2) {
+  animation-delay: 0.2s;
+}
+section:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ===== TOAST NOTIFICATIONS - SLIDE IN ===== */
+
+.alert {
+  animation: toastSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes toastSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Toast exit animation */
+.alert.removing {
+  animation: toastSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes toastSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.8);
+  }
+}
+
+/* ===== MODAL DRAMATIC ENTRANCE ===== */
+
+.modal:has(dialog[open]) {
+  animation: modalBackdropFade 0.3s ease;
+}
+
+dialog[open] .modal-box {
+  animation: modalZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalBackdropFade {
+  0% {
+    backdrop-filter: blur(0px);
+    background-color: rgba(0, 0, 0, 0);
+  }
+  100% {
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+@keyframes modalZoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ===== BUTTON MICROINTERACTIONS ===== */
+
+/* All buttons - premium feel */
+.btn {
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+/* Button shine effect */
+.btn::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn:hover::before {
+  opacity: 1;
+  animation: buttonShine 0.8s ease;
+}
+
+/* Primary button extra glow */
+.btn-primary {
+  box-shadow: 0 2px 8px hsl(var(--p) / 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px hsl(var(--p) / 0.5);
+}
+
+/* ===== LOADING SPINNER ENHANCEMENT ===== */
+
+.loading {
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Page loader dramatic entrance */
+#pageLoader {
+  animation: loaderFadeIn 0.3s ease;
+}
+
+@keyframes loaderFadeIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* ===== BADGE ANIMATIONS ===== */
+
+.badge {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.badge:hover {
+  transform: scale(1.1);
+}
+
+.badge-primary {
+  animation: badgeGlow 2s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 8px hsl(var(--p) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px hsl(var(--p) / 0.6);
+  }
+}
+
+/* ===== SCROLL INDICATOR ===== */
+
+/* Add this HTML: <div id="scrollIndicator"></div> */
+#scrollIndicator {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
+  background: hsl(var(--p));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 100;
+  box-shadow: 0 4px 16px hsl(var(--p) / 0.5);
+}
+
+#scrollIndicator.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+#scrollIndicator:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px hsl(var(--p) / 0.7);
+}
+
+#scrollIndicator::before {
+  content: "↑";
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: scrollArrowBounce 1s ease-in-out infinite;
+}
+
+@keyframes scrollArrowBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* ===== FLOATING ANIMATION FOR HERO ===== */
+
+#hero {
+  animation: heroFloat 6s ease-in-out infinite;
+}
+
+@keyframes heroFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ===== AMBIENT BACKGROUND PARTICLES ===== */
+
+/* Add this to body or main section */
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: hsl(var(--p));
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: particleFloat 10s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.3;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+/* ===== CONFETTI ON SUCCESS ===== */
+
+/* Add when movie is added to pool successfully */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: hsl(var(--p));
+  top: -10px;
+  z-index: 9999;
+  animation: confetti 2s ease-out forwards;
+  pointer-events: none;
+}
+
+/* ===== FOCUS RING ENHANCEMENT ===== */
+
+*:focus-visible {
+  outline: 2px solid hsl(var(--p));
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+  animation: focusRingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes focusRingPulse {
+  0%,
+  100% {
+    outline-color: hsl(var(--p));
+  }
+  50% {
+    outline-color: hsl(var(--p) / 0.5);
+  }
+}
+
+/* ===== CARD STACK EFFECT ===== */
+
+/* Create depth illusion for stacked elements */
+#pool > *,
+#results .card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== TYPING ANIMATION FOR TEXT ===== */
+
+.typing-effect {
+  overflow: hidden;
+  border-right: 2px solid hsl(var(--p));
+  white-space: nowrap;
+  animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    border-color: hsl(var(--p));
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+/* ===== PULSING DOT INDICATOR ===== */
+
+.status-indicator {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: hsl(var(--su));
+  border-radius: 50%;
+}
+
+.status-indicator::before,
+.status-indicator::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid hsl(var(--su));
+  border-radius: 50%;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-indicator::after {
+  animation-delay: 0.75s;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ===== SMOOTH STATE TRANSITIONS ===== */
+
+/* Elements appearing */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Elements disappearing */
+.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ===== INTERACTIVE CARD FLIP ===== */
+
+/* For special cards (e.g., Tonight's pick) */
+.card-flip {
+  perspective: 1000px;
+}
+
+.card-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-flip:hover .card-flip-inner {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+}
+
+/* ===== CURSOR TRAIL EFFECT ===== */
+
+.cursor-trail {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  border: 2px solid hsl(var(--p));
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0;
+  transition: all 0.15s ease-out;
+}
+
+/* ===== AMBIENT GLOW AROUND ACTIVE ELEMENTS ===== */
+
+.active-glow {
+  position: relative;
+}
+
+.active-glow::after {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, hsl(var(--p) / 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.active-glow:hover::after {
+  opacity: 1;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* ===== PARTICLE BURST ON CLICK ===== */
+
+/* Add via JS on button clicks */
+.particle-burst {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(var(--p));
+  pointer-events: none;
+  z-index: 9999;
+  animation: particleBurst 0.8s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes particleBurst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0);
+  }
+}
+
+/* ===== PARALLAX SCROLL EFFECT ===== */
+
+#hero .hero-frame {
+  transition: transform 0.3s ease-out;
+}
+
+/* Add via JS: on scroll, adjust transform */
+#hero.scrolled .hero-frame {
+  transform: translateY(calc(var(--scroll) * 0.3px));
+}
+
+/* ===== GLASS MORPHISM CARDS ===== */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="noir"] .glass-card {
+  background: rgba(255, 79, 216, 0.05) !important;
+  border-color: rgba(180, 120, 255, 0.2);
+}
+
+/* ===== NEON TEXT GLOW ===== */
+
+.neon-text {
+  animation: neonFlicker 3s ease-in-out infinite;
+}
+
+@keyframes neonFlicker {
+  0%,
+  100% {
+    text-shadow: 0 0 10px hsl(var(--p)), 0 0 20px hsl(var(--p) / 0.8),
+      0 0 30px hsl(var(--p) / 0.6);
+  }
+  50% {
+    text-shadow: 0 0 5px hsl(var(--p)), 0 0 10px hsl(var(--p) / 0.6),
+      0 0 15px hsl(var(--p) / 0.4);
+  }
+}
+
+/* ===== MAGNETIC HOVER EFFECT ===== */
+
+/* For important CTAs like Pick button */
+.magnetic-hover {
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Add via JS: calculate mouse position relative to button */
+.magnetic-hover:hover {
+  transform: translate(var(--mouse-x, 0), var(--mouse-y, 0)) scale(1.05);
+}
+
+/* ===== STAGGER GRID ANIMATIONS ===== */
+
+#results .card {
+  animation: cardStaggerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+#results .card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+#results .card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+#results .card:nth-child(3) {
+  animation-delay: 0.15s;
+}
+#results .card:nth-child(4) {
+  animation-delay: 0.2s;
+}
+#results .card:nth-child(5) {
+  animation-delay: 0.25s;
+}
+#results .card:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+@keyframes cardStaggerIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== ICON ANIMATIONS ===== */
+
+/* Icons breathe on hover */
+.btn:hover svg {
+  animation: iconBreathe 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes iconBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Star icon twinkle */
+svg polygon {
+  transform-origin: center;
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+/* ===== PROGRESS BAR ANIMATION ===== */
+
+.progress-bar {
+  position: relative;
+  height: 4px;
+  background: hsl(var(--b3));
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: var(--progress, 0%);
+  background: linear-gradient(90deg, hsl(var(--p)), hsl(var(--s)));
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px hsl(var(--p) / 0.5);
+}
+
+.progress-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ===== CHAT MESSAGE SLIDE IN ===== */
+
+.chat-message {
+  animation: chatSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes chatSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== ROOM BADGE PULSE ===== */
+
+#roomBadge {
+  animation: roomPulse 2s ease-in-out infinite;
+}
+
+@keyframes roomPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--p) / 0);
+  }
+}
+
+/* ===== GENRE CHECKBOX RIPPLE ===== */
+
+#genreDropdownMenu input[type="checkbox"]:checked + label,
+#ottDropdownMenu input[type="checkbox"]:checked + label {
+  background: hsl(var(--p) / 0.1);
+  animation: checkRipple 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes checkRipple {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 10px hsl(var(--p) / 0);
+  }
+}
+
+/* ===== THEME-SPECIFIC ENHANCEMENTS ===== */
+
+/* Synthwave - Scanline effect */
+[data-theme="synthwave"] body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(231, 56, 255, 0.03) 3px,
+    rgba(231, 56, 255, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlines 8s linear infinite;
+}
+
+/* Noir - Floating orbs */
+[data-theme="noir"] body::after {
+  content: "";
+  position: fixed;
+  top: 20%;
+  left: 10%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 79, 216, 0.1) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+@keyframes orbFloat {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(50px, -30px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* ===== TOOLTIP ENHANCEMENT ===== */
+
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 0.5rem 0.75rem;
+  background: hsl(var(--b1));
+  border: 1px solid hsl(var(--b3));
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-12px);
+}
+
+/* ===== NUMBER COUNTER ANIMATION ===== */
+
+/* For rating badges */
+.counter {
+  animation: countUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes countUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

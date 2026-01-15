@@ -90,7 +90,293 @@ function setTheme(theme) {
     applyTheme(theme); // now also updates state.prefs + storage
 }
 
+// ===== CHAT ENHANCEMENTS =====
 
+// 1. Send button pulse when input has text
+function initChatInputEffects() {
+    const chatInput = document.getElementById('roomChatInput');
+    const sendBtn = document.querySelector('#roomChatForm button[type="submit"]');
+
+    if (chatInput && sendBtn) {
+        chatInput.addEventListener('input', () => {
+            if (chatInput.value.trim()) {
+                sendBtn.classList.add('has-text');
+            } else {
+                sendBtn.classList.remove('has-text');
+            }
+        });
+    }
+}
+
+// 2. Typing indicator (show when user is typing)
+let typingTimeout;
+function showTypingIndicator(userId, userName) {
+    const chatMessages = document.getElementById('roomChatMessages');
+    if (!chatMessages) return;
+
+    // Remove existing indicator
+    const existing = chatMessages.querySelector('.typing-indicator');
+    if (existing) existing.remove();
+
+    // Create new indicator
+    const indicator = document.createElement('div');
+    indicator.className = 'typing-indicator chat-message';
+    indicator.innerHTML = `
+      <div class="chat-message-avatar">
+        <img src="https://ui-avatars.com/api/?name=${userName}&size=32" alt="${userName}">
+      </div>
+      <div class="typing-indicator">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+
+    chatMessages.appendChild(indicator);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Auto remove after 3 seconds
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => indicator.remove(), 3000);
+}
+
+// 3. New message flash highlight
+function highlightNewMessage(messageElement) {
+    messageElement.classList.add('new-message');
+    setTimeout(() => messageElement.classList.remove('new-message'), 1000);
+}
+
+// 4. Smooth scroll to bottom on new message
+function smoothScrollChatToBottom() {
+    const chatMessages = document.getElementById('roomChatMessages');
+    if (chatMessages) {
+        chatMessages.scrollTo({
+            top: chatMessages.scrollHeight,
+            behavior: 'smooth'
+        });
+    }
+}
+
+// 5. Reaction button scale animation
+function addReactionAnimation(reactionButton) {
+    reactionButton.addEventListener('click', (e) => {
+        const rect = reactionButton.getBoundingClientRect();
+        const emoji = reactionButton.textContent.trim().charAt(0);
+
+        // Create floating emoji
+        const floater = document.createElement('div');
+        floater.textContent = emoji;
+        floater.style.position = 'fixed';
+        floater.style.left = rect.left + 'px';
+        floater.style.top = rect.top + 'px';
+        floater.style.fontSize = '2rem';
+        floater.style.pointerEvents = 'none';
+        floater.style.zIndex = '9999';
+        floater.style.animation = 'emojiFloat 1s cubic-bezier(0.4, 0, 1, 1) forwards';
+
+        document.body.appendChild(floater);
+        setTimeout(() => floater.remove(), 1000);
+    });
+}
+
+// 6. Voice note waveform pulse on play
+function enhanceVoiceNoteAnimations() {
+    document.addEventListener('click', (e) => {
+        const playBtn = e.target.closest('.voice-note-play-btn');
+        if (!playBtn) return;
+
+        const waveform = playBtn.closest('.voice-note-container')?.querySelector('.voice-note-waveform');
+        if (waveform) {
+            waveform.style.animation = 'waveformPulse 0.3s ease';
+            setTimeout(() => waveform.style.animation = '', 300);
+        }
+    });
+}
+
+// 7. Chat bubble color based on user
+function generateUserColor(userId) {
+    const hash = userId.split('').reduce((acc, char) => {
+        return char.charCodeAt(0) + ((acc << 5) - acc);
+    }, 0);
+    const hue = Math.abs(hash % 360);
+    return `hsl(${hue}, 70%, 65%)`;
+}
+
+// 8. Message context menu (right-click) animation
+function initMessageContextMenu() {
+    document.addEventListener('contextmenu', (e) => {
+        const msg = e.target.closest('.chat-message');
+        if (!msg) return;
+
+        const picker = document.getElementById('msgEmojiPicker');
+        if (picker) {
+            picker.style.animation = 'contextMenuPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        }
+    });
+}
+
+// 9. Mention suggestion slide in
+function showMentionSuggestions(suggestions) {
+    const mentionBox = document.getElementById('mentionSuggestions');
+    if (!mentionBox) return;
+
+    mentionBox.style.animation = 'mentionSlideIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
+}
+
+// 10. Chat resize handle glow on hover
+function initChatResizeEffects() {
+    const resizeHandle = document.getElementById('roomChatResize');
+    if (!resizeHandle) return;
+
+    resizeHandle.addEventListener('mouseenter', () => {
+        resizeHandle.style.background = 'hsl(var(--p) / 0.2)';
+        resizeHandle.style.transition = 'all 0.3s ease';
+    });
+
+    resizeHandle.addEventListener('mouseleave', () => {
+        resizeHandle.style.background = '';
+    });
+
+    resizeHandle.addEventListener('dblclick', () => {
+        resizeHandle.style.animation = 'resizeFlash 0.4s ease';
+    });
+}
+// 1. SCROLL TO TOP INDICATOR
+function initScrollIndicator() {
+    // Create scroll to top button
+    const indicator = document.createElement('div');
+    indicator.id = 'scrollIndicator';
+    indicator.innerHTML = '↑';
+    document.body.appendChild(indicator);
+
+    window.addEventListener('scroll', () => {
+        indicator.classList.toggle('visible', window.scrollY > 300);
+    });
+
+    indicator.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// 2. CONFETTI ON ADD TO POOL
+function triggerConfetti(x, y) {
+    for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-piece';
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+        particle.style.setProperty('--x', `${(Math.random() - 0.5) * 200}px`);
+        particle.style.setProperty('--y', `${Math.random() * 100 + 50}px`);
+        particle.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
+        particle.style.animationDelay = `${Math.random() * 0.3}s`;
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 2000);
+    }
+}
+
+// Listen for pool additions
+document.addEventListener('poolItemAdded', (e) => {
+    // Add stagger animation class
+    setTimeout(() => {
+        const poolItems = document.querySelectorAll('#pool > *');
+        const newItem = poolItems[0]; // Assuming unshift adds to top
+        if (newItem) {
+            newItem.classList.add('just-added');
+            setTimeout(() => newItem.classList.remove('just-added'), 500);
+        }
+    }, 50);
+
+    // Trigger confetti at button location
+    triggerConfetti(window.innerWidth / 2, window.innerHeight / 2);
+});
+
+// 4. MAGNETIC HOVER FOR PICK BUTTONS
+function initMagneticButtons() {
+    const buttons = ['#btnPick', '#btnPickPool', '#pickMeNow'];
+
+    buttons.forEach(selector => {
+        const btn = document.querySelector(selector);
+        if (!btn) return;
+
+        btn.classList.add('magnetic-hover');
+
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width - 0.5) * 15;
+            const y = ((e.clientY - rect.top) / rect.height - 0.5) * 15;
+            btn.style.setProperty('--mouse-x', `${x}px`);
+            btn.style.setProperty('--mouse-y', `${y}px`);
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.setProperty('--mouse-x', '0px');
+            btn.style.setProperty('--mouse-y', '0px');
+        });
+    });
+}
+
+
+// 6. PARALLAX HERO ON SCROLL
+function initParallaxHero() {
+    const hero = document.getElementById('hero');
+    if (!hero) return;
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        hero.style.setProperty('--scroll', scrolled);
+
+        if (scrolled > 300) {
+            hero.classList.add('scrolled');
+        } else {
+            hero.classList.remove('scrolled');
+        }
+    });
+}
+
+// 7. PARTICLE BURST ON BUTTON CLICKS
+function addParticleBurst(button) {
+    button.addEventListener('click', (e) => {
+        const rect = button.getBoundingClientRect();
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle-burst';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+
+            const angle = (Math.PI * 2 * i) / 8;
+            const distance = 50 + Math.random() * 30;
+            const offsetX = Math.cos(angle) * distance;
+            const offsetY = Math.sin(angle) * distance;
+
+            particle.style.setProperty('--x', `${offsetX}px`);
+            particle.style.setProperty('--y', `${offsetY}px`);
+            particle.style.background = `hsl(var(--p))`;
+
+            document.body.appendChild(particle);
+            setTimeout(() => particle.remove(), 800);
+        }
+    });
+}
+
+// 9. SMOOTH NUMBER COUNTER FOR RATINGS
+function animateCounter(element, target) {
+    const duration = 500;
+    const start = parseFloat(element.textContent) || 0;
+    const increment = (target - start) / (duration / 16);
+    let current = start;
+
+    const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+            current = target;
+            clearInterval(timer);
+        }
+        element.textContent = current.toFixed(1);
+    }, 16);
+}
 
 function spinThemeButtonOnce() {
     const btn = document.getElementById("themeToggleBtn");
@@ -260,11 +546,15 @@ function setPageLoading(on) {
 
 function updateGenreDropdownLabel() {
     const countEl = id("genreDropdownCount");
-    const n = Array.isArray(state.filters.genres)
-        ? state.filters.genres.length
-        : 0;
-    if (countEl) countEl.textContent = n ? `${n} selected` : "";
+    const n = Array.isArray(state.filters.genres) ? state.filters.genres.length : 0;
+    if (countEl) {
+        countEl.textContent = n ? `${n} selected` : "";
+        // ADD PULSE ANIMATION
+        countEl.classList.add('updated');
+        setTimeout(() => countEl.classList.remove('updated'), 500);
+    }
 }
+
 
 async function loadGenres(kind) {
     const data = await tmdb(`genre/${kind}/list`, { language: "en-US" });
@@ -1459,6 +1749,46 @@ async function boot() {
         }
     });
 
+    // Initialize scroll indicator
+    initScrollIndicator();
+
+    // Initialize magnetic buttons
+    initMagneticButtons();
+
+    // Initialize parallax hero
+    initParallaxHero();
+
+    // Add particle burst to action buttons
+    const burstButtons = [
+        '#btnSearch',
+        '#btnPick',
+        '#btnPickPool',
+        '#btnReroll'
+    ];
+    burstButtons.forEach(selector => {
+        const btn = document.querySelector(selector);
+        if (btn) addParticleBurst(btn);
+    });
+
+    if (minRatingPoolInput && minRatingPoolDisplay) {
+        minRatingPoolInput.addEventListener('input', () => {
+            const newValue = Number(minRatingPoolInput.value);
+            animateCounter(minRatingPoolDisplay, newValue);
+        });
+    }
+    // CHAT ENHANCEMENTS - ADD THESE:
+    initChatInputEffects();
+    enhanceVoiceNoteAnimations();
+    initMessageContextMenu();
+    initChatResizeEffects();
+
+    // Add reaction animations to existing reactions
+    document.addEventListener('click', (e) => {
+        const reactionBtn = e.target.closest('.chat-message button[class*="badge"]');
+        if (reactionBtn) {
+            addReactionAnimation(reactionBtn);
+        }
+    });
 }
 
 if (document.readyState === "loading")

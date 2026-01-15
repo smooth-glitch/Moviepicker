@@ -1,234 +1,551 @@
 #resultSort {
-    padding-right: 2.5rem !important;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    background-position: right 0.85rem center !important;
-    background-size: 1rem 1rem !important;
+  padding-right: 2.5rem !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background-position: right 0.85rem center !important;
+  background-size: 1rem 1rem !important;
 }
-
 
 #resultSort {
-    min-width: 10.5rem;
+  min-width: 10.5rem;
 }
-
 
 #genreFilter {
-    border-radius: 0.75rem !important;
-    border-width: 1px !important;
-    border-style: solid !important;
-    border-color: hsl(var(--b3)) !important;
-    background-color: hsl(var(--b1)) !important;
-    color: hsl(var(--bc)) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.03) !important;
-    padding: 0.5rem 0.6rem !important;
-    min-height: 11rem !important;
-    background-image: none !important;
-    background-position: initial !important;
-    background-repeat: initial !important;
+  border-radius: 0.75rem !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-color: hsl(var(--b3)) !important;
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.03) !important;
+  padding: 0.5rem 0.6rem !important;
+  min-height: 11rem !important;
+  background-image: none !important;
+  background-position: initial !important;
+  background-repeat: initial !important;
 }
-
 
 #genreFilter option {
-    color: hsl(var(--bc)) !important;
-    background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
+  background-color: hsl(var(--b1)) !important;
 }
-
 
 #genreFilter:focus {
-    outline: none;
-    border-color: hsl(var(--p));
-    box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55);
+  outline: none;
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55);
 }
-
 
 #q {
-    max-width: 420px;
-    width: 100%;
+  max-width: 420px;
+  width: 100%;
 }
-
 
 #q {
-    max-width: 520px;
-    min-height: 3rem;
-    height: 3rem;
-    font-size: 1rem;
-    border-width: 2px;
-    border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  max-width: 520px;
+  min-height: 3rem;
+  height: 3rem;
+  font-size: 1rem;
+  border-width: 2px;
+  border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-
 
 #q:focus {
-    border-color: hsl(var(--p));
-    box-shadow: 0 0 0 2px color-mix(in oklab, hsl(var(--p)) 55%, transparent), 0 14px 34px rgba(0, 0, 0, 0.55);
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 2px color-mix(in oklab, hsl(var(--p)) 55%, transparent),
+    0 14px 34px rgba(0, 0, 0, 0.55);
 }
-
 
 #mediaType {
-    padding-right: 2.5rem !important;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    background-position: right 0.85rem center !important;
-    background-size: 1rem 1rem !important;
+  padding-right: 2.5rem !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background-position: right 0.85rem center !important;
+  background-size: 1rem 1rem !important;
 }
-
 
 #genreDropdownBtn {
-    border: 1px solid hsl(var(--b3)) !important;
-    background-color: hsl(var(--b1)) !important;
-    color: hsl(var(--bc)) !important;
-    box-shadow: var(--ui-shadow-soft) !important;
+  border: 1px solid hsl(var(--b3)) !important;
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
+  box-shadow: var(--ui-shadow-soft) !important;
 }
-
 
 #genreDropdownBtn:hover {
-    background-color: color-mix(in oklab, hsl(var(--b2)) 35%, transparent) !important;
+  background-color: color-mix(
+    in oklab,
+    hsl(var(--b2)) 35%,
+    transparent
+  ) !important;
 }
-
 
 #genreDropdownBtn:focus-visible {
-    outline: none !important;
-    box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55) !important;
 }
-
 
 #genreDropdownMenu {
-    border-color: hsl(var(--b3)) !important;
-    background-color: hsl(var(--b1)) !important;
-    color: hsl(var(--bc)) !important;
+  border-color: hsl(var(--b3)) !important;
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
 }
-
 
 #genreDropdownMenu {
-    min-width: 100%;
-    max-width: min(28rem, 92vw);
+  min-width: 100%;
+  max-width: min(28rem, 92vw);
 }
-
 
 #genreDropdownMenu label {
-    width: 100%;
+  width: 100%;
 }
-
 
 #genreDropdownMenu span {
-    white-space: normal;
+  white-space: normal;
 }
-
 
 #ottDropdownBtn {
-    border: 1px solid hsl(var(--b3)) !important;
-    background-color: hsl(var(--b1)) !important;
-    color: hsl(var(--bc)) !important;
-    box-shadow: var(--ui-shadow-soft) !important;
+  border: 1px solid hsl(var(--b3)) !important;
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
+  box-shadow: var(--ui-shadow-soft) !important;
 }
-
 
 #ottDropdownBtn:hover {
-    background-color: color-mix(in oklab, hsl(var(--b2)) 35%, transparent) !important;
+  background-color: color-mix(
+    in oklab,
+    hsl(var(--b2)) 35%,
+    transparent
+  ) !important;
 }
-
 
 #ottDropdownBtn:focus-visible {
-    outline: none !important;
-    box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px hsl(var(--p)), 0 10px 24px rgba(0, 0, 0, 0.55) !important;
 }
-
 
 #ottDropdownMenu {
-    border-color: hsl(var(--b3)) !important;
-    background-color: hsl(var(--b1)) !important;
-    color: hsl(var(--bc)) !important;
-    min-width: 100%;
-    max-width: min(28rem, 92vw);
+  border-color: hsl(var(--b3)) !important;
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc)) !important;
+  min-width: 100%;
+  max-width: min(28rem, 92vw);
 }
-
 
 #ottDropdownMenu label {
-    width: 100%;
+  width: 100%;
 }
-
 
 #ottDropdownMenu span {
-    white-space: normal;
+  white-space: normal;
 }
-
 
 #genreDropdownMenu label,
 #ottDropdownMenu label {
-    border: 1px solid transparent;
-    border-radius: 0.75rem;
-    transition: filter 160ms ease, background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  transition: filter 160ms ease, background-color 160ms ease,
+    border-color 160ms ease, box-shadow 160ms ease;
 }
-
 
 #genreDropdownMenu label:hover,
 #ottDropdownMenu label:hover {
-    filter: brightness(1.05);
+  filter: brightness(1.05);
 }
-
 
 #genreDropdownMenu label:has(input[type="checkbox"]:checked),
 #ottDropdownMenu label:has(input[type="checkbox"]:checked) {
-    border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
-    background: linear-gradient(135deg, color-mix(in oklab, hsl(var(--p)) 45%, transparent), color-mix(in oklab, hsl(var(--s)) 35%, transparent));
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  border-color: color-mix(in oklab, hsl(var(--p)) 55%, hsl(var(--b3)) 45%);
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklab, hsl(var(--p)) 45%, transparent),
+    color-mix(in oklab, hsl(var(--s)) 35%, transparent)
+  );
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-
 
 #genreDropdownMenu label:has(input[type="checkbox"]:checked) span,
 #ottDropdownMenu label:has(input[type="checkbox"]:checked) span {
-    font-weight: 700;
-    color: hsl(var(--bc));
+  font-weight: 700;
+  color: hsl(var(--bc));
 }
-
 
 #genreDropdownMenu label:focus-within,
 #ottDropdownMenu label:focus-within {
-    outline: none;
-    box-shadow: 0 0 0 2px color-mix(in oklab, hsl(var(--p)) 45%, transparent), 0 10px 24px rgba(0, 0, 0, 0.45);
+  outline: none;
+  box-shadow: 0 0 0 2px color-mix(in oklab, hsl(var(--p)) 45%, transparent),
+    0 10px 24px rgba(0, 0, 0, 0.45);
 }
-
 
 #genreDropdownMenu label span,
 #ottDropdownMenu label span {
-    pointer-events: none;
+  pointer-events: none;
 }
-
 
 #genreDropdownMenu label,
 #ottDropdownMenu label {
-    cursor: pointer;
-    width: 100%;
+  cursor: pointer;
+  width: 100%;
 }
-
 
 #btnSearch,
 #btnTrending {
-    min-height: 2.55rem;
-    height: 2.55rem;
-    padding-inline: 1rem;
-    font-size: 0.9rem;
+  min-height: 2.55rem;
+  height: 2.55rem;
+  padding-inline: 1rem;
+  font-size: 0.9rem;
 }
-
 
 /* Search bar hover + focus lift */
 #q {
-    transition:
-        border-color 180ms ease,
-        box-shadow 200ms ease,
-        transform 180ms ease,
-        background-color 200ms ease;
+  transition: border-color 180ms ease, box-shadow 200ms ease,
+    transform 180ms ease, background-color 200ms ease;
 }
-
 
 #q:hover,
 #q:focus-visible {
-    transform: translateY(-2px);
-    border-color: hsl(var(--p));
-    box-shadow:
-        0 0 0 2px color-mixin(oklab, hsl(var(--p)) 55, transparent),
-        0 16px 34px rgba(0, 0, 0, 0.6);
-    background-color: color-mixin(oklab, hsl(var(--b2)) 40, transparent);
+  transform: translateY(-2px);
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 2px color-mixin(oklab, hsl(var(--p)) 55, transparent),
+    0 16px 34px rgba(0, 0, 0, 0.6);
+  background-color: color-mixin(oklab, hsl(var(--b2)) 40, transparent);
+}
+
+/* ===== SEARCH BAR & FILTERS - PREMIUM POLISH ===== */
+
+/* Search Input - Focus Glow */
+#q {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+#q:focus {
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Search icon bounce on focus */
+#searchRow label svg {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#q:focus + label svg,
+#searchRow:focus-within svg {
+  transform: scale(1.15) rotate(5deg);
+}
+
+/* Filter Inputs - Smooth Focus */
+#mediaType,
+#yearFilter,
+#resultSort {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#mediaType:focus,
+#yearFilter:focus,
+#resultSort:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown Buttons - Hover Lift */
+#genreDropdownBtn,
+#ottDropdownBtn {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+#genreDropdownBtn:hover,
+#ottDropdownBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+/* Dropdown arrow rotate on open */
+#genreDropdownBtn svg,
+#ottDropdownBtn svg {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#genreDropdownBtn:focus svg,
+#ottDropdownBtn:focus svg,
+.dropdown:focus-within svg {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu slide in */
+#genreDropdownMenu,
+#ottDropdownMenu {
+  animation: dropdownSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top;
+}
+
+@keyframes dropdownSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Checkbox labels hover */
+#genreDropdownMenu label,
+#ottDropdownMenu label {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#genreDropdownMenu label:hover,
+#ottDropdownMenu label:hover {
+  background-color: hsl(var(--b3));
+  transform: translateX(3px);
+  padding-left: 0.75rem;
+}
+
+/* Checkbox check animation */
+#genreDropdownMenu input[type="checkbox"],
+#ottDropdownMenu input[type="checkbox"] {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#genreDropdownMenu input[type="checkbox"]:checked,
+#ottDropdownMenu input[type="checkbox"]:checked {
+  animation: checkBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* Genre count badge pulse when changed */
+#genreDropdownCount {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#genreDropdownCount.updated {
+  animation: countPulse 0.5s ease;
+}
+
+@keyframes countPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+}
+
+/* ===== ACTION BUTTONS - ENHANCED ===== */
+
+/* Search button - ripple effect */
+#btnSearch {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#btnSearch:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+#btnSearch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s, opacity 0.6s;
+  opacity: 0;
+}
+
+#btnSearch:active::after {
+  width: 300px;
+  height: 300px;
+  opacity: 1;
+  transition: 0s;
+}
+
+/* Pick button - magical pulse */
+#btnPick {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#btnPick:hover {
+  transform: translateY(-2px) scale(1.03);
+  animation: magicPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes magicPulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Trending button - wave effect */
+#btnTrending {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#btnTrending:hover {
+  transform: translateY(-2px);
+}
+
+#btnTrending:hover svg {
+  animation: trendingWave 0.6s ease;
+}
+
+@keyframes trendingWave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-3px);
+  }
+  75% {
+    transform: translateY(-1px);
+  }
+}
+
+/* Reset button - rotate icon on hover */
+#btnResetFilters {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#btnResetFilters:hover {
+  transform: translateY(-2px);
+}
+
+#btnResetFilters:hover svg {
+  animation: resetSpin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes resetSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+/* ===== THEME-SPECIFIC FILTER GLOWS ===== */
+
+/* Synthwave - Neon glow */
+[data-theme="synthwave"] #q:focus {
+  box-shadow: 0 4px 16px rgba(231, 56, 255, 0.25),
+    0 0 20px rgba(69, 162, 255, 0.15);
+  border-color: rgba(231, 56, 255, 0.5);
+}
+
+[data-theme="synthwave"] #btnSearch:hover {
+  box-shadow: 0 6px 20px rgba(231, 56, 255, 0.4),
+    0 0 24px rgba(69, 162, 255, 0.3);
+}
+
+[data-theme="synthwave"] #btnPick:hover {
+  box-shadow: 0 6px 20px rgba(231, 56, 255, 0.5),
+    0 0 28px rgba(231, 56, 255, 0.3);
+}
+
+/* Cupcake - Soft glow */
+[data-theme="cupcake"] #q:focus {
+  box-shadow: 0 4px 14px rgba(101, 80, 225, 0.2),
+    0 0 16px rgba(101, 80, 225, 0.12);
+  border-color: rgba(101, 80, 225, 0.4);
+}
+
+[data-theme="cupcake"] #btnSearch:hover {
+  box-shadow: 0 6px 18px rgba(101, 80, 225, 0.25);
+}
+
+/* Noir - Cyberpunk glow */
+[data-theme="noir"] #q:focus {
+  box-shadow: 0 4px 16px rgba(255, 79, 216, 0.3),
+    0 0 24px rgba(66, 217, 255, 0.2);
+  border-color: rgba(255, 79, 216, 0.6);
+}
+
+[data-theme="noir"] #btnSearch:hover {
+  box-shadow: 0 6px 20px rgba(255, 79, 216, 0.4),
+    0 0 28px rgba(66, 217, 255, 0.3);
+}
+
+[data-theme="noir"] #btnPick:hover {
+  box-shadow: 0 6px 24px rgba(255, 79, 216, 0.5),
+    0 0 32px rgba(255, 79, 216, 0.35);
+}
+
+/* ===== TYPING INDICATOR IN SEARCH ===== */
+
+#q:focus::placeholder {
+  animation: placeholderPulse 2s ease-in-out infinite;
+}
+
+@keyframes placeholderPulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Filter grid stagger animation on page load */
+#filtersGrid > div {
+  animation: filterFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+#filtersGrid > div:nth-child(1) {
+  animation-delay: 0.05s;
+}
+#filtersGrid > div:nth-child(2) {
+  animation-delay: 0.1s;
+}
+#filtersGrid > div:nth-child(3) {
+  animation-delay: 0.15s;
+}
+#filtersGrid > div:nth-child(4) {
+  animation-delay: 0.2s;
+}
+#filtersGrid > div:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+@keyframes filterFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

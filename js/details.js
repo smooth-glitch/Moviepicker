@@ -8,6 +8,7 @@ import { saveJson, LSWATCHED } from "./storage.js";
 import { renderPool } from "./render.js";
 import { updatePlaybackFromLocal, saveTelepartyUrl } from "./rooms.js";
 import { addToPoolById } from "./pool.js";
+import { rerollPick } from "./pick.js";
 
 
 let currentDetailsId = null;
@@ -400,7 +401,11 @@ export async function openDetails(idNum, opts = {}) {
 
         if (btnReroll) {
             btnReroll.classList.toggle("hidden", !opts?.highlight);
+            if (opts?.highlight) {
+                btnReroll.onclick = rerollPick;
+            }
         }
+
 
         dlg.showModal();
     } catch {

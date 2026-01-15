@@ -284,3 +284,440 @@ main.grid > section:first-child .card-body {
 #btnCreateRoom {
   flex: 0 0 auto;
 }
+
+/* ===== RESULTS CARDS - PREMIUM HOVER EFFECT ===== */
+
+/* Remove grid hover */
+#results:hover {
+  transform: none !important;
+}
+
+/* Base card state */
+#results .card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0) scale(1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Premium hover effect */
+#results .card:hover {
+  transform: translateY(-6px) scale(1.02);
+  z-index: 10;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Subtle shine effect on hover */
+#results .card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#results .card:hover::before {
+  opacity: 1;
+  animation: cardShine 0.8s ease;
+}
+
+@keyframes cardShine {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Border glow on hover */
+#results .card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#results .card:hover::after {
+  opacity: 1;
+}
+
+/* ===== THEME-SPECIFIC GLOWS ===== */
+
+/* Synthwave - Neon glow */
+[data-theme="synthwave"] #results .card:hover {
+  box-shadow: 0 12px 32px rgba(231, 56, 255, 0.25),
+    0 4px 16px rgba(69, 162, 255, 0.2), 0 0 24px rgba(231, 56, 255, 0.15),
+    inset 0 1px 0 rgba(231, 56, 255, 0.2);
+  border-color: rgba(231, 56, 255, 0.5);
+}
+
+[data-theme="synthwave"] #results .card::after {
+  background: linear-gradient(135deg, #e738ff, #45a2ff, #e738ff);
+}
+
+/* Cupcake - Soft elegant glow */
+[data-theme="cupcake"] #results .card:hover {
+  box-shadow: 0 12px 28px rgba(101, 80, 225, 0.18),
+    0 4px 12px rgba(101, 80, 225, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  border-color: rgba(101, 80, 225, 0.4);
+}
+
+[data-theme="cupcake"] #results .card::after {
+  background: linear-gradient(135deg, #6550e1, #e779c1, #6550e1);
+}
+
+/* Noir - Neon cyberpunk glow */
+[data-theme="noir"] #results .card:hover {
+  box-shadow: 0 12px 32px rgba(255, 79, 216, 0.3),
+    0 4px 16px rgba(66, 217, 255, 0.25), 0 0 28px rgba(255, 79, 216, 0.2),
+    inset 0 1px 0 rgba(255, 79, 216, 0.25);
+  border-color: rgba(255, 79, 216, 0.6);
+}
+
+[data-theme="noir"] #results .card::after {
+  background: linear-gradient(135deg, #ff4fd8, #42d9ff, #ff4fd8);
+}
+
+/* Poster image zoom on hover */
+#results .card:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+#results .card img {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth title glow on hover */
+#results .card:hover .card-title {
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.3);
+}
+
+#results .card .card-title {
+  transition: text-shadow 0.3s ease;
+}
+
+/* ===== POOL ITEMS - PREMIUM POLISH ===== */
+
+/* Base pool item state */
+#pool > * {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0) scale(1);
+  position: relative;
+  overflow: hidden;
+  opacity: 1;
+}
+
+/* Smooth hover lift */
+#pool > *:hover {
+  transform: translateY(-3px) scale(1.01);
+  z-index: 5;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle shimmer on hover */
+#pool > *::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#pool > *:hover::before {
+  opacity: 1;
+  animation: poolShimmer 0.8s ease;
+}
+
+@keyframes poolShimmer {
+  0% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  100% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Poster hover zoom */
+#pool img {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#pool > *:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.1) contrast(1.05);
+}
+
+/* Button hover effects in pool */
+#pool .btn {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#pool .btn:hover {
+  transform: scale(1.05);
+}
+
+#pool .btn:active {
+  transform: scale(0.95);
+}
+
+/* Watched badge pulse */
+#pool .badge-accent {
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+/* Rating badge subtle glow */
+#pool .badge-outline {
+  transition: all 0.2s ease;
+}
+
+#pool > *:hover .badge-outline {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* Add animation when items are added */
+@keyframes poolItemAdded {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Apply to newly added items (you'll need JS to add this class) */
+#pool > *.just-added {
+  animation: poolItemAdded 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Slide out animation when removed */
+@keyframes poolItemRemoved {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(20px) scale(0.9);
+  }
+}
+
+#pool > *.removing {
+  animation: poolItemRemoved 0.3s cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ===== THEME-SPECIFIC POOL GLOWS ===== */
+
+/* Synthwave - Neon glow */
+[data-theme="synthwave"] #pool > *:hover {
+  box-shadow: 0 8px 24px rgba(231, 56, 255, 0.2),
+    0 2px 12px rgba(69, 162, 255, 0.15), 0 0 16px rgba(231, 56, 255, 0.1);
+  border-color: rgba(231, 56, 255, 0.4);
+}
+
+[data-theme="synthwave"] #pool .badge-outline:hover {
+  box-shadow: 0 0 10px rgba(231, 56, 255, 0.4);
+  border-color: rgba(231, 56, 255, 0.5);
+}
+
+/* Cupcake - Soft glow */
+[data-theme="cupcake"] #pool > *:hover {
+  box-shadow: 0 8px 20px rgba(101, 80, 225, 0.15),
+    0 2px 10px rgba(101, 80, 225, 0.1);
+  border-color: rgba(101, 80, 225, 0.3);
+}
+
+[data-theme="cupcake"] #pool .badge-outline:hover {
+  box-shadow: 0 0 8px rgba(101, 80, 225, 0.3);
+}
+
+/* Noir - Cyberpunk glow */
+[data-theme="noir"] #pool > *:hover {
+  box-shadow: 0 8px 24px rgba(255, 79, 216, 0.25),
+    0 2px 12px rgba(66, 217, 255, 0.2), 0 0 20px rgba(255, 79, 216, 0.15);
+  border-color: rgba(255, 79, 216, 0.5);
+}
+
+[data-theme="noir"] #pool .badge-outline:hover {
+  box-shadow: 0 0 12px rgba(255, 79, 216, 0.4);
+  border-color: rgba(255, 79, 216, 0.6);
+}
+
+/* Smooth border glow effect */
+#pool > *::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#pool > *:hover::after {
+  opacity: 1;
+}
+
+/* Title text glow on hover */
+#pool .font-semibold {
+  transition: all 0.3s ease;
+}
+
+#pool > *:hover .font-semibold {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  color: hsl(var(--p));
+}
+
+/* Stagger animation for multiple items */
+#pool > *:nth-child(1).just-added {
+  animation-delay: 0s;
+}
+#pool > *:nth-child(2).just-added {
+  animation-delay: 0.05s;
+}
+#pool > *:nth-child(3).just-added {
+  animation-delay: 0.1s;
+}
+#pool > *:nth-child(4).just-added {
+  animation-delay: 0.15s;
+}
+#pool > *:nth-child(5).just-added {
+  animation-delay: 0.2s;
+}
+
+/* ===== POOL ACTION BUTTONS - MICROINTERACTIONS ===== */
+
+/* Details button - subtle bounce */
+#pool button[data-action="details"]:hover {
+  animation: buttonBounce 0.5s ease;
+}
+
+@keyframes buttonBounce {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Watch button - check mark animation */
+#pool button[data-action="toggleWatched"]:hover svg {
+  animation: checkPulse 0.6s ease;
+}
+
+@keyframes checkPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.2);
+  }
+  60% {
+    transform: scale(0.95);
+  }
+}
+
+/* Remove button - shake warning */
+#pool button[data-action="remove"]:hover {
+  animation: shakeWarning 0.4s ease;
+}
+
+@keyframes shakeWarning {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+}
+
+/* Button ripple effect on click */
+#pool .btn {
+  position: relative;
+  overflow: hidden;
+}
+
+#pool .btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+#pool .btn:active::after {
+  width: 200px;
+  height: 200px;
+}

@@ -2,7 +2,7 @@
   border-radius: 999px;
 }
 
-#pool>div {
+#pool > div {
   display: grid !important;
   grid-template-columns: 3rem minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -15,18 +15,18 @@
   transition: background-color 160ms ease;
 }
 
-#pool>div:hover {
+#pool > div:hover {
   background-color: color-mix(in oklab, hsl(var(--b2)) 55%, transparent);
 }
 
-#pool>div> :first-child {
+#pool > div > :first-child {
   width: 3rem !important;
   height: 4rem !important;
   border-radius: 0.6rem !important;
   overflow: hidden !important;
 }
 
-#pool>div> :nth-child(2) {
+#pool > div > :nth-child(2) {
   min-width: 0 !important;
 }
 
@@ -37,7 +37,7 @@
   white-space: nowrap;
 }
 
-#pool>div> :nth-child(3) {
+#pool > div > :nth-child(3) {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 0.45rem !important;
@@ -46,12 +46,12 @@
 }
 
 @media (max-width: 640px) {
-  #pool>div {
+  #pool > div {
     grid-template-columns: 3rem minmax(0, 1fr) !important;
     grid-template-rows: auto auto !important;
   }
 
-  #pool>div> :nth-child(3) {
+  #pool > div > :nth-child(3) {
     grid-column: 1 / -1 !important;
     justify-content: flex-start !important;
   }
@@ -92,7 +92,7 @@
   overflow: visible !important;
 }
 
-#roomMembersWrap .card-body>div:first-child {
+#roomMembersWrap .card-body > div:first-child {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
   align-items: center !important;
@@ -100,7 +100,7 @@
   overflow: visible !important;
 }
 
-#roomMembersWrap .card-body>div:first-child h3 {
+#roomMembersWrap .card-body > div:first-child h3 {
   min-width: 0 !important;
   margin: 0 !important;
 }
@@ -131,7 +131,7 @@
   overflow: auto;
 }
 
-#roomMembersList>div {
+#roomMembersList > div {
   width: 100% !important;
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto !important;
@@ -143,11 +143,11 @@
   word-break: break-word;
 }
 
-#roomMembersList>div>.truncate {
+#roomMembersList > div > .truncate {
   min-width: 0 !important;
 }
 
-#roomMembersList>div>.badge {
+#roomMembersList > div > .badge {
   justify-self: end !important;
   white-space: nowrap !important;
 }
@@ -219,7 +219,8 @@
 #roomStickerBtn,
 #roomEmojiBtn,
 #roomVoiceBtn {
-  transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;
+  transition: transform 140ms ease, background-color 140ms ease,
+    box-shadow 140ms ease;
   border-radius: 999px;
 }
 
@@ -239,7 +240,6 @@
   transform: translateY(0) scale(0.97);
   box-shadow: none;
 }
-
 
 #roomChatForm {
   gap: 0.5rem;
@@ -359,7 +359,6 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 
 /* Chat + members tuning on 1080p laptops */
 @media (min-width: 1440px) and (max-width: 2100px) {
-
   /* Give chat a bit more vertical space on larger laptops */
   #roomChatMessages {
     max-height: 20rem;
@@ -382,16 +381,473 @@ html[data-theme="cupcake"] .chat-bubble-neutral {
 }
 
 #poolFilters label,
-#poolFilters>div {
+#poolFilters > div {
   box-shadow: var(--ui-shadow-soft);
 }
 
 [data-theme="synthwave"] #poolFilters label,
-[data-theme="synthwave"] #poolFilters>div {
+[data-theme="synthwave"] #poolFilters > div {
   background-color: color-mixin(oklab, hsl(var(--b2)) 45%, transparent);
 }
 
 [data-theme="cupcake"] #poolFilters label,
-[data-theme="cupcake"] #poolFilters>div {
+[data-theme="cupcake"] #poolFilters > div {
   background-color: color-mixin(oklab, hsl(var(--b1)) 70%, transparent);
+}
+
+/* ===== POOL & ROOM MEMBERS SPACING - MORE SPACE ===== */
+
+/* Add large buffer space below pool */
+#pool {
+  margin-bottom: 3rem !important;
+}
+
+/* Prevent room members from shifting */
+#roomMembersWrap {
+  margin-top: 1.5rem !important;
+}
+
+/* Lock room members position */
+#roomMembersWrap {
+  will-change: auto;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ===== FIX HORIZONTAL SCROLLBAR ON POOL HOVER ===== */
+
+/* Prevent horizontal overflow */
+#pool {
+  overflow-x: hidden !important;
+  overflow-y: auto;
+}
+
+/* Also fix on parent containers */
+#poolChatWrap,
+.card-body {
+  overflow-x: hidden !important;
+}
+
+/* Reduce scale slightly to prevent overflow */
+#pool > *:hover {
+  transform: translateY(-3px) scale(1.005); /* Reduced from 1.01 */
+  z-index: 5;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== ROOM CHAT - PREMIUM ANIMATIONS & POLISH ===== */
+
+/* Chat container smooth appearance */
+#roomChatColumn {
+  animation: chatSlideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes chatSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Individual message slide in */
+.chat-message {
+  animation: chatMessageSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes chatMessageSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-15px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Avatar bounce on message appear */
+.chat-message-avatar {
+  animation: avatarBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes avatarBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced message hover */
+.chat-message:hover {
+  background-color: hsl(var(--b2) / 0.4);
+  border-radius: 8px;
+  margin: -4px;
+  padding: calc(0.25rem + 4px) 4px;
+  transform: translateX(3px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Typing indicator animation */
+.typing-indicator {
+  display: inline-flex;
+  gap: 4px;
+  padding: 8px 12px;
+}
+
+.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: hsl(var(--bc) / 0.5);
+  animation: typingDot 1.4s ease-in-out infinite;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingDot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* Chat input focus glow */
+#roomChatInput {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#roomChatInput:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--p) / 0.2);
+  border-color: hsl(var(--p) / 0.5);
+}
+
+/* Send button pulse when input has text */
+#roomChatForm button[type="submit"].has-text {
+  animation: sendPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes sendPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--p) / 0);
+  }
+}
+
+/* Reaction pill pop-in */
+.chat-message .badge {
+  animation: reactionPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes reactionPop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Reaction button hover */
+.chat-message button[class*="badge"]:hover {
+  transform: scale(1.15);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* GIF/Sticker button hover dance */
+#roomGifBtn:hover,
+#roomStickerBtn:hover,
+#roomEmojiBtn:hover,
+#roomVoiceBtn:hover {
+  animation: iconDance 0.5s ease;
+}
+
+@keyframes iconDance {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-10deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(10deg) scale(1.1);
+  }
+}
+
+/* Chat tray slide up */
+#chatTray {
+  animation: traySlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: bottom;
+}
+
+@keyframes traySlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scaleY(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+/* GIF/Sticker grid stagger */
+#chatTrayGrid > button {
+  animation: gridItemFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+#chatTrayGrid > button:nth-child(1) {
+  animation-delay: 0s;
+}
+#chatTrayGrid > button:nth-child(2) {
+  animation-delay: 0.03s;
+}
+#chatTrayGrid > button:nth-child(3) {
+  animation-delay: 0.06s;
+}
+#chatTrayGrid > button:nth-child(4) {
+  animation-delay: 0.09s;
+}
+#chatTrayGrid > button:nth-child(5) {
+  animation-delay: 0.12s;
+}
+#chatTrayGrid > button:nth-child(6) {
+  animation-delay: 0.15s;
+}
+
+@keyframes gridItemFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* GIF hover zoom */
+#chatTrayGrid img {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#chatTrayGrid button:hover img {
+  transform: scale(1.1);
+}
+
+/* Reply preview slide in */
+#roomReplyPreview {
+  animation: replySlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes replySlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Voice recording pulse */
+#voiceRecordingUI {
+  animation: voiceRecordPulse 1.5s ease-in-out infinite;
+  border: 2px solid hsl(var(--er));
+}
+
+@keyframes voiceRecordPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--er) / 0.7);
+    border-color: hsl(var(--er) / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 10px hsl(var(--er) / 0);
+    border-color: hsl(var(--er));
+  }
+}
+
+/* Voice timer pulsing */
+#voiceTimer {
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* Online badge pulse */
+.badge-success {
+  animation: onlinePulse 2s ease-in-out infinite;
+}
+
+@keyframes onlinePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--su) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 4px hsl(var(--su) / 0);
+  }
+}
+
+/* Member join/leave animation */
+#roomMembersList > div {
+  animation: memberFadeIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes memberFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Chat scroll to bottom smooth */
+#roomChatMessages {
+  scroll-behavior: smooth;
+}
+
+/* New message glow flash */
+@keyframes newMessageFlash {
+  0% {
+    background-color: hsl(var(--p) / 0.2);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.chat-message.new-message {
+  animation: newMessageFlash 1s ease-out;
+}
+
+/* Mention highlight */
+.text-primary {
+  position: relative;
+  animation: mentionGlow 2s ease-in-out infinite;
+}
+
+@keyframes mentionGlow {
+  0%,
+  100% {
+    text-shadow: 0 0 8px hsl(var(--p) / 0.5);
+  }
+  50% {
+    text-shadow: 0 0 12px hsl(var(--p) / 0.8);
+  }
+}
+
+/* Emoji picker button grid bounce */
+#msgEmojiPicker button {
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#msgEmojiPicker button:hover {
+  transform: scale(1.3);
+  background-color: hsl(var(--b3));
+}
+
+#msgEmojiPicker button:active {
+  transform: scale(1.1);
+}
+
+/* Chat background preview shimmer */
+#chatBgPreviewLayer {
+  animation: bgPreviewShimmer 3s ease-in-out infinite;
+}
+
+@keyframes bgPreviewShimmer {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* ===== THEME-SPECIFIC CHAT ENHANCEMENTS ===== */
+
+/* Synthwave - Message glow */
+[data-theme="synthwave"] .chat-message:hover {
+  box-shadow: 0 0 15px rgba(231, 56, 255, 0.2);
+}
+
+[data-theme="synthwave"] #roomChatInput:focus {
+  box-shadow: 0 4px 16px rgba(231, 56, 255, 0.3),
+    0 0 20px rgba(69, 162, 255, 0.2);
+  border-color: rgba(231, 56, 255, 0.6);
+}
+
+/* Noir - Neon chat effects */
+[data-theme="noir"] .chat-message:hover {
+  box-shadow: 0 0 15px rgba(255, 79, 216, 0.25);
+  border-color: rgba(180, 120, 255, 0.3);
+}
+
+[data-theme="noir"] #roomChatInput:focus {
+  box-shadow: 0 4px 16px rgba(255, 79, 216, 0.35),
+    0 0 24px rgba(66, 217, 255, 0.25);
+  border-color: rgba(255, 79, 216, 0.7);
+}
+
+[data-theme="noir"] .chat-message-author {
+  text-shadow: 0 0 8px hsl(var(--p) / 0.4);
+}
+
+/* Cupcake - Soft chat glow */
+[data-theme="cupcake"] .chat-message:hover {
+  box-shadow: 0 2px 12px rgba(101, 80, 225, 0.15);
+}
+
+[data-theme="cupcake"] #roomChatInput:focus {
+  box-shadow: 0 4px 14px rgba(101, 80, 225, 0.25);
+  border-color: rgba(101, 80, 225, 0.5);
 }
