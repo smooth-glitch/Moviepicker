@@ -376,7 +376,6 @@
 }
 
 @keyframes wavePlay {
-
   0%,
   100% {
     transform: scaleY(0.6);
@@ -410,7 +409,6 @@
 }
 
 @keyframes voicePulse {
-
   0%,
   100% {
     background-color: hsl(var(--er) / 0.15);
@@ -442,12 +440,14 @@
 
 /* Rainbow Spin */
 #framePreviewRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg,
-      #ff0080 0%,
-      #ff8c00 25%,
-      #40e0d0 50%,
-      #ff0080 75%,
-      #ff8c00 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #ff0080 0%,
+    #ff8c00 25%,
+    #40e0d0 50%,
+    #ff0080 75%,
+    #ff8c00 100%
+  ) !important;
   background-size: 400% 400% !important;
   animation: rainbowSpin 3s linear infinite !important;
   border: 4px solid transparent;
@@ -471,7 +471,6 @@
 }
 
 @keyframes neonPulse {
-
   0%,
   100% {
     filter: brightness(1) drop-shadow(0 0 10px rgba(231, 56, 255, 0.9));
@@ -492,7 +491,6 @@
 }
 
 @keyframes fireGlow {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -515,7 +513,6 @@
 }
 
 @keyframes iceShimmer {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -530,12 +527,14 @@
 
 /* Gold Shine */
 #framePreviewRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg,
-      #b8860b 0%,
-      #ffd700 25%,
-      #ffed4e 50%,
-      #ffd700 75%,
-      #b8860b 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #b8860b 0%,
+    #ffd700 25%,
+    #ffed4e 50%,
+    #ffd700 75%,
+    #b8860b 100%
+  ) !important;
   background-size: 400% 100% !important;
   animation: goldShine 2.5s linear infinite !important;
   border: 4px solid transparent;
@@ -631,31 +630,39 @@
 
 /* Purple Galaxy */
 #roomChatMessages.chat-bg-gradient-purple {
-  background-image: linear-gradient(135deg,
-      rgba(102, 126, 234, 0.25) 0%,
-      rgba(118, 75, 162, 0.25) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.25) 0%,
+    rgba(118, 75, 162, 0.25) 100%
+  ) !important;
 }
 
 /* Ocean Waves */
 #roomChatMessages.chat-bg-gradient-blue {
-  background-image: linear-gradient(135deg,
-      rgba(102, 126, 234, 0.22) 0%,
-      rgba(67, 233, 123, 0.22) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.22) 0%,
+    rgba(67, 233, 123, 0.22) 100%
+  ) !important;
 }
 
 /* Sunset Glow */
 #roomChatMessages.chat-bg-gradient-sunset {
-  background-image: linear-gradient(135deg,
-      rgba(250, 112, 154, 0.2) 0%,
-      rgba(254, 225, 64, 0.2) 100%) !important;
+  background-image: linear-gradient(
+    135deg,
+    rgba(250, 112, 154, 0.2) 0%,
+    rgba(254, 225, 64, 0.2) 100%
+  ) !important;
 }
 
 /* Dot Pattern - FIXED */
 #roomChatMessages.chat-bg-pattern-dots {
   background-color: transparent !important;
-  background-image: radial-gradient(circle,
-      hsl(var(--bc) / 0.25) 2px,
-      transparent 2px) !important;
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--bc) / 0.25) 2px,
+    transparent 2px
+  ) !important;
   background-size: 20px 20px !important;
   background-attachment: local !important;
   background-repeat: repeat !important;
@@ -673,17 +680,21 @@
 
 /* Matrix Code */
 #roomChatMessages.chat-bg-matrix {
-  background-image: linear-gradient(180deg,
-      rgba(0, 0, 0, 0.3) 0%,
-      rgba(0, 51, 0, 0.3) 100%) !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 51, 0, 0.3) 100%
+  ) !important;
 }
 
 /* Starfield - FIXED */
 #roomChatMessages.chat-bg-stars {
   background-color: rgba(10, 10, 30, 0.15) !important;
-  background-image: radial-gradient(circle at 15% 25%,
+  background-image: radial-gradient(
+      circle at 15% 25%,
       white 1.5px,
-      transparent 1.5px),
+      transparent 1.5px
+    ),
     radial-gradient(circle at 45% 15%, white 1px, transparent 1px),
     radial-gradient(circle at 75% 35%, white 1.5px, transparent 1.5px),
     radial-gradient(circle at 30% 65%, white 1px, transparent 1px),
@@ -700,7 +711,7 @@
 }
 
 /* Ensure messages stay above background */
-#roomChatMessages>* {
+#roomChatMessages > * {
   position: relative;
   z-index: 1;
 }
@@ -728,9 +739,11 @@
 }
 
 #chatBgPreviewLayer.chat-bg-pattern-dots {
-  background-image: radial-gradient(circle,
-      hsl(var(--bc) / 0.4) 2px,
-      transparent 2px);
+  background-image: radial-gradient(
+    circle,
+    hsl(var(--bc) / 0.4) 2px,
+    transparent 2px
+  );
   background-size: 24px 24px;
   opacity: 0.35;
 }
@@ -928,27 +941,33 @@
 
 /* Synthwave theme */
 [data-theme="synthwave"] .alert-info {
-  background: linear-gradient(135deg,
-      rgba(69, 162, 255, 0.15),
-      rgba(231, 56, 255, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(69, 162, 255, 0.15),
+    rgba(231, 56, 255, 0.15)
+  );
   border-color: rgba(69, 162, 255, 0.5);
   color: #45a2ff;
   box-shadow: 0 4px 12px rgba(69, 162, 255, 0.3);
 }
 
 [data-theme="synthwave"] .alert-success {
-  background: linear-gradient(135deg,
-      rgba(0, 255, 136, 0.15),
-      rgba(0, 200, 100, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 136, 0.15),
+    rgba(0, 200, 100, 0.15)
+  );
   border-color: rgba(0, 255, 136, 0.5);
   color: #00ff88;
   box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
 }
 
 [data-theme="synthwave"] .alert-error {
-  background: linear-gradient(135deg,
-      rgba(255, 56, 96, 0.15),
-      rgba(255, 0, 80, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 56, 96, 0.15),
+    rgba(255, 0, 80, 0.15)
+  );
   border-color: rgba(255, 56, 96, 0.5);
   color: #ff3860;
   box-shadow: 0 4px 12px rgba(255, 56, 96, 0.3);
@@ -988,14 +1007,16 @@
 }
 
 #headerAvatarRing.profile-frame-gradient-spin {
-  background: linear-gradient(90deg,
-      #ff0080 0%,
-      #ff8c00 16%,
-      #ffed4e 33%,
-      #40e0d0 50%,
-      #4169e1 66%,
-      #ff0080 83%,
-      #ff8c00 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #ff0080 0%,
+    #ff8c00 16%,
+    #ffed4e 33%,
+    #40e0d0 50%,
+    #4169e1 66%,
+    #ff0080 83%,
+    #ff8c00 100%
+  ) !important;
   background-size: 600% 100% !important;
   animation: rainbowSpin 4s linear infinite !important;
   border: 4px solid transparent;
@@ -1020,14 +1041,16 @@
 
 /* Gold Shine - FIXED */
 #headerAvatarRing.profile-frame-gold-shine {
-  background: linear-gradient(90deg,
-      #8b6914 0%,
-      #b8860b 20%,
-      #ffd700 40%,
-      #ffed4e 50%,
-      #ffd700 60%,
-      #b8860b 80%,
-      #8b6914 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #8b6914 0%,
+    #b8860b 20%,
+    #ffd700 40%,
+    #ffed4e 50%,
+    #ffd700 60%,
+    #b8860b 80%,
+    #8b6914 100%
+  ) !important;
   background-size: 600% 100% !important;
   animation: goldShine 3s linear infinite !important;
   border: 4px solid transparent;
@@ -1141,9 +1164,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 30% 50%,
-      rgba(231, 56, 255, 0.15),
-      transparent 60%);
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(231, 56, 255, 0.15),
+    transparent 60%
+  );
   pointer-events: none;
   z-index: 1;
 }
@@ -1155,10 +1180,12 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(0deg,
-      transparent 0px,
-      rgba(255, 255, 255, 0.03) 2px,
-      transparent 4px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    rgba(255, 255, 255, 0.03) 2px,
+    transparent 4px
+  );
   animation: scanlines 8s linear infinite;
   pointer-events: none;
   z-index: 2;
@@ -1179,15 +1206,21 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle at 20% 30%,
+  background-image: radial-gradient(
+      circle at 20% 30%,
       rgba(255, 255, 255, 0.05) 1px,
-      transparent 1px),
-    radial-gradient(circle at 80% 70%,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 80% 70%,
       rgba(255, 255, 255, 0.04) 1px,
-      transparent 1px),
-    radial-gradient(circle at 50% 50%,
+      transparent 1px
+    ),
+    radial-gradient(
+      circle at 50% 50%,
       rgba(255, 255, 255, 0.03) 1px,
-      transparent 1px);
+      transparent 1px
+    );
   background-size: 200px 200px, 300px 300px, 250px 250px;
   background-position: 0 0, 100px 100px, 50px 150px;
   animation: filmGrain 3s infinite;
@@ -1197,7 +1230,6 @@
 }
 
 @keyframes filmGrain {
-
   0%,
   100% {
     opacity: 0.3;
@@ -1237,10 +1269,12 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(45deg,
-      transparent 30%,
-      rgba(255, 255, 255, 0.3) 50%,
-      transparent 70%);
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
   animation: buttonShine 3s infinite;
 }
 
@@ -1260,7 +1294,6 @@
 }
 
 @keyframes pulse {
-
   0%,
   100% {
     transform: scale(1);
@@ -1289,10 +1322,12 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg,
-      rgba(231, 56, 255, 0.15) 0%,
-      transparent 40%,
-      rgba(69, 162, 255, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(231, 56, 255, 0.15) 0%,
+    transparent 40%,
+    rgba(69, 162, 255, 0.1) 100%
+  );
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
   pointer-events: none;
@@ -1300,7 +1335,6 @@
 }
 
 @keyframes gradientShift {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -1434,9 +1468,7 @@ html[data-theme="noir"] {
 
 /* Hero and chrome tweaks for Noir */
 html[data-theme="noir"] #hero {
-  box-shadow:
-    0 0 40px rgba(180, 90, 255, 0.5),
-    0 0 80px rgba(255, 80, 180, 0.4);
+  box-shadow: 0 0 40px rgba(180, 90, 255, 0.5), 0 0 80px rgba(255, 80, 180, 0.4);
   border-color: rgba(255, 120, 220, 0.5);
 }
 
@@ -1444,8 +1476,7 @@ html[data-theme="noir"] .btn-primary {
   background: linear-gradient(135deg, #ff4fd8, #9b6bff);
   border: none;
   color: #ffffff;
-  box-shadow:
-    0 0 18px rgba(255, 79, 216, 0.6),
+  box-shadow: 0 0 18px rgba(255, 79, 216, 0.6),
     0 0 28px rgba(155, 107, 255, 0.5);
 }
 
@@ -1453,14 +1484,19 @@ html[data-theme="noir"] .btn-secondary {
   background: linear-gradient(135deg, #42d9ff, #9b6bff);
   border: none;
   color: #ffffff;
-  box-shadow:
-    0 0 16px rgba(66, 217, 255, 0.6),
+  box-shadow: 0 0 16px rgba(66, 217, 255, 0.6),
     0 0 26px rgba(155, 107, 255, 0.5);
 }
 
 html[data-theme="noir"] .card,
 html[data-theme="noir"] .modal-box {
-  background: radial-gradient(circle at top, rgba(255, 79, 216, 0.15), transparent 55%), radial-gradient(circle at bottom, rgba(66, 217, 255, 0.12), transparent 55%), hsl(var(--b2));
+  background: radial-gradient(
+      circle at top,
+      rgba(255, 79, 216, 0.15),
+      transparent 55%
+    ),
+    radial-gradient(circle at bottom, rgba(66, 217, 255, 0.12), transparent 55%),
+    hsl(var(--b2));
   border-color: rgba(180, 120, 255, 0.4);
 }
 
@@ -1468,8 +1504,7 @@ html[data-theme="noir"] .modal-box {
 html[data-theme="noir"] #themeToggleBtn {
   background: rgba(8, 8, 24, 0.7);
   border-color: rgba(255, 120, 220, 0.6);
-  box-shadow:
-    0 0 18px rgba(255, 120, 220, 0.7),
+  box-shadow: 0 0 18px rgba(255, 120, 220, 0.7),
     0 0 32px rgba(66, 217, 255, 0.5);
   color: #ffffff;
 }
@@ -1575,11 +1610,14 @@ html[data-theme="noir"] #minRatingPool {
 }
 
 html[data-theme="noir"] .pool-min-rating-control {
-  background: linear-gradient(135deg,
-      rgba(255, 79, 216, 0.08),
-      rgba(66, 217, 255, 0.08));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 79, 216, 0.08),
+    rgba(66, 217, 255, 0.08)
+  );
   border-color: rgba(180, 120, 255, 0.6);
-  box-shadow: 0 0 16px rgba(255, 79, 216, 0.25), 0 0 24px rgba(66, 217, 255, 0.15);
+  box-shadow: 0 0 16px rgba(255, 79, 216, 0.25),
+    0 0 24px rgba(66, 217, 255, 0.15);
 }
 
 .pool-min-rating-control h4 {
@@ -1614,7 +1652,11 @@ html[data-theme="noir"] .pool-min-rating-control {
 }
 
 html[data-theme="noir"] #btnExcludeWatchedPool {
-  background: linear-gradient(135deg, rgba(255, 79, 216, 0.15), rgba(66, 217, 255, 0.12));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 79, 216, 0.15),
+    rgba(66, 217, 255, 0.12)
+  );
   border-color: rgba(180, 120, 255, 0.7);
   box-shadow: 0 0 12px rgba(255, 79, 216, 0.4), 0 0 18px rgba(66, 217, 255, 0.3);
 }
@@ -1712,3 +1754,13 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
   box-shadow: 0 0 16px rgba(255, 79, 216, 0.15) !important;
 }
 
+/* Fix rooms section indentation */
+#tab-rooms {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+
+#tab-rooms > div {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
