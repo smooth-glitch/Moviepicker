@@ -1764,3 +1764,93 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
   padding-left: 0 !important;
   margin-left: 0 !important;
 }
+
+/* ========== CHAT AVATAR FRAMES ========== */
+.chat-message-avatar {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+}
+
+/* Frame animations for chat avatars */
+.chat-message-avatar.has-frame-gradient-spin {
+  animation: profile-frame-gradient-spin 8s linear infinite;
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #ff4fd8, #9b6bff, #ff4fd8) 1;
+}
+
+.chat-message-avatar.has-frame-neon-pulse {
+  animation: profile-frame-neon-pulse 2s ease-in-out infinite;
+  border: 2px solid #ff4fd8;
+  box-shadow: 0 0 8px rgba(255, 79, 216, 0.6);
+}
+
+.chat-message-avatar.has-frame-fire-glow {
+  animation: profile-frame-fire-glow 3s ease-in-out infinite;
+  border: 2px solid #ff6b35;
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.7);
+}
+
+.chat-message-avatar.has-frame-ice-shimmer {
+  animation: profile-frame-ice-shimmer 3s ease-in-out infinite;
+  border: 2px solid #00d4ff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+}
+
+.chat-message-avatar.has-frame-gold-shine {
+  animation: profile-frame-gold-shine 2s ease-in-out infinite;
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+/* Define the animations */
+@keyframes profile-frame-gradient-spin {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes profile-frame-neon-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 8px rgba(255, 79, 216, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(255, 79, 216, 0.9);
+  }
+}
+
+@keyframes profile-frame-fire-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(255, 107, 53, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 107, 53, 1);
+  }
+}
+
+@keyframes profile-frame-ice-shimmer {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.9);
+  }
+}
+
+@keyframes profile-frame-gold-shine {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(255, 215, 0, 1);
+  }
+}
