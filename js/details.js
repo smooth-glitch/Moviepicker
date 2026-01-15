@@ -10,6 +10,7 @@ import { updatePlaybackFromLocal, saveTelepartyUrl } from "./rooms.js";
 import { addToPoolById } from "./pool.js";
 import { rerollPick } from "./pick.js";
 import { openCollectionPicker } from "./collections.js";
+// Add to your imports at the top:
 
 let currentDetailsId = null;
 
@@ -435,6 +436,62 @@ export async function openDetails(idNum, opts = {}) {
             });
         };
     }
+
+    // REVIEW FUNCTIONALITY - add this after btnAddToCollection
+    const reviewRatingInput = document.getElementById('reviewRatingInput');
+    const reviewRatingDisplay = document.getElementById('reviewRatingDisplay');
+    const reviewTextInput = document.getElementById('reviewTextInput');
+    const btnSaveReview = document.getElementById('btnSaveReview');
+    const btnDeleteReview = document.getElementById('btnDeleteReview');
+
+    if (reviewRatingInput && reviewRatingDisplay && reviewTextInput && btnSaveReview && btnDeleteReview) {
+        // Load existing review if it exists
+        const existingReview = getReview(idNum);
+
+        if (existingReview) {
+            reviewRatingInput.value = existingReview.rating;
+            reviewRatingDisplay.textContent = existingReview.rating.toFixed(1);
+            reviewTextInput.value = existingReview.review || '';
+            btnDeleteReview.classList.remove('hidden');
+        } else {
+            reviewRatingInput.value = 0;
+            reviewRatingDisplay.textContent = '0.0';
+            reviewTextInput.value = '';
+            btnDeleteReview.classList.add('hidden');
+        }
+
+        // Update display when slider moves
+        reviewRatingInput.addEventListener('input', () => {
+            const value = Number(reviewRatingInput.value);
+            reviewRatingDisplay.textContent = value.toFixed(1);
+        });
+
+        // Save review
+        btnSaveReview.onclick = () => {
+            const rating = Number(reviewRatingInput.value);
+            const reviewText = reviewTextInput.value.trim();
+
+            if (rating === 0) {
+                toast("Please select a rating", "info");
+                return;
+            }
+
+            addReview(idNum, rating, reviewText);
+            btnDeleteReview.classList.remove('hidden');
+        };
+
+        // Delete review
+        btnDeleteReview.onclick = () => {
+            if (!confirm('Delete your review for this movie?')) return;
+
+            deleteReview(idNum);
+            reviewRatingInput.value = 0;
+            reviewRatingDisplay.textContent = '0.0';
+            reviewTextInput.value = '';
+            btnDeleteReview.classList.add('hidden');
+        };
+    }
+
 }
 
 

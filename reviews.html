@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Reviews - CineCircle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Tailwind + daisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/reviews.css">
+
+    <!-- Firebase -->
+    <script src="js/config.js"></script>
+    <script type="module" src="js/firebase-init.js"></script>
+</head>
+
+<body class="min-h-screen bg-base-200">
+    <!-- Header -->
+    <header class="bg-base-100 border-b border-base-300 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="btn btn-ghost btn-sm">← Back</a>
+                <h1 class="font-headline font-bold text-xl">Movie Reviews</h1>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <!-- Filter dropdown -->
+                <select id="reviewsFilter" class="select select-bordered select-sm">
+                    <option value="recent">Recent</option>
+                    <option value="top-rated">Top Rated</option>
+                    <option value="my-reviews">My Reviews</option>
+                    <option value="friends">Friends</option>
+                </select>
+
+                <!-- User button -->
+                <button id="btnUser" class="btn btn-sm gap-2">
+                    <span id="userLabel">Sign in</span>
+                </button>
+
+                <button id="themeToggle" class="theme-toggle btn btn-circle btn-md btn-outline bg-transparent border-base-300 text-base-content transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20"
+                        class="theme-toggle__dark-inner" fill="currentColor" viewBox="0 0 32 32">
+                        <path d="M16 9c3.9 0 7 3.1 7 7s-3.1 7-7 7" />
+                        <path
+                            d="M16 .5C7.4.5.5 7.4.5 16S7.4 31.5 16 31.5 31.5 24.6 31.5 16 24.6.5 16 .5zm0 28.1V23c-3.9 0-7-3.1-7-7s3.1-7 7-7V3.4C23 3.4 28.6 9 28.6 16S23 28.6 16 28.6z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- Write Review Section (when signed in) -->
+        <div id="writeReviewSection" class="hidden card bg-base-100 shadow-xl border border-base-300 p-6 mb-6">
+            <h3 class="font-bold text-lg mb-4">Write a Review</h3>
+
+            <!-- Search movie -->
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="movieSearch" class="input input-bordered flex-1"
+                    placeholder="Search for a movie to review...">
+                <button id="btnSearchMovie" class="btn btn-primary">Search</button>
+            </div>
+
+            <!-- Selected movie (hidden until search) -->
+            <div id="selectedMovie" class="hidden">
+                <!-- Will be populated -->
+            </div>
+        </div>
+
+        <!-- Reviews Feed -->
+        <div id="reviewsFeed" class="space-y-4">
+            <!-- Loading state -->
+            <div class="text-center py-10">
+                <span class="loading loading-spinner loading-lg text-primary"></span>
+                <p class="text-sm opacity-70 mt-2">Loading reviews...</p>
+            </div>
+        </div>
+
+        <!-- Load more -->
+        <div class="text-center mt-6">
+            <button id="btnLoadMore" class="btn btn-outline btn-sm">Load More</button>
+        </div>
+    </main>
+
+    <script type="module" src="js/reviews-page.js"></script>
+</body>
+
+</html>

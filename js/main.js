@@ -1127,6 +1127,7 @@ async function boot() {
     applyPrefsToUI();
     syncControls();
     loadCollections();
+    
     await initWatchFiltersUI({
         onChange: () => {
             if (state.lastMode !== "trending") doSearch(1);
@@ -1330,11 +1331,14 @@ async function boot() {
                 fs.doc(fs.db, "users", user.uid),
                 { email: user.email || null, createdAt: fs.serverTimestamp() },
                 { merge: true }
+
             );
 
             // LOAD COLLECTIONS FROM FIRESTORE - FIX: import both functions
             const { loadCollectionsFromCloud, renderCollections } = await import('./collections.js');
             await loadCollectionsFromCloud();
+            const { loadReviewsFromCloud } = await import('./reviews.js');
+            await loadReviewsFromCloud();
             renderCollections();
 
             // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========

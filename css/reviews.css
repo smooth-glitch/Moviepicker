@@ -1,0 +1,34 @@
+/* css/reviews.css */
+
+/* Remove grid, add scanlines for synthwave on reviews page */
+[data-theme="synthwave"] body::before {
+  display: none !important;
+}
+
+/* Scanlines only for reviews page - STRONG VERSION */
+[data-theme="synthwave"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.6) 2px,
+    rgba(0, 0, 0, 0.6) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  animation: scanlineMove 8s linear infinite;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+}
+
+@keyframes scanlineMove {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100px);
+  }
+}

@@ -48,6 +48,7 @@ export const state = {
         // region: "IN",
     },
     collections: [],
+    reviews: {},
 };
 
 export const authState = { user: null };
