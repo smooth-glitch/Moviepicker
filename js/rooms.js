@@ -695,6 +695,22 @@ export async function updatePlaybackFromLocal({
         { merge: true }
     );
 }
+// Add near the top or before boot():
+export function randomizeVibe() {
+    const vibes = ['🎬 Movie Night', '🍿 Chill', '😱 Horror', '😂 Comedy', '💥 Action', '❤️ Romance', '🚀 Sci-Fi', '🎭 Drama', '🔍 Mystery', '🌟 Classic'];
+    const vibeEl = document.getElementById('roomVibe');
+
+    if (!vibeEl) return;
+
+    // Pick 3 random vibes
+    const shuffled = vibes.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
+
+    vibeEl.innerHTML = selected.map(v =>
+        `<span class="badge badge-sm badge-outline">${v}</span>`
+    ).join('');
+}
+
 
 /**
  * Called when Firestore playback payload changes.
@@ -719,20 +735,6 @@ export function startMembersListener() {
     const roomMembersWrap = id("roomMembersWrap");
     const roomMembersList = id("roomMembersList");
     const roomOnlineCount = id("roomOnlineCount");
-
-
-
-    snap.forEach(doc => {
-        const data = doc.data?.() ?? {};
-        const label = data.name || data.email || doc.id;
-
-        if (change.type === "added" && selfUid && doc.id !== selfUid) {
-            addRoomActivity(`${label} joined`, '👋');
-        }
-        if (change.type === "removed") {
-            addRoomActivity(`${label} left`, '👋');
-        }
-    });
 
     unsubMembers = fs.onSnapshot(
         membersColRef(),

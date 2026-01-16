@@ -739,7 +739,7 @@
                                                     style="animation-duration: 2s;">🎬</span>
                                                 <h4 class="font-bold text-sm">Tonight's Vibe</h4>
                                             </div>
-                                            <button class="btn btn-xs btn-ghost" onclick="randomizeVibe()">
+                                            <button id="btnRandomizeVibe" class="btn btn-xs btn-ghost">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -1573,8 +1573,7 @@
                             </div>
 
                             <!-- Current Region Display -->
-                            <div
-                                class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
+                            <div class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
                                 <div>
                                     <div class="font-semibold text-sm">Your Region</div>
                                     <p class="text-xs opacity-70">Detected automatically or set manually</p>
