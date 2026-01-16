@@ -312,16 +312,6 @@ export function startMessagesListener() {
         q,
         (snap) => {
             const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            // Update message count
-            const newCount = msgs.length;
-            if (newCount > roomStats.messageCount) {
-                const diff = newCount - roomStats.messageCount;
-                if (diff === 1 && msgs[msgs.length - 1]) {
-                    const lastMsg = msgs[msgs.length - 1];
-                    const userName = lastMsg.userName || 'Someone';
-                    addRoomActivity(`${userName} sent a message`, '💬');
-                }
-            }
             roomStats.messageCount = newCount;
             updateRoomStats();
             renderRoomMessages(msgs);
@@ -1003,7 +993,11 @@ export function updateRoomUI() {
 
     // Show/hide room members tab
     if (membersWrap) {
-        membersWrap.classList.toggle("hidden", !hasRoom);
+        if (hasRoom) {
+            membersWrap.classList.remove("hidden");
+        } else {
+            membersWrap.classList.add("hidden");
+        }
     }
 
     // Show/hide chat column
@@ -1091,10 +1085,6 @@ export function startRoomListener() {
                     text2.textContent = title ? `Tonight's pick: ${title}` : "Tonight's pick";
                 }
 
-                roomStats.pickCount++;
-                addRoomActivity(`${lp.title || 'A movie'} picked`, '🎬');
-                updateRoomStats();
-
                 const pickedAtMs =
                     typeof lp.pickedAt?.toMillis === "function" ? lp.pickedAt.toMillis() : 0;
                 const key = lp.pickId ?? `${lp.movieId}_${lp.clientPickedAt ?? 0}`;
@@ -1102,6 +1092,9 @@ export function startRoomListener() {
                 if (key && key !== lastAutoOpenedPickKey) {
                     setLastAutoOpenedPickKey(key);
                     setLastPickedMovieId(lp.movieId);
+                    roomStats.pickCount++;
+                    addRoomActivity(`${lp.title || 'A movie'} picked`, '🎬');
+                    updateRoomStats();
                     openDetails(lp.movieId, {
                         highlight: true,
                         mediaType: lp.mediaType ?? "movie",

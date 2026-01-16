@@ -2287,6 +2287,24 @@ async function boot() {
         });
     }
 
+    setTimeout(() => {
+        if (!inRoom()) {
+            const membersWrap = document.getElementById('roomMembersWrap');
+            const chatCol = document.getElementById('roomChatColumn');
+            if (membersWrap) membersWrap.classList.add('hidden');
+            if (chatCol) chatCol.classList.add('hidden');
+        }
+    }, 500);
+
+    setTimeout(() => {
+        const membersWrap = document.getElementById('roomMembersWrap');
+        console.log('After boot - roomState.id:', roomState.id);
+        console.log('After boot - inRoom():', inRoom());
+        console.log('After boot - membersWrap classes:', membersWrap?.className);
+        console.log('After boot - is hidden?', membersWrap?.classList.contains('hidden'));
+    }, 1000);
+
+
 }
 
 if (document.readyState === "loading")
