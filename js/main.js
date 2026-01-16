@@ -304,22 +304,6 @@ function triggerConfetti(x, y) {
     }
 }
 
-// Listen for pool additions
-document.addEventListener('poolItemAdded', (e) => {
-    // Add stagger animation class
-    setTimeout(() => {
-        const poolItems = document.querySelectorAll('#pool > *');
-        const newItem = poolItems[0]; // Assuming unshift adds to top
-        if (newItem) {
-            newItem.classList.add('just-added');
-            setTimeout(() => newItem.classList.remove('just-added'), 500);
-        }
-    }, 50);
-
-    // Trigger confetti at button location
-    triggerConfetti(window.innerWidth / 2, window.innerHeight / 2);
-});
-
 // 4. MAGNETIC HOVER FOR PICK BUTTONS
 function initMagneticButtons() {
     const buttons = ['#btnPick', '#btnPickPool', '#pickMeNow'];
@@ -982,25 +966,6 @@ function stopBubbles() {
     clearInterval(bubbleInterval);
     document.querySelectorAll('[style*="bubbleRise"]').forEach(el => el.remove());
 }
-
-// Update initCupcakeEffects:
-function initCupcakeEffects() {
-    console.log('Cupcake theme effects initialized');
-
-    // Heart particles on add to pool
-    const poolItemHandler = (e) => {
-        if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
-        triggerHeartParticles();
-    };
-
-    document.addEventListener('poolItemAdded', poolItemHandler);
-
-    // Start floating bubbles
-    startBubbles();
-}
-// --------------------------------------------------
-// Boot
-// --------------------------------------------------
 
 async function loadSharedListFromUrl() {
     const fs = window.firebaseStore;
