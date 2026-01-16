@@ -1705,17 +1705,54 @@ async function boot() {
     const dmEmojiBtn = document.getElementById('dmEmojiBtn');
     const dmVoiceBtn = document.getElementById('dmVoiceBtn');
 
-    // DM-specific handlers that send to DM instead of room
+    console.log('DM Buttons found:', {
+        gif: !!dmGifBtn,
+        sticker: !!dmStickerBtn,
+        emoji: !!dmEmojiBtn,
+        voice: !!dmVoiceBtn
+    });
+
+    // DM-specific handlers
     async function sendDMGifHandler(gif) {
+        console.log('Sending DM GIF:', gif.url);
         const { sendDMGif } = await import('./dm.js');
         await sendDMGif(gif.url);
         closeTray(tray);
     }
 
     async function sendDMStickerHandler(sticker) {
+        console.log('Sending DM Sticker:', sticker.url);
         const { sendDMSticker } = await import('./dm.js');
         await sendDMSticker(sticker.url);
         closeTray(tray);
+    }
+
+    // Wire up DM buttons
+    if (dmGifBtn) {
+        console.log('Wiring DM GIF button');
+        dmGifBtn.addEventListener('click', () => {
+            console.log('DM GIF clicked!');
+            openTray('gif', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayGifs('', trayGrid, sendDMGifHandler);
+        });
+    }
+
+    if (dmStickerBtn) {
+        console.log('Wiring DM Sticker button');
+        dmStickerBtn.addEventListener('click', () => {
+            console.log('DM Sticker clicked!');
+            openTray('sticker', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayStickers('', trayGrid, sendDMStickerHandler);
+        });
+    }
+
+    if (dmEmojiBtn && dmInput) {
+        console.log('Wiring DM Emoji button');
+        dmEmojiBtn.addEventListener('click', () => {
+            console.log('DM Emoji clicked!');
+            openTray('emoji', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayEmojis('', trayGrid, dmInput, tray);
+        });
     }
 
     // Open tray for DM

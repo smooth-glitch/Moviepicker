@@ -1702,3 +1702,41 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
 [data-theme="noir"] #collectionPickerList button {
   color: hsl(var(--bc)) !important;
 }
+
+/* ===== DM MODAL - THEME SPECIFIC ===== */
+
+#dmModal .bg-base-100 {
+  background-color: hsl(var(--b1)) !important;
+  opacity: 1 !important;
+}
+
+/* Synthwave DM styling */
+[data-theme="synthwave"] #dmModal .bg-base-100 {
+  background-color: #1a103d !important;
+  border-color: rgba(231, 56, 255, 0.4);
+}
+
+[data-theme="synthwave"] #dmMessages {
+  background-color: #251454 !important;
+}
+
+/* Cupcake DM styling */
+[data-theme="cupcake"] #dmModal .bg-base-100 {
+  background-color: #faf7f5 !important;
+  border-color: rgba(101, 80, 225, 0.3);
+}
+
+[data-theme="cupcake"] #dmMessages {
+  background-color: #f5f3f0 !important;
+}
+
+/* Noir DM styling */
+[data-theme="noir"] #dmModal .bg-base-100 {
+  background-color: hsl(240 45% 10%) !important;
+  border-color: rgba(180, 120, 255, 0.4);
+  box-shadow: 0 0 40px rgba(255, 79, 216, 0.3);
+}
+
+[data-theme="noir"] #dmMessages {
+  background-color: hsl(240 40% 8%) !important;
+}
