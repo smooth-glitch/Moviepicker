@@ -2088,19 +2088,24 @@ async function boot() {
         trayClose.addEventListener("click", () => closeTray(tray));
     }
 
-    // Initial render when opening
-    document.addEventListener(
-        "click",
-        (e) => {
-            if (!tray || tray.classList.contains("hidden")) return;
-            const t = e.target;
-            const insideTray = tray.contains(t);
-            const insideBtns =
-                gifBtn?.contains(t) || stickerBtn?.contains(t) || emojiBtn?.contains(t);
-            if (!insideTray && !insideBtns) closeTray(tray);
-        },
-        false
-    );
+    // Find this code (around line 1900) and UPDATE it:
+    document.addEventListener("click", (e) => {
+        if (!tray || tray.classList.contains("hidden")) return;
+        const t = e.target;
+        const insideTray = tray.contains(t);
+
+        // ADD DM BUTTONS HERE:
+        const insideBtns =
+            gifBtn?.contains(t) ||
+            stickerBtn?.contains(t) ||
+            emojiBtn?.contains(t) ||
+            dmGifBtn?.contains(t) ||      // ADD
+            dmStickerBtn?.contains(t) ||  // ADD
+            dmEmojiBtn?.contains(t);       // ADD
+
+        if (!insideTray && !insideBtns) closeTray(tray);
+    }, false);
+
     // Add to js/main.js (at the end of boot function)
 
     window.addEventListener('scroll', () => {
