@@ -2084,3 +2084,66 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* ===== ROOM MEMBERS - FIXED LAYOUT ===== */
+
+/* Header gradient - proper sizing */
+#roomMembersWrap .relative {
+  padding: 1rem !important;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem;
+}
+
+/* Fix icon container */
+#roomMembersWrap .w-12.h-12 {
+  min-width: 3rem !important;
+  min-height: 3rem !important;
+}
+
+/* Member list proper spacing */
+#roomMembersList > div {
+  margin-bottom: 0.5rem;
+}
+
+/* Stats grid - prevent breaking */
+#roomMembersWrap .grid-cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+/* Stat cards - fixed height */
+.stat-card {
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Vibe section - proper layout */
+.vibe-card {
+  min-height: auto !important;
+}
+
+#roomVibe {
+  min-height: 2rem;
+}
+
+/* Activity section - scrollable */
+#roomActivity {
+  min-height: 4rem;
+  max-height: 10rem;
+}
+
+/* Buttons full width */
+#btnCopyRoomLink,
+#btnLeaveRoom {
+  width: 100% !important;
+}
+
+/* Room badge - proper spacing */
+#roomBadge {
+  margin-top: 0.75rem !important;
+  word-break: break-all;
+}

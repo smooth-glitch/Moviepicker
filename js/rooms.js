@@ -95,7 +95,7 @@ export function clearRoomStats() {
 // Call this to update stats
 export function updateRoomStats() {
     const pickCount = document.getElementById('roomPickCount');
-    const messageCount = document.getElementById('roomMessageCount');
+    const messageCount = document.getElementById('roomMessageCount'); // ADD THIS
     const duration = document.getElementById('roomDuration');
 
     if (pickCount) {
@@ -104,6 +104,7 @@ export function updateRoomStats() {
         setTimeout(() => pickCount.classList.remove('stat-bump'), 300);
     }
 
+    // ADD THIS SECTION:
     if (messageCount) {
         messageCount.textContent = roomStats.messageCount;
     }
@@ -120,6 +121,7 @@ export function updateRoomStats() {
         }
     }
 }
+
 // Add activity log
 export function addRoomActivity(text, icon = '•') {
     const activityEl = document.getElementById('roomActivity');
@@ -312,6 +314,7 @@ export function startMessagesListener() {
         q,
         (snap) => {
             const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            roomStats.messageCount = msgs.length;
             updateRoomStats();
             renderRoomMessages(msgs);
         },
