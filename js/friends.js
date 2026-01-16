@@ -227,7 +227,7 @@ export async function renderFriends() {
     if (followingCount) followingCount.textContent = state.friends.following.length;
     if (followersCount) followersCount.textContent = state.friends.followers.length;
 
-    // Render following
+    // Replace the following list section with this:
     if (followingList) {
         if (state.friends.following.length === 0) {
             followingList.innerHTML = `
@@ -253,21 +253,38 @@ export async function renderFriends() {
                 <p class="text-xs opacity-60 font-mono">${uid.slice(0, 8)}...</p>
               </div>
             </div>
-            <button class="btn btn-ghost btn-xs" data-action="unfollow" data-uid="${uid}">
-              Unfollow
-            </button>
+            <div class="flex gap-2">
+              <button class="btn btn-primary btn-xs" data-action="message" data-uid="${uid}" data-name="${escapeHtml(userInfo?.name || 'User')}">
+                Message
+              </button>
+              <button class="btn btn-ghost btn-xs" data-action="unfollow" data-uid="${uid}">
+                Unfollow
+              </button>
+            </div>
           `;
 
-                // Unfollow handler
-                card.querySelector('button')?.addEventListener('click', async () => {
-                    await removeFriend(uid);
-                    renderFriends(); // Refresh
+                // Event handler for both buttons
+                card.addEventListener('click', async (e) => {
+                    const btn = e.target.closest('button');
+                    if (!btn) return;
+
+                    const action = btn.dataset.action;
+                    const targetUid = btn.dataset.uid;
+
+                    if (action === 'message') {
+                        const { openDM } = await import('./dm.js');
+                        openDM(targetUid, btn.dataset.name);
+                    } else if (action === 'unfollow') {
+                        await removeFriend(targetUid);
+                        renderFriends();
+                    }
                 });
 
                 followingList.appendChild(card);
             }
         }
     }
+
 
     // Render followers
     if (followersList) {

@@ -68,6 +68,7 @@ import {
     addToCollection  // ADD THIS
 } from "./collections.js";
 import { loadFriends, addFriend, renderFriends } from "./friends.js";
+import { openDM, sendDM, closeDM } from "./dm.js";
 
 let liveSearchTimer = null;
 // reply draft for chat
@@ -1192,6 +1193,32 @@ async function boot() {
             }
         });
     }
+
+    // Wire up DM modal
+    const btnCloseDM = document.getElementById('btnCloseDM');
+    const dmForm = document.getElementById('dmForm');
+    const dmInput = document.getElementById('dmInput');
+
+    if (btnCloseDM) {
+        btnCloseDM.addEventListener('click', closeDM);
+    }
+
+    if (dmForm && dmInput) {
+        dmForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = dmInput.value.trim();
+            if (text) {
+                sendDM(text);
+            }
+        });
+    }
+
+    // Close DM on backdrop click
+    document.getElementById('dmModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'dmModal') {
+            closeDM();
+        }
+    });
 
     // ADD THIS - Tab switching for settings modal:
     document.querySelectorAll('.settings-tab-btn').forEach(btn => {
