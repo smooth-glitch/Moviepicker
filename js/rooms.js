@@ -40,6 +40,15 @@ let lastPlaybackApplyTs = 0;
 let unsubMessages = null;
 // helper set from main.js (simple global)
 export let setReplyDraft = null;
+
+let roomStats = {
+    pickCount: 0,
+    messageCount: 0,
+    startTime: null,
+    activities: [],
+    durationInterval: null
+};
+
 export function registerReplyDraftSetter(fn) {
     setReplyDraft = typeof fn === "function" ? fn : null;
 }
@@ -47,6 +56,107 @@ export function registerReplyDraftSetter(fn) {
 
 // ========== USER PROFILE CACHE FOR AVATARS ==========
 const userProfileCache = {};
+
+// Initialize stats when joining room
+export function initRoomStats() {
+    roomStats = {
+        pickCount: 0,
+        messageCount: 0,
+        startTime: Date.now(),
+        activities: [],
+        durationInterval: null
+    };
+
+    addRoomActivity('Room created', '🎉');
+
+    // Start duration timer
+    if (roomStats.durationInterval) clearInterval(roomStats.durationInterval);
+    roomStats.durationInterval = setInterval(() => {
+        updateRoomStats();
+    }, 60000); // Update every minute
+
+    updateRoomStats();
+}
+
+// Clear stats when leaving room
+export function clearRoomStats() {
+    if (roomStats.durationInterval) {
+        clearInterval(roomStats.durationInterval);
+        roomStats.durationInterval = null;
+    }
+
+    roomStats = {
+        pickCount: 0,
+        messageCount: 0,
+        startTime: null,
+        activities: []
+    };
+}
+// Call this to update stats
+export function updateRoomStats() {
+    const pickCount = document.getElementById('roomPickCount');
+    const messageCount = document.getElementById('roomMessageCount');
+    const duration = document.getElementById('roomDuration');
+
+    if (pickCount) {
+        pickCount.textContent = roomStats.pickCount;
+        pickCount.classList.add('stat-bump');
+        setTimeout(() => pickCount.classList.remove('stat-bump'), 300);
+    }
+
+    if (messageCount) {
+        messageCount.textContent = roomStats.messageCount;
+    }
+
+    if (duration && roomStats.startTime) {
+        const elapsed = Date.now() - roomStats.startTime;
+        const hours = Math.floor(elapsed / (1000 * 60 * 60));
+        const mins = Math.floor(elapsed / (1000 * 60)) % 60;
+
+        if (hours > 0) {
+            duration.textContent = `${hours}h ${mins}m`;
+        } else {
+            duration.textContent = `${mins}m`;
+        }
+    }
+}
+// Add activity log
+export function addRoomActivity(text, icon = '•') {
+    const activityEl = document.getElementById('roomActivity');
+    if (!activityEl) return;
+
+    roomStats.activities.unshift({
+        text,
+        icon,
+        time: new Date()
+    });
+
+    roomStats.activities = roomStats.activities.slice(0, 15);
+
+    activityEl.innerHTML = roomStats.activities.length > 0
+        ? roomStats.activities.map(a => `
+          <div class="activity-item">
+            <span class="activity-icon">${a.icon}</span>
+            <span class="flex-1 truncate">${escapeHtml(a.text)}</span>
+            <span class="activity-time">${timeAgo(a.time)}</span>
+          </div>
+        `).join('')
+        : '<div class="text-center opacity-60 italic py-4">No activity yet...</div>';
+}
+
+function timeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+    return date.toLocaleDateString();
+}
+
+function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+}
 
 async function getUserProfile(uid) {
     // Check cache first
@@ -202,6 +312,18 @@ export function startMessagesListener() {
         q,
         (snap) => {
             const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+            // Update message count
+            const newCount = msgs.length;
+            if (newCount > roomStats.messageCount) {
+                const diff = newCount - roomStats.messageCount;
+                if (diff === 1 && msgs[msgs.length - 1]) {
+                    const lastMsg = msgs[msgs.length - 1];
+                    const userName = lastMsg.userName || 'Someone';
+                    addRoomActivity(`${userName} sent a message`, '💬');
+                }
+            }
+            roomStats.messageCount = newCount;
+            updateRoomStats();
             renderRoomMessages(msgs);
         },
         (err) => {
@@ -600,6 +722,18 @@ export function startMembersListener() {
 
     roomMembersWrap?.classList.remove("hidden");
 
+    snap.forEach(doc => {
+        const data = doc.data?.() ?? {};
+        const label = data.name || data.email || doc.id;
+
+        if (change.type === "added" && selfUid && doc.id !== selfUid) {
+            addRoomActivity(`${label} joined`, '👋');
+        }
+        if (change.type === "removed") {
+            addRoomActivity(`${label} left`, '👋');
+        }
+    });
+
     unsubMembers = fs.onSnapshot(
         membersColRef(),
         (snap) => {
@@ -608,14 +742,20 @@ export function startMembersListener() {
             } else {
                 const selfUid = authState.user?.uid ?? null;
 
-                for (const ch of snap.docChanges()) {
-                    const data = ch.doc.data?.() ?? {};
-                    const label = data.name || data.email || ch.doc.id;
+                for (const change of snap.docChanges()) {
+                    const data = change.doc.data?.() ?? {};
+                    const label = data.name || data.email || change.doc.id;
 
-                    if (selfUid && ch.doc.id === selfUid) continue;
+                    if (selfUid && change.doc.id === selfUid) continue;
 
-                    if (ch.type === "added") toast(`${label} joined`, "info");
-                    if (ch.type === "removed") toast(`${label} left`, "info");
+                    if (change.type === "added") {
+                        toast(`${label} joined`, "info");
+                        addRoomActivity(`${label} joined`, '👋');
+                    }
+                    if (change.type === "removed") {
+                        toast(`${label} left`, "info");
+                        addRoomActivity(`${label} left`, '👋');
+                    }
                 }
             }
 
@@ -855,6 +995,10 @@ export function updateRoomUI() {
     const chatCol = document.getElementById("roomChatColumn");
     const hasRoom = inRoom();
     document.body.classList.toggle("has-room", hasRoom);
+    // SHOW/HIDE ROOM MEMBERS TAB:
+    if (membersWrap) {
+        membersWrap.classList.toggle("hidden", !hasRoom);
+    }
 
     const membersWrap = document.getElementById("roomMembersWrap");
 
@@ -944,6 +1088,10 @@ export function startRoomListener() {
                     banner2.classList.remove("hidden");
                     text2.textContent = title ? `Tonight's pick: ${title}` : "Tonight's pick";
                 }
+
+                roomStats.pickCount++;
+                addRoomActivity(`${lp.title || 'A movie'} picked`, '🎬');
+                updateRoomStats();
 
                 const pickedAtMs =
                     typeof lp.pickedAt?.toMillis === "function" ? lp.pickedAt.toMillis() : 0;
@@ -1094,8 +1242,8 @@ export function joinRoom(roomId) {
 
     roomState.id = roomId;
     setRoomInUrl(roomId);
-
     updateRoomUI();
+    initRoomStats();
     startRoomListener();
     startMembersListener();
     startHeartbeat();
@@ -1124,7 +1272,7 @@ export async function leaveRoom() {
     id("roomPickBanner")?.classList.add("hidden");
 
     setLastPickedMovieId(null);
-
+    clearRoomStats();
     roomState.id = null;
     setRoomInUrl(null);
     updateRoomUI();

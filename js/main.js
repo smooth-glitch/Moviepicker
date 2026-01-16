@@ -8,6 +8,7 @@ import {
     ensureWatchFilterDefaults,
     normalizeFilters,
     lastPickedMovieId,
+    inRoom
 } from "./state.js";
 import {
     LSPOOL,
@@ -1119,6 +1120,12 @@ function initSynthwaveEffects() {
 }
 
 async function boot() {
+    roomState.id = null;
+    const roomMembersWrap = document.getElementById('roomMembersWrap');
+    if (roomMembersWrap && !inRoom()) {
+        roomMembersWrap.classList.add('hidden');
+    }
+
     await loadTmdbConfig();
 
     // Initial homepage load – show skeletons before first trending call
@@ -1583,12 +1590,6 @@ async function boot() {
         members?.classList.add("hidden");
         chatCol?.classList.add("hidden");
     });
-
-    function boot() {
-        loadPrefs();
-        applyPrefsToUI(); // your function that syncs filters/controls from state.prefs
-        // rest of init
-    }
 
     id("btnResetFilters")?.addEventListener("click", resetAllFilters);
 
