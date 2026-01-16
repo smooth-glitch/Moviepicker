@@ -35,16 +35,25 @@ export function addToPoolById(id) {
     saveJson(LSPOOL, state.pool);
     renderPool();
 
-    // REMOVE THIS LINE - it's causing the grid refresh:
-    // renderResults(state.results); ← DELETE THIS
-
-    // INSTEAD: Update just the button for this movie
-    updateMovieButton(id, true); // true = inPool
+    // DIRECTLY update the button without re-rendering:
+    const cards = document.querySelectorAll('#results .card');
+    cards.forEach(card => {
+        const btn = card.querySelector(`button[data-action="add"][data-id="${id}"]`);
+        if (btn) {
+            btn.classList.add('btn-disabled');
+            btn.disabled = true;
+            btn.textContent = 'In pool';
+        }
+    });
 
     scheduleCloudSave();
     toast("Added to pool", "success");
-    
+
+    if (typeof triggerHeartParticles === 'function') {
+        triggerHeartParticles();
+    }
 }
+
 
 function updateMovieButton(movieId, inPool) {
     // Find the button in results grid
