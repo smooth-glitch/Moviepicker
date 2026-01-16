@@ -35,21 +35,19 @@ export function addToPoolById(id) {
     saveJson(LSPOOL, state.pool);
     renderPool();
 
-    // DIRECTLY update the button without re-rendering:
-    const cards = document.querySelectorAll('#results .card');
-    cards.forEach(card => {
-        const btn = card.querySelector(`button[data-action="add"][data-id="${id}"]`);
-        if (btn) {
-            btn.classList.add('btn-disabled');
-            btn.disabled = true;
-            btn.textContent = 'In pool';
-        }
-    });
+    // DO NOT CALL renderResults() here!
+    // Instead, just update the button:
+    const btn = document.querySelector(`#results button[data-action="add"][data-id="${id}"]`);
+    if (btn) {
+        btn.classList.add('btn-disabled');
+        btn.disabled = true;
+        btn.textContent = 'In pool';
+    }
 
     scheduleCloudSave();
     toast("Added to pool", "success");
-
 }
+
 
 
 function updateMovieButton(movieId, inPool) {
@@ -74,11 +72,17 @@ export function removeFromPool(id) {
     saveJson(LSPOOL, state.pool);
     renderPool();
 
-    // Update the button back to "Add"
-    updateMovieButton(id, false); // false = not in pool
+    // Update the button back to "Add":
+    const btn = document.querySelector(`#results button[data-action="add"][data-id="${id}"]`);
+    if (btn) {
+        btn.classList.remove('btn-disabled');
+        btn.disabled = false;
+        btn.textContent = 'Add';
+    }
 
     scheduleCloudSave();
 }
+
 
 
 export function toggleWatched(id) {
