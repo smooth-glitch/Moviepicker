@@ -312,7 +312,6 @@ export function startMessagesListener() {
         q,
         (snap) => {
             const msgs = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-            roomStats.messageCount = newCount;
             updateRoomStats();
             renderRoomMessages(msgs);
         },
