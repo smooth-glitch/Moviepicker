@@ -49,9 +49,6 @@ export function addToPoolById(id) {
     scheduleCloudSave();
     toast("Added to pool", "success");
 
-    if (typeof triggerHeartParticles === 'function') {
-        triggerHeartParticles();
-    }
 }
 
 
