@@ -73,6 +73,9 @@ import { openDM, sendDM, closeDM } from "./dm.js";
 let liveSearchTimer = null;
 // reply draft for chat
 let currentReplyTarget = null;
+let trayMode = null;
+let traySearchTimer = null;
+let emojiCache = null;
 
 // ========== VOICE NOTE RECORDING ==========
 let mediaRecorder = null;
@@ -97,6 +100,25 @@ function getCurrentTheme() {
 
 function setTheme(theme) {
     applyTheme(theme); // now also updates state.prefs + storage
+}
+
+function openTray(mode, tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji) {
+    if (!tray || !trayGrid || !traySearch) return;
+
+    trayMode = mode;
+    tray.classList.remove("hidden");
+
+    // Set active tab
+    [tabGif, tabSticker, tabEmoji].forEach(tab => tab?.classList.remove('active'));
+    if (mode === 'gif') tabGif?.classList.add('active');
+    if (mode === 'sticker') tabSticker?.classList.add('active');
+    if (mode === 'emoji') tabEmoji?.classList.add('active');
+
+    traySearch.value = '';
+    traySearch.placeholder = mode === 'gif' ? 'Search GIFs' :
+        mode === 'sticker' ? 'Search stickers' :
+            'Search emoji';
+    traySearch.focus();
 }
 
 function initScrollIndicator() {
@@ -692,9 +714,6 @@ function resetAllFilters() {
 // Docked tray (GIF / Sticker / Emoji)
 // --------------------------------------------------
 
-let trayMode = null;
-let traySearchTimer = null;
-let emojiCache = null;
 
 async function loadEmojis() {
     if (emojiCache) return emojiCache;
@@ -736,24 +755,6 @@ function setActiveTab(mode, tabGif, tabSticker, tabEmoji) {
     if (mode === "gif") tabGif?.classList.add("is-active");
     if (mode === "sticker") tabSticker?.classList.add("is-active");
     if (mode === "emoji") tabEmoji?.classList.add("is-active");
-}
-
-function openTray(mode, tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji) {
-    if (!tray || !trayGrid || !traySearch) return;
-    trayMode = mode;
-    tray.classList.remove("hidden");
-    setActiveTab(mode, tabGif, tabSticker, tabEmoji);
-
-    traySearch.value = "";
-    traySearch.placeholder =
-        mode === "gif"
-            ? "Search GIFs…"
-            : mode === "sticker"
-                ? "Search stickers…"
-                : "Search emoji…";
-
-    renderTray(trayGrid, traySearch);
-    traySearch.focus();
 }
 
 function closeTray(tray) {
@@ -1112,6 +1113,10 @@ function initThemeEffects() {
     }
 }
 
+function initSynthwaveEffects() {
+    console.log('Synthwave theme effects initialized');
+    // CSS-based effects only, no JS needed
+}
 
 async function boot() {
     await loadTmdbConfig();
@@ -1750,28 +1755,6 @@ async function boot() {
         console.log('Wiring DM Emoji button');
         dmEmojiBtn.addEventListener('click', () => {
             console.log('DM Emoji clicked!');
-            openTray('emoji', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayEmojis('', trayGrid, dmInput, tray);
-        });
-    }
-
-    // Open tray for DM
-    if (dmGifBtn && tray && trayGrid && traySearch) {
-        dmGifBtn.addEventListener('click', () => {
-            openTray('gif', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayGifs('', trayGrid, sendDMGifHandler);
-        });
-    }
-
-    if (dmStickerBtn && tray && trayGrid && traySearch) {
-        dmStickerBtn.addEventListener('click', () => {
-            openTray('sticker', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayStickers('', trayGrid, sendDMStickerHandler);
-        });
-    }
-
-    if (dmEmojiBtn && tray && trayGrid && traySearch) {
-        dmEmojiBtn.addEventListener('click', () => {
             openTray('emoji', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
             renderTrayEmojis('', trayGrid, dmInput, tray);
         });
