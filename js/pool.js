@@ -43,7 +43,7 @@ export function addToPoolById(id) {
 
     scheduleCloudSave();
     toast("Added to pool", "success");
-    triggerHeartParticles();
+    
 }
 
 function updateMovieButton(movieId, inPool) {
