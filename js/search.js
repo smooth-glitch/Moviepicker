@@ -81,7 +81,22 @@ export async function doSearch(page = 1) {
             if (kind === "tv" && year) params.first_air_date_year = year;
 
             const providerIds = selectedProviderIds();
-            if (providerIds.length) {
+
+            // UPDATED: Regional availability logic
+            if (state.filters.regionalOnly && state.filters.region) {
+                // Regional only mode ON
+                params.watch_region = state.filters.region;
+
+                if (providerIds.length) {
+                    // Specific providers selected
+                    params.with_watch_providers = providerIds.join("|");
+                    params.with_watch_monetization_types = "flatrate";
+                } else {
+                    // No specific providers - show all available in region
+                    params.with_watch_monetization_types = "flatrate|free|ads|rent|buy";
+                }
+            } else if (providerIds.length) {
+                // Regional only OFF but providers selected
                 params.with_watch_providers = providerIds.join("|");
                 params.watch_region = state.filters.region || "IN";
                 params.with_watch_monetization_types = "flatrate";
@@ -100,3 +115,4 @@ export async function doSearch(page = 1) {
         setBusy(false);
     }
 }
+

@@ -53,6 +53,7 @@ export const state = {
         following: [], // UIDs I'm following
         followers: [], // UIDs following me (populated from Firestore)
     },
+    regionalOnly: false,
 };
 
 export const authState = { user: null };

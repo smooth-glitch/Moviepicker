@@ -1157,6 +1157,38 @@ async function boot() {
         });
     }
 
+
+    const setRegionalOnly = document.getElementById('setRegionalOnly');
+    const currentRegionDisplay = document.getElementById('currentRegionDisplay');
+
+    if (setRegionalOnly) {
+        // Load saved preference
+        setRegionalOnly.checked = !!state.filters.regionalOnly;
+
+        // Save on change
+        setRegionalOnly.addEventListener('change', () => {
+            state.filters.regionalOnly = setRegionalOnly.checked;
+            saveJson(LSFILTERS, state.filters);
+
+            // Re-search if in discover mode
+            if (state.lastMode !== 'trending') {
+                doSearch(1);
+            }
+
+            toast(
+                setRegionalOnly.checked
+                    ? `Showing only movies available in ${state.filters.region}`
+                    : 'Showing all movies globally',
+                'info'
+            );
+        });
+    }
+
+    // Display current region
+    if (currentRegionDisplay && state.filters.region) {
+        currentRegionDisplay.textContent = state.filters.region;
+    }
+
     // When opening settings, sync inputs from state
     id("btnMenuSettings")?.addEventListener("click", () => {
         const dlg = document.getElementById("dlgSettings");

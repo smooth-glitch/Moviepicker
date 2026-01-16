@@ -1554,6 +1554,35 @@
                             </div>
 
                         </div>
+
+                        <!-- In tab-privacy, after the Pool Filters section, add this: -->
+                        <div class="divider my-4"></div>
+
+                        <!-- Regional Availability -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-4">
+                            <h3 class="font-bold text-sm uppercase text-base-content/60">Regional Availability</h3>
+
+                            <!-- Available in My Region Toggle -->
+                            <div class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
+                                <div>
+                                    <div class="font-semibold text-sm">Show Available in My Region Only</div>
+                                    <p class="text-xs opacity-70">Filter results to movies/shows available in your
+                                        country</p>
+                                </div>
+                                <input type="checkbox" id="setRegionalOnly" class="toggle toggle-sm">
+                            </div>
+
+                            <!-- Current Region Display -->
+                            <div
+                                class="flex items-center justify-between p-3 bg-base-100 border border-base-300">
+                                <div>
+                                    <div class="font-semibold text-sm">Your Region</div>
+                                    <p class="text-xs opacity-70">Detected automatically or set manually</p>
+                                </div>
+                                <div class="badge badge-primary" id="currentRegionDisplay">IN</div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div id="tab-collections" class="settings-content hidden space-y-6">

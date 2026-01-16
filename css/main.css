@@ -2066,3 +2066,15 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
   opacity: 0.5;
   white-space: nowrap;
 }
+
+/* Add to css/main.css */
+
+/* Fix toggle flash in settings */
+#setRegionalOnly,
+#setRegionalOnly:active,
+#setRegionalOnly:focus,
+#setRegionalOnly:checked {
+  outline: none !important;
+  box-shadow: none !important;
+}
+

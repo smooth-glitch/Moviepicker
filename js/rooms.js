@@ -720,7 +720,7 @@ export function startMembersListener() {
     const roomMembersList = id("roomMembersList");
     const roomOnlineCount = id("roomOnlineCount");
 
-    roomMembersWrap?.classList.remove("hidden");
+
 
     snap.forEach(doc => {
         const data = doc.data?.() ?? {};
@@ -987,25 +987,24 @@ export function startUserDocListener() {
     );
 }
 
+// In js/rooms.js, find updateRoomUI and fix it:
 export function updateRoomUI() {
     const badge = id("roomBadge");
     const btnCreate = id("btnCreateRoom");
     const btnCopy = id("btnCopyRoomLink");
     const btnLeave = id("btnLeaveRoom");
     const chatCol = document.getElementById("roomChatColumn");
+    const membersWrap = document.getElementById("roomMembersWrap"); // DECLARE HERE FIRST
+
     const hasRoom = inRoom();
     document.body.classList.toggle("has-room", hasRoom);
-    // SHOW/HIDE ROOM MEMBERS TAB:
+
+    // Show/hide room members tab
     if (membersWrap) {
         membersWrap.classList.toggle("hidden", !hasRoom);
     }
 
-    const membersWrap = document.getElementById("roomMembersWrap");
-
-    // Show/hide right-side panels
-    if (membersWrap) {
-        membersWrap.classList.toggle("hidden", !hasRoom);
-    }
+    // Show/hide chat column
     if (chatCol) {
         chatCol.classList.toggle("hidden", !hasRoom);
         chatCol.classList.toggle("flex", hasRoom);
@@ -1049,6 +1048,7 @@ export function updateRoomUI() {
         wrap.classList.toggle("md:grid-cols-2", hasRoom);
     }
 }
+
 
 
 
