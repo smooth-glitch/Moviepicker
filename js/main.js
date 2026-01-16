@@ -67,6 +67,7 @@ import {
     renderCollections,
     addToCollection  // ADD THIS
 } from "./collections.js";
+import { loadFriends, addFriend, renderFriends } from "./friends.js";
 
 let liveSearchTimer = null;
 // reply draft for chat
@@ -1127,7 +1128,7 @@ async function boot() {
     applyPrefsToUI();
     syncControls();
     loadCollections();
-    
+    loadFriends();
     await initWatchFiltersUI({
         onChange: () => {
             if (state.lastMode !== "trending") doSearch(1);
@@ -1165,6 +1166,33 @@ async function boot() {
         dlg.showModal();
     });
 
+    // Wire up add friend button:
+    const btnAddFriend = document.getElementById('btnAddFriend');
+    const friendUidInput = document.getElementById('friendUidInput');
+
+    if (btnAddFriend && friendUidInput) {
+        btnAddFriend.addEventListener('click', async () => {
+            const uid = friendUidInput.value.trim();
+
+            if (!uid) {
+                toast("Enter a UID", "info");
+                return;
+            }
+
+            const success = await addFriend(uid);
+            if (success) {
+                friendUidInput.value = '';
+                renderFriends(); // Refresh
+            }
+        });
+
+        friendUidInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                btnAddFriend.click();
+            }
+        });
+    }
+
     // ADD THIS - Tab switching for settings modal:
     document.querySelectorAll('.settings-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1185,6 +1213,9 @@ async function boot() {
             // REFRESH COLLECTIONS WHEN COLLECTIONS TAB IS CLICKED
             if (btn.dataset.tab === 'collections') {
                 renderCollections();
+            }
+            if (btn.dataset.tab === 'friends') {
+                renderFriends();
             }
         });
     });
@@ -1338,6 +1369,8 @@ async function boot() {
             const { loadCollectionsFromCloud, renderCollections } = await import('./collections.js');
             await loadCollectionsFromCloud();
             renderCollections();
+            const { loadFriendsFromCloud } = await import('./friends.js');
+            await loadFriendsFromCloud();
 
             // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========
             try {

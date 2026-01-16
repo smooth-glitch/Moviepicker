@@ -1095,6 +1095,16 @@
                             Collections
                         </button>
 
+                        <button class="settings-tab-btn btn btn-ghost btn-sm w-full justify-start rounded-none"
+                            data-tab="friends" style="color: hsl(var(--bc) / 1)">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                            </svg>
+                            Friends
+                        </button>
+
+
                     </nav>
 
                     <div class="mt-auto pt-4 border-t border-base-300">
@@ -1385,6 +1395,57 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="tab-friends" class="settings-content hidden space-y-6">
+                        <h2 class="text-2xl font-bold font-sora mb-6">Friends</h2>
+
+                        <!-- Stats -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-base-200 border border-base-300 rounded-lg text-center">
+                                <div id="followingCount" class="text-3xl font-bold">0</div>
+                                <div class="text-xs opacity-70">Following</div>
+                            </div>
+                            <div class="p-4 bg-base-200 border border-base-300 rounded-lg text-center">
+                                <div id="followersCount" class="text-3xl font-bold">0</div>
+                                <div class="text-xs opacity-70">Followers</div>
+                            </div>
+                        </div>
+
+                        <!-- Add friend by UID -->
+                        <div class="p-4 bg-base-200 border border-base-300 space-y-3">
+                            <h3 class="font-bold">Add Friend</h3>
+                            <div class="flex gap-2">
+                                <input type="text" id="friendUidInput"
+                                    class="input input-bordered input-sm flex-1 rounded-none font-mono"
+                                    placeholder="Paste friend's UID">
+                                <button id="btnAddFriend" class="btn btn-primary btn-sm rounded-none">
+                                    Add
+                                </button>
+                            </div>
+                            <p class="text-xs opacity-60">💡 Friends can find your UID in Settings → My Account</p>
+                        </div>
+
+                        <!-- Following list -->
+                        <div>
+                            <h3 class="font-bold mb-3">Following</h3>
+                            <div id="followingList" class="space-y-2">
+                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    Not following anyone yet
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Followers list -->
+                        <div>
+                            <h3 class="font-bold mb-3">Followers</h3>
+                            <div id="followersList" class="space-y-2">
+                                <div class="text-xs opacity-60 p-3 bg-base-200 border border-base-300">
+                                    No followers yet
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
 

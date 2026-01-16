@@ -49,6 +49,10 @@ export const state = {
     },
     collections: [],
     reviews: {},
+    friends: {
+        following: [], // UIDs I'm following
+        followers: [], // UIDs following me (populated from Firestore)
+    },
 };
 
 export const authState = { user: null };
