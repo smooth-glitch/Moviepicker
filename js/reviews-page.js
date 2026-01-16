@@ -424,3 +424,9 @@ if (document.readyState === 'loading') {
 } else {
     init();
 }
+
+// Add to reviews-page.js:
+window.smoothPageTransition = function (url) {
+    document.body.classList.add('page-transitioning');
+    setTimeout(() => window.location.href = url, 400);
+};

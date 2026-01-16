@@ -1018,6 +1018,54 @@ function transitionToTheme(newTheme) {
     }, 800);
 }
 
+// ===== RIPPLE EFFECT - FIXED =====
+function createRipple(event, button) {
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    button.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+}
+
+// Add this function to main.js:
+function smoothPageTransition(url) {
+    const mainContent = document.querySelector('body > div');
+
+    if (mainContent) {
+        mainContent.classList.add('page-transitioning');
+
+        setTimeout(() => {
+            window.location.href = url;
+        }, 400);
+    } else {
+        window.location.href = url;
+    }
+}
+
+// Make it global
+window.smoothPageTransition = smoothPageTransition;
+
+
+// Apply to all buttons
+function initRippleEffects() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn');
+        if (btn && !btn.disabled) {
+            createRipple(e, btn); // Pass button as second argument
+        }
+    });
+}
+
 
 async function boot() {
     const loaderStatus = document.querySelector('.loader-status');
@@ -1098,26 +1146,57 @@ async function boot() {
         currentRegionDisplay.textContent = state.filters.region;
     }
 
-    // When opening settings, sync inputs from state
+    // Settings modal - Enhanced with animations
     id("btnMenuSettings")?.addEventListener("click", () => {
-        const dlg = document.getElementById("dlgSettings");
-        if (!dlg) return;
+        const modal = document.getElementById("settingsModal"); // Changed from dlgSettings
+        if (!modal) return;
 
         const exclude = id("settingsExcludeWatched");
         const themeToggle = id("settingsThemeToggle");
 
-        // filters
+        // Sync filters
         if (exclude) exclude.checked = !!state.filters.excludeWatched;
 
-        // theme: checked = synthwave, unchecked = cupcake
-        const currentTheme =
-            document.documentElement.getAttribute("data-theme") || "synthwave";
+        // Sync theme
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "synthwave";
         if (themeToggle) themeToggle.checked = currentTheme === "synthwave";
 
-        // ADD THIS - RENDER COLLECTIONS WHEN OPENING SETTINGS:
+        // Render collections
         renderCollections();
 
-        dlg.showModal();
+        // Show with animation
+        modal.classList.remove("hidden");
+    });
+
+    // ADD THIS - Close handlers with animation:
+    function closeSettingsModal() {
+        const modal = document.getElementById('settingsModal');
+        if (modal) {
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('closing');
+            }, 300);
+        }
+    }
+
+    const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+    const settingsBackdrop = document.getElementById('settingsBackdrop');
+
+    if (closeSettingsBtn) {
+        closeSettingsBtn.addEventListener('click', closeSettingsModal);
+    }
+
+    if (settingsBackdrop) {
+        settingsBackdrop.addEventListener('click', closeSettingsModal);
+    }
+
+    // ESC key to close
+    document.addEventListener('keydown', (e) => {
+        const modal = document.getElementById('settingsModal');
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            closeSettingsModal();
+        }
     });
 
     // Wire up add friend button:
@@ -2194,6 +2273,10 @@ async function boot() {
             setTimeout(() => appLoader.remove(), 800);
         }, 500);
     }
+
+    // In boot(), add at the end with other init functions:
+    initRippleEffects();
+
 }
 
 if (document.readyState === "loading")

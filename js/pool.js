@@ -68,20 +68,47 @@ function updateMovieButton(movieId, inPool) {
 export function removeFromPool(id) {
     if (!requireLoginForRoomWrite()) return;
 
-    state.pool = state.pool.filter((x) => x.id !== id);
-    saveJson(LSPOOL, state.pool);
-    renderPool();
+    // Find the row in the DOM
+    const poolWrap = document.getElementById('pool');
+    const rows = poolWrap?.querySelectorAll('div[class*="flex items-center"]');
+    let rowToRemove = null;
 
-    // Update the button back to "Add":
-    const btn = document.querySelector(`#results button[data-action="add"][data-id="${id}"]`);
-    if (btn) {
-        btn.classList.remove('btn-disabled');
-        btn.disabled = false;
-        btn.textContent = 'Add';
+    rows?.forEach(row => {
+        const removeBtn = row.querySelector(`button[data-action="remove"][data-id="${id}"]`);
+        if (removeBtn) {
+            rowToRemove = row;
+        }
+    });
+
+    // Animate out, THEN remove from state
+    if (rowToRemove) {
+        rowToRemove.classList.add('removing');
+
+        setTimeout(() => {
+            // Now remove from state and re-render
+            state.pool = state.pool.filter((x) => x.id !== id);
+            saveJson(LSPOOL, state.pool);
+            renderPool();
+
+            // Update button in results grid
+            const btn = document.querySelector(`#results button[data-action="add"][data-id="${id}"]`);
+            if (btn) {
+                btn.classList.remove('btn-disabled');
+                btn.disabled = false;
+                btn.textContent = 'Add';
+            }
+
+            scheduleCloudSave();
+        }, 400); // Wait for animation
+    } else {
+        // Fallback if row not found
+        state.pool = state.pool.filter((x) => x.id !== id);
+        saveJson(LSPOOL, state.pool);
+        renderPool();
+        scheduleCloudSave();
     }
-
-    scheduleCloudSave();
 }
+
 
 
 

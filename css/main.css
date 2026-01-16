@@ -2529,3 +2529,491 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
 .card-flip-front > div:first-child {
   flex-shrink: 0;
 }
+
+/* ===== RIPPLE EFFECT ON CLICK ===== */
+
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: rippleEffect 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Theme-specific ripple colors */
+[data-theme="synthwave"] .ripple {
+  background: radial-gradient(circle, rgba(231, 56, 255, 0.5), transparent);
+}
+
+[data-theme="noir"] .ripple {
+  background: radial-gradient(circle, rgba(255, 79, 216, 0.5), transparent);
+}
+
+[data-theme="cupcake"] .ripple {
+  background: radial-gradient(circle, rgba(255, 105, 180, 0.4), transparent);
+}
+
+/* Add ripple container class to buttons */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== POOL ITEMS - SLIDE-IN ANIMATION ===== */
+
+#pool > * {
+  animation: poolItemSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes poolItemSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* New item highlight */
+#pool > .new-item {
+  animation: newItemPulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(90deg, hsl(var(--p) / 0.15), transparent);
+}
+
+@keyframes newItemPulse {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px) scale(0.9);
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px hsl(var(--p) / 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    box-shadow: 0 0 0 0 hsl(var(--p) / 0);
+  }
+}
+
+/* Stagger animation for existing pool items */
+#pool > *:nth-child(1) {
+  animation-delay: 0s;
+}
+#pool > *:nth-child(2) {
+  animation-delay: 0.05s;
+}
+#pool > *:nth-child(3) {
+  animation-delay: 0.1s;
+}
+#pool > *:nth-child(4) {
+  animation-delay: 0.15s;
+}
+#pool > *:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+/* ===== POOL ITEMS - SLIDE-OUT ANIMATION ===== */
+
+#pool > .removing {
+  animation: poolItemSlideOut 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes poolItemSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: 100px;
+  }
+  50% {
+    transform: translateX(30px) scale(0.95);
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50px) scale(0.8);
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Shake animation on hover over remove button */
+#pool button[data-action="remove"]:hover {
+  animation: shakeWarning 0.4s ease;
+}
+
+@keyframes shakeWarning {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+/* ===== RESULTS GRID - STAGGER ANIMATION ===== */
+
+#results .card {
+  animation: cardStaggerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes cardStaggerIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Stagger delays for first 20 cards */
+#results .card:nth-child(1) {
+  animation-delay: 0s;
+}
+#results .card:nth-child(2) {
+  animation-delay: 0.05s;
+}
+#results .card:nth-child(3) {
+  animation-delay: 0.1s;
+}
+#results .card:nth-child(4) {
+  animation-delay: 0.15s;
+}
+#results .card:nth-child(5) {
+  animation-delay: 0.2s;
+}
+#results .card:nth-child(6) {
+  animation-delay: 0.25s;
+}
+#results .card:nth-child(7) {
+  animation-delay: 0.3s;
+}
+#results .card:nth-child(8) {
+  animation-delay: 0.35s;
+}
+#results .card:nth-child(9) {
+  animation-delay: 0.4s;
+}
+#results .card:nth-child(10) {
+  animation-delay: 0.45s;
+}
+#results .card:nth-child(11) {
+  animation-delay: 0.5s;
+}
+#results .card:nth-child(12) {
+  animation-delay: 0.55s;
+}
+#results .card:nth-child(13) {
+  animation-delay: 0.6s;
+}
+#results .card:nth-child(14) {
+  animation-delay: 0.65s;
+}
+#results .card:nth-child(15) {
+  animation-delay: 0.7s;
+}
+#results .card:nth-child(16) {
+  animation-delay: 0.75s;
+}
+#results .card:nth-child(17) {
+  animation-delay: 0.8s;
+}
+#results .card:nth-child(18) {
+  animation-delay: 0.85s;
+}
+#results .card:nth-child(19) {
+  animation-delay: 0.9s;
+}
+#results .card:nth-child(20) {
+  animation-delay: 0.95s;
+}
+
+/* Smooth re-entry after page change */
+#results.refreshing .card {
+  animation: cardFadeIn 0.3s ease-out;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== PAGE TRANSITION ===== */
+
+.page-transitioning {
+  animation: pageTransitionOut 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes pageTransitionOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.98);
+    filter: blur(5px);
+  }
+}
+
+.page-transition-in {
+  animation: pageTransitionIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pageTransitionIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Apply to main content */
+body > div:first-child {
+  animation: pageTransitionIn 0.5s ease-out;
+}
+
+/* ===== MODAL ZOOM ENTRANCE ===== */
+
+/* Backdrop fade in */
+.modal:has(dialog[open]) {
+  animation: backdropFadeIn 0.3s ease;
+}
+
+@keyframes backdropFadeIn {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* Modal box zoom and bounce */
+dialog[open] .modal-box {
+  animation: modalZoomBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalZoomBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(30px);
+  }
+  70% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal close animation */
+dialog.closing .modal-box {
+  animation: modalZoomOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes modalZoomOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+}
+
+/* Details dialog specific - larger entrance */
+#dlg[open] .modal-box {
+  animation: detailsModalEntrance 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes detailsModalEntrance {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) rotateX(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(0);
+  }
+}
+
+/* ===== SETTINGS MODAL - ENHANCED DRAWER SLIDE ===== */
+
+/* Override previous settings slide */
+#settingsModal {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.4s ease;
+}
+
+#settingsModal:not(.hidden) {
+  animation: drawerSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#settingsModal.closing {
+  animation: drawerSlideOut 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes drawerSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes drawerSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.98);
+  }
+}
+
+/* Settings content fade in after drawer opens */
+#settingsModal .settings-content {
+  animation: contentFadeIn 0.3s ease 0.2s backwards;
+}
+
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Sidebar buttons cascade */
+#settingsModal .settings-tab-btn {
+  animation: sidebarBtnCascade 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+#settingsModal .settings-tab-btn:nth-child(1) {
+  animation-delay: 0.1s;
+}
+#settingsModal .settings-tab-btn:nth-child(2) {
+  animation-delay: 0.15s;
+}
+#settingsModal .settings-tab-btn:nth-child(3) {
+  animation-delay: 0.2s;
+}
+#settingsModal .settings-tab-btn:nth-child(4) {
+  animation-delay: 0.25s;
+}
+#settingsModal .settings-tab-btn:nth-child(5) {
+  animation-delay: 0.3s;
+}
+#settingsModal .settings-tab-btn:nth-child(6) {
+  animation-delay: 0.35s;
+}
+#settingsModal .settings-tab-btn:nth-child(7) {
+  animation-delay: 0.4s;
+}
+
+@keyframes sidebarBtnCascade {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Close button spin in */
+#closeSettingsBtn {
+  animation: closeButtonSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s
+    backwards;
+}
+
+@keyframes closeButtonSpin {
+  from {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+/* Collection picker - scale from center */
+#dlgCollectionPicker[open] .modal-box {
+  animation: pickerPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes pickerPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* DM modal - slide from bottom */
+#dmModal:not(.hidden) > div {
+  animation: dmSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dmSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

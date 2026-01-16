@@ -22,7 +22,12 @@
     <header class="bg-base-100 border-b border-base-300 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <a href="index.html" class="btn btn-ghost btn-sm">← Back</a>
+                <!-- In reviews.html header: -->
+                <a href="#" onclick="event.preventDefault(); smoothPageTransition('index.html')"
+                    class="btn btn-ghost btn-sm">
+                    ← Back
+                </a>
+
                 <h1 class="font-headline font-bold text-xl">Movie Reviews</h1>
             </div>
 
@@ -40,7 +45,8 @@
                     <span id="userLabel">Sign in</span>
                 </button>
 
-                <button id="themeToggle" class="theme-toggle btn btn-circle btn-md btn-outline bg-transparent border-base-300 text-base-content transition-all">
+                <button id="themeToggle"
+                    class="theme-toggle btn btn-circle btn-md btn-outline bg-transparent border-base-300 text-base-content transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" width="20" height="20"
                         class="theme-toggle__dark-inner" fill="currentColor" viewBox="0 0 32 32">
                         <path d="M16 9c3.9 0 7 3.1 7 7s-3.1 7-7 7" />

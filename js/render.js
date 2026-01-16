@@ -92,6 +92,7 @@ export function renderResults(list) {
   const empty = id("resultsEmpty");
   if (!wrap) return;
 
+  
   wrap.innerHTML = "";
   if (!state.results.length) {
     empty?.classList.remove("hidden");
@@ -348,6 +349,11 @@ export function renderPool() {
 
     const row = document.createElement("div");
     row.className = "flex items-center gap-3 p-2 rounded-xl bg-base-200/40 border border-base-300";
+    if (wrap.children.length === 0) {
+      row.classList.add('new-item');
+      // Remove class after animation
+      setTimeout(() => row.classList.remove('new-item'), 600);
+    }
     row.style.opacity = isHiddenByFilters && showHiddenPoolItems ? "0.65" : "1";
 
     row.innerHTML = `
