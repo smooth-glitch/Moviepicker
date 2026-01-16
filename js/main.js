@@ -359,22 +359,21 @@ function addParticleBurst(button) {
     });
 }
 
-const heroThemeBtn = document.getElementById("themeToggleBtn");
-
+// Replace your theme toggle handler with this:
+const heroThemeBtn = document.getElementById('themeToggleBtn');
 if (heroThemeBtn) {
-    heroThemeBtn.addEventListener("click", () => {
-        const current = document.documentElement.getAttribute("data-theme") || "cupcake";
+    heroThemeBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'cupcake';
+        const next = current === 'cupcake' ? 'noir' : current === 'noir' ? 'synthwave' : 'cupcake';
 
-        const next =
-            current === "cupcake" ? "noir" :
-                current === "noir" ? "synthwave" :
-                    "cupcake";
+        // USE THE TRANSITION FUNCTION:
+        transitionToTheme(next);
 
-        console.log("current:", current, "next:", next);
-        document.documentElement.setAttribute("data-theme", next);
-        document.dispatchEvent(new Event('themeChanged'));
+        // Save to localStorage
+        localStorage.setItem('mnp:theme:v1', JSON.stringify(next));
     });
 }
+
 
 
 
@@ -951,17 +950,94 @@ function applyPrefsToUI() {
     }
 }
 
+// Add this function before boot():
+function transitionToTheme(newTheme) {
+    const overlay = document.getElementById('themeTransition');
+    const nameDisplay = overlay?.querySelector('.theme-name-display');
+    const particlesContainer = overlay?.querySelector('.theme-particles');
+
+    if (!overlay) {
+        // Fallback if overlay doesn't exist
+        document.documentElement.setAttribute('data-theme', newTheme);
+        return;
+    }
+
+    // Theme names
+    const themeNames = {
+        'cupcake': '🎀 Cupcake',
+        'noir': '🌃 Noir',
+        'synthwave': '🌆 Synthwave'
+    };
+
+    // Update display
+    if (nameDisplay) {
+        nameDisplay.textContent = themeNames[newTheme] || newTheme;
+    }
+
+    // Create particle burst
+    if (particlesContainer) {
+        particlesContainer.innerHTML = '';
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 8px;
+          height: 8px;
+          background: hsl(var(--p));
+          border-radius: 50%;
+          animation: particleBurst 0.8s ease-out forwards;
+        `;
+
+            const angle = (Math.PI * 2 * i) / 20;
+            const distance = 150 + Math.random() * 100;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+
+            particle.style.setProperty('--tx', `${tx}px`);
+            particle.style.setProperty('--ty', `${ty}px`);
+            particle.style.animationDelay = `${i * 0.02}s`;
+
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Show overlay
+    overlay.classList.add('active');
+
+    // Change theme after slight delay
+    setTimeout(() => {
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.dispatchEvent(new Event('themeChanged'));
+    }, 150);
+
+    // Hide overlay
+    setTimeout(() => {
+        overlay.classList.remove('active');
+    }, 800);
+}
+
+
 async function boot() {
+    const loaderStatus = document.querySelector('.loader-status');
+
+    function updateStatus(text) {
+        if (loaderStatus) loaderStatus.textContent = text;
+    }
+
+    updateStatus('Setting up...');
     roomState.id = null;
     const roomMembersWrap = document.getElementById('roomMembersWrap');
     if (roomMembersWrap && !inRoom()) {
         roomMembersWrap.classList.add('hidden');
     }
-
+    updateStatus('Loading configuration...');
     await loadTmdbConfig();
 
     // Initial homepage load – show skeletons before first trending call
     renderResultsLoading();
+    updateStatus('Fetching trending movies...');
     await loadTrending(1);
     // persisted state
     state.pool = loadJson(LSPOOL, []);
@@ -969,6 +1045,7 @@ async function boot() {
     state.filters = loadJson(LSFILTERS, { excludeWatched: true, minRating: 6 });
 
     ensureWatchFilterDefaults();
+    updateStatus('Loading your preferences...');
     loadPrefs();
     applyPrefsToUI();
     syncControls();
@@ -979,7 +1056,7 @@ async function boot() {
             if (state.lastMode !== "trending") doSearch(1);
         },
     });
-
+    updateStatus('Almost ready...');
     const minRatingPoolInput = document.getElementById('minRatingPool');
     const minRatingPoolDisplay = document.getElementById('minRatingPoolDisplay');
 
@@ -2108,6 +2185,15 @@ async function boot() {
         });
     }
 
+    updateStatus('Ready!');
+
+    const appLoader = document.getElementById('appLoader');
+    if (appLoader) {
+        setTimeout(() => {
+            appLoader.classList.add('loaded');
+            setTimeout(() => appLoader.remove(), 800);
+        }, 500);
+    }
 }
 
 if (document.readyState === "loading")

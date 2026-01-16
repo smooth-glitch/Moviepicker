@@ -116,22 +116,53 @@ export function renderResults(list) {
          </figure>`
       : `<div class="m-3 rounded-xl bg-base-200 aspect-23 grid place-items-center text-base-content/60 cursor-pointer" data-click="details">No poster</div>`;
 
+    // In renderResults(), replace the card innerHTML with this flip structure:
     card.innerHTML = `
-      ${poster}
-      <div class="card-body p-4 gap-2">
-        <div class="flex items-start justify-between gap-3">
-          <h3 class="card-title text-base leading-snug line-clamp-2 flex-1">${escapeHtml(m.title)}</h3>
-          <span class="badge badge-primary badge-outline shrink-0">${Number(m.vote_average ?? 0).toFixed(1)}</span>
-        </div>
-        <p class="text-sm text-base-content/60">${escapeHtml(year(m.release_date))}</p>
-        <div class="card-actions mt-3 justify-end gap-2">
-          <button class="btn btn-sm btn-ghost" data-action="details" data-id="${m.id}">Details</button>
-          <button class="btn btn-sm ${inPool ? "btn-disabled" : "btn-secondary"}" data-action="add" data-id="${m.id}">
-            ${inPool ? "In pool" : "Add"}
-          </button>
+<div class="card-flip-inner">
+  <!-- Front side (poster & basic info) -->
+  <div class="card-flip-front">
+    ${poster}
+    <div class="card-body p-4 gap-2">
+      <div class="flex items-start justify-between gap-3">
+        <h3 class="card-title text-base leading-snug line-clamp-2 flex-1">
+          ${escapeHtml(m.title || "Untitled")}
+        </h3>
+        <span class="badge badge-primary badge-outline shrink-0">
+          ${Number(m.vote_average ?? 0).toFixed(1)}
+        </span>
+      </div>
+      <p class="text-sm text-base-content/60">${escapeHtml(year(m.release_date))}</p>
+    </div>
+  </div>
+  
+  <!-- Back side (details & actions) -->
+  <div class="card-flip-back">
+    <div class="p-4 h-full flex flex-col justify-between">
+      <div>
+        <h4 class="font-bold text-sm mb-2">${escapeHtml(m.title || "Untitled")}</h4>
+        <p class="text-xs opacity-80 line-clamp-4 mb-3">
+          ${escapeHtml(m.overview?.slice(0, 120) || 'No description available')}...
+        </p>
+        <div class="flex flex-wrap gap-1 mb-3">
+          <span class="badge badge-xs">⭐ ${Number(m.vote_average ?? 0).toFixed(1)}</span>
+          <span class="badge badge-xs">${escapeHtml(year(m.release_date))}</span>
         </div>
       </div>
-    `;
+      
+      <div class="card-actions flex-col gap-2">
+        <button class="btn btn-sm btn-primary w-full" data-action="details" data-id="${m.id}">
+          View Details
+        </button>
+        <button class="btn btn-sm ${inPool ? "btn-disabled" : "btn-secondary"} w-full" 
+                data-action="add" data-id="${m.id}" ${inPool ? 'disabled' : ''}>
+          ${inPool ? "In pool" : "Add to Pool"}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 
     card.addEventListener("click", (e) => {
       if (e.target.closest('[data-click="details"]')) {
