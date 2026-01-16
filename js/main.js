@@ -1837,14 +1837,6 @@ async function boot() {
         });
     }
 
-    const btnRandomizeVibe = document.getElementById('btnRandomizeVibe');
-    if (btnRandomizeVibe) {
-        btnRandomizeVibe.addEventListener('click', async () => {
-            const { randomizeVibe } = await import('./rooms.js');
-            randomizeVibe();
-        });
-    }
-
     // Close DM on backdrop click
     document.getElementById('dmModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'dmModal') {
