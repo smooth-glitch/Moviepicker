@@ -951,11 +951,6 @@ function applyPrefsToUI() {
     }
 }
 
-function initSynthwaveEffects() {
-    console.log('Synthwave theme effects initialized');
-    // CSS-based effects only, no JS needed
-}
-
 async function boot() {
     roomState.id = null;
     const roomMembersWrap = document.getElementById('roomMembersWrap');
@@ -2076,19 +2071,8 @@ async function boot() {
         const oldLine = document.getElementById('vhsTrackingLine');
         if (oldLine) oldLine.remove();
 
-        // Initialize NEW theme effects
-        if (theme === 'cupcake') {
-            initCupcakeEffects();
-        } else if (theme === 'synthwave') {
-            initSynthwaveEffects();
-        }
     });
 
-    // Initialize for current theme ONCE on page load
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    if (currentTheme === 'cupcake') {
-        initCupcakeEffects();
-    }
 
     // In boot() function, add:
     const btnQuickCreate = document.getElementById('btnQuickCreate');
