@@ -1456,7 +1456,7 @@
         </div>
     </div>
 
-    <!-- DM Modal -->
+    <!-- Replace your existing DM Modal with this enhanced version -->
     <div id="dmModal" class="fixed inset-0 z-[9999] hidden bg-black/70 backdrop-blur-sm">
         <div class="absolute inset-0 flex items-center justify-center p-4">
             <div
@@ -1472,18 +1472,86 @@
                 </div>
 
                 <!-- Messages -->
-                <div id="dmMessages" class="flex-1 overflow-y-auto p-4 space-y-2">
+                <div id="dmMessages" class="flex-1 overflow-y-auto p-4 space-y-2 bg-base-200/40">
                     <!-- Messages will be rendered here -->
                 </div>
 
-                <!-- Input -->
-                <form id="dmForm" class="p-4 border-t border-base-300">
-                    <div class="flex gap-2">
-                        <input type="text" id="dmInput" class="input input-bordered flex-1"
-                            placeholder="Type a message...">
-                        <button type="submit" class="btn btn-primary">Send</button>
+                <!-- Input Area (same as room chat) -->
+                <div class="p-4 border-t border-base-300 space-y-2">
+                    <!-- Media buttons -->
+                    <div class="flex items-center gap-2">
+                        <button id="dmGifBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Send GIF">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M15 15.003a1 1 0 0 1 1.517-.859l4.997 2.997a1 1 0 0 1 0 1.718l-4.997 2.997a1 1 0 0 1-1.517-.86z" />
+                                <path d="M21 12.17V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6" />
+                                <path d="m6 21 5-5" />
+                                ircle cx="9" cy="9" r="2"/>
+                            </svg>
+                        </button>
+
+                        <button id="dmStickerBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Send sticker">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M21 9a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" />
+                                <path d="M15 3v5a1 1 0 0 0 1 1h5" />
+                                <path d="M8 13h.01" />
+                                <path d="M16 13h.01" />
+                                <path d="M10 16s.8 1 2 1c1.3 0 2-1 2-1" />
+                            </svg>
+                        </button>
+
+                        <button id="dmEmojiBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Emoji">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                ircle cx="12" cy="12" r="9"/>
+                                <path d="M9 10h.01" />
+                                <path d="M15 10h.01" />
+                                <path d="M8 15s1.5 2 4 2 4-2 4-2" />
+                            </svg>
+                        </button>
+
+                        <button id="dmVoiceBtn" type="button" class="btn btn-xs btn-ghost px-2" title="Voice note">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                                <line x1="12" x2="12" y1="19" y2="22" />
+                            </svg>
+                        </button>
                     </div>
-                </form>
+
+                    <!-- Input form -->
+                    <form id="dmForm" class="flex gap-2">
+                        <input type="text" id="dmInput" class="input input-bordered input-sm flex-1"
+                            placeholder="Type a message...">
+                        <button type="submit" class="btn btn-primary btn-sm">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Floating DM/Messages Button -->
+    <div id="floatingDMBtn" class="fixed bottom-6 right-6 z-[999] hidden">
+        <button class="btn btn-circle btn-lg btn-primary shadow-2xl" title="Messages">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <!-- Unread badge -->
+            <span id="dmUnreadBadge" class="hidden absolute -top-1 -right-1 badge badge-error badge-sm">0</span>
+        </button>
+
+        <!-- Quick DM dropdown -->
+        <div id="dmQuickList"
+            class="hidden absolute bottom-20 right-0 w-72 bg-base-100 border border-base-300 rounded-lg shadow-2xl p-2 space-y-2">
+            <h4 class="font-bold px-2">Recent Conversations</h4>
+            <div id="dmConversationsList" class="space-y-1 max-h-96 overflow-y-auto">
+                <!-- Will be populated -->
             </div>
         </div>
     </div>
