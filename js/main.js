@@ -1212,61 +1212,6 @@ async function boot() {
             }
         });
     }
-    const dmGifBtn = document.getElementById('dmGifBtn');
-    const dmStickerBtn = document.getElementById('dmStickerBtn');
-    const dmEmojiBtn = document.getElementById('dmEmojiBtn');
-    const dmVoiceBtn = document.getElementById('dmVoiceBtn');
-
-    // DM-specific handlers that send to DM instead of room
-    async function sendDMGifHandler(gif) {
-        const { sendDMGif } = await import('./dm.js');
-        await sendDMGif(gif.url);
-        closeTray(tray);
-    }
-
-    async function sendDMStickerHandler(sticker) {
-        const { sendDMSticker } = await import('./dm.js');
-        await sendDMSticker(sticker.url);
-        closeTray(tray);
-    }
-
-    // Open tray for DM
-    if (dmGifBtn && tray && trayGrid && traySearch) {
-        dmGifBtn.addEventListener('click', () => {
-            openTray('gif', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayGifs('', trayGrid, sendDMGifHandler);
-        });
-    }
-
-    if (dmStickerBtn && tray && trayGrid && traySearch) {
-        dmStickerBtn.addEventListener('click', () => {
-            openTray('sticker', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayStickers('', trayGrid, sendDMStickerHandler);
-        });
-    }
-
-    if (dmEmojiBtn && tray && trayGrid && traySearch) {
-        dmEmojiBtn.addEventListener('click', () => {
-            openTray('emoji', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
-            renderTrayEmojis('', trayGrid, dmInput, tray);
-        });
-    }
-
-    // Voice note for DM (reuse your existing voice recording logic)
-    if (dmVoiceBtn) {
-        dmVoiceBtn.addEventListener('click', async () => {
-            // Start recording (reuse existing mediaRecorder logic)
-            // Same as room voice, but call sendDMVoice instead
-            // TODO: Extract your voice recording to a shared function
-        });
-    }
-
-    // Close DM on backdrop click
-    document.getElementById('dmModal')?.addEventListener('click', (e) => {
-        if (e.target.id === 'dmModal') {
-            closeDM();
-        }
-    });
 
     // Floating DM button
     const floatingDMBtn = document.getElementById('floatingDMBtn');
@@ -1754,6 +1699,62 @@ async function boot() {
     const mentionBox = id("mentionSuggestions");
     let mentionActive = false;
     let mentionStartIndex = -1;
+
+    const dmGifBtn = document.getElementById('dmGifBtn');
+    const dmStickerBtn = document.getElementById('dmStickerBtn');
+    const dmEmojiBtn = document.getElementById('dmEmojiBtn');
+    const dmVoiceBtn = document.getElementById('dmVoiceBtn');
+
+    // DM-specific handlers that send to DM instead of room
+    async function sendDMGifHandler(gif) {
+        const { sendDMGif } = await import('./dm.js');
+        await sendDMGif(gif.url);
+        closeTray(tray);
+    }
+
+    async function sendDMStickerHandler(sticker) {
+        const { sendDMSticker } = await import('./dm.js');
+        await sendDMSticker(sticker.url);
+        closeTray(tray);
+    }
+
+    // Open tray for DM
+    if (dmGifBtn && tray && trayGrid && traySearch) {
+        dmGifBtn.addEventListener('click', () => {
+            openTray('gif', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayGifs('', trayGrid, sendDMGifHandler);
+        });
+    }
+
+    if (dmStickerBtn && tray && trayGrid && traySearch) {
+        dmStickerBtn.addEventListener('click', () => {
+            openTray('sticker', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayStickers('', trayGrid, sendDMStickerHandler);
+        });
+    }
+
+    if (dmEmojiBtn && tray && trayGrid && traySearch) {
+        dmEmojiBtn.addEventListener('click', () => {
+            openTray('emoji', tray, trayGrid, traySearch, tabGif, tabSticker, tabEmoji);
+            renderTrayEmojis('', trayGrid, dmInput, tray);
+        });
+    }
+
+    // Voice note for DM (reuse your existing voice recording logic)
+    if (dmVoiceBtn) {
+        dmVoiceBtn.addEventListener('click', async () => {
+            // Start recording (reuse existing mediaRecorder logic)
+            // Same as room voice, but call sendDMVoice instead
+            // TODO: Extract your voice recording to a shared function
+        });
+    }
+
+    // Close DM on backdrop click
+    document.getElementById('dmModal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'dmModal') {
+            closeDM();
+        }
+    });
 
     function hideMentionBox() {
         mentionActive = false;
