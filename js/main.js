@@ -2172,15 +2172,45 @@ async function boot() {
 
     // Add to js/main.js (at the end of boot function)
 
-    window.addEventListener('scroll', () => {
-        const hero = document.getElementById('hero');
-        const scrolled = window.pageYOffset;
+    // Enhanced parallax with requestAnimationFrame
+    let ticking = false;
 
-        if (hero && scrolled < 300) {
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-            hero.style.opacity = 1 - (scrolled / 500);
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const hero = document.getElementById('hero');
+                const scrolled = window.pageYOffset;
+
+                if (hero) {
+                    // Calculate parallax offset
+                    const offset = scrolled * 0.5;
+                    hero.style.setProperty('--scroll-offset', `${offset}px`);
+
+                    // Add classes for different scroll depths
+                    if (scrolled > 100) {
+                        hero.classList.add('scrolled');
+                    } else {
+                        hero.classList.remove('scrolled');
+                    }
+
+                    if (scrolled > 400) {
+                        hero.classList.add('deep-scroll');
+                    } else {
+                        hero.classList.remove('deep-scroll');
+                    }
+
+                    // Subtle opacity fade
+                    const opacity = Math.max(0.3, 1 - (scrolled / 500));
+                    hero.style.opacity = opacity;
+                }
+
+                ticking = false;
+            });
+
+            ticking = true;
         }
     });
+
 
     // Initialize scroll indicator
     initScrollIndicator();

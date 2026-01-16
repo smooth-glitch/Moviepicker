@@ -3017,3 +3017,54 @@ dialog.closing .modal-box {
     transform: translateY(0);
   }
 }
+
+/* ===== ENHANCED HERO PARALLAX ===== */
+
+/* Main hero container */
+#hero {
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+/* Parallax layers with different speeds */
+#hero .hero-frame {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+#hero img {
+  transform: translateZ(0);
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+}
+
+/* Parallax on scroll */
+#hero.scrolled img {
+  transform: translateY(var(--scroll-offset, 0)) scale(1.05);
+}
+
+#hero.scrolled::before,
+#hero.scrolled::after {
+  transform: translateY(calc(var(--scroll-offset, 0) * 0.5));
+}
+
+/* Content shifts slower (depth effect) */
+#hero .absolute {
+  transform: translateZ(20px);
+  transition: transform 0.2s ease-out;
+}
+
+#hero.scrolled .absolute {
+  transform: translateZ(20px) translateY(calc(var(--scroll-offset, 0) * -0.3));
+}
+
+/* Fade out hero on deep scroll */
+#hero {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+#hero.deep-scroll {
+  opacity: 0.3;
+  pointer-events: none;
+}
