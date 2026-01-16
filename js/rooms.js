@@ -643,19 +643,47 @@ export function startMembersListener() {
             if (roomOnlineCount) roomOnlineCount.textContent = `Online ${onlineCount}`;
 
             if (!roomMembersList) return;
+            // In rooms.js, update the members list HTML:
             roomMembersList.innerHTML = members
                 .map((m) => {
                     const label = m.name || m.email || m.id;
                     const badge = m.online ? "badge-success" : "badge-ghost";
                     const status = m.online ? "online" : "offline";
+                    const initials = label.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+
                     return `
-        <div class="flex items-center justify-between p-2 rounded-xl bg-base-200/40 border border-base-300">
-          <div class="truncate">${label}</div>
-          <span class="badge badge-sm ${badge}">${status}</span>
+    <div class="flex items-center gap-3 p-3 rounded-xl bg-base-200/40 border border-base-300 hover:bg-base-200 hover:border-primary/30 transition-all group">
+      <!-- Avatar -->
+      <div class="relative">
+        <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-sm text-primary">
+          ${initials}
         </div>
-      `;
+        ${m.online
+                            ? `<span class="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-base-100 rounded-full"></span>`
+                            : `<span class="absolute bottom-0 right-0 w-3 h-3 bg-base-300 border-2 border-base-100 rounded-full"></span>`
+                        }
+      </div>
+      
+      <!-- Info -->
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-sm truncate">${escapeHtml(label)}</p>
+        <div class="flex items-center gap-2 mt-0.5">
+          <span class="badge ${badge} badge-xs">${status}</span>
+          ${m.online ? '<span class="text-xs opacity-60">Active</span>' : ''}
+        </div>
+      </div>
+      
+      <!-- Hover action (optional - DM button) -->
+      <button class="btn btn-xs btn-ghost opacity-0 group-hover:opacity-100 transition">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+        </svg>
+      </button>
+    </div>
+  `;
                 })
                 .join("");
+
         },
         (err) => {
             console.warn("Members listener failed", err);

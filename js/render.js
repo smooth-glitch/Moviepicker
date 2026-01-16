@@ -198,20 +198,16 @@ export function renderPool() {
   const mr = id("minRatingPool");
   const mrBtn = id("btnMinRatingPool");
 
-
   const wrap = id("pool");
   const empty = id("poolEmpty");
   if (!wrap) return;
 
-  wrap.innerHTML = "";
-
   const minRating = Number(state.filters.minRating ?? 0);
   const excludeWatched = !!state.filters.excludeWatched;
 
-  // Keep the header checkbox in sync with state (in case syncControls isn't called yet)
+  // Keep the header checkbox in sync
   if (ex) ex.checked = excludeWatched;
 
-  // Style Exclude watched like a toggle-button
   if (exBtn) {
     exBtn.classList.toggle("btn-primary", excludeWatched);
     exBtn.classList.toggle("btn-outline", !excludeWatched);
@@ -224,7 +220,8 @@ export function renderPool() {
     mrBtn.classList.toggle("btn-outline", isDefaultMin);
     mrBtn.classList.toggle("btn-primary", !isDefaultMin);
   }
-  // Split pool into visible vs hidden-by-filters
+
+  // Split pool into visible vs hidden
   const hidden = [];
   const visible = [];
 
@@ -234,7 +231,6 @@ export function renderPool() {
     (okRating && okWatched ? visible : hidden).push(m);
   }
 
-  // Update "Show hidden" button (always present in header now)
   if (btnHidden) {
     const n = hidden.length;
     btnHidden.disabled = n === 0;
@@ -244,18 +240,60 @@ export function renderPool() {
 
   const listToRender = showHiddenPoolItems ? [...visible, ...hidden] : visible;
 
-  // Empty states
+  // Empty pool state
   if (!state.pool.length) {
+    wrap.innerHTML = "";
     if (empty) {
-      empty.textContent = "Add movies from results to build your pool.";
+      empty.innerHTML = `
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200/60 mb-4" 
+             style="animation: floatIcon 3s ease-in-out infinite;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" class="text-primary opacity-70">
+                <rect x="3" y="4" width="18" height="18" rx="3"/>
+                <path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+            </svg>
+        </div>
+        <h4 class="font-headline font-bold text-lg mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Your Pool is Empty
+        </h4>
+        <p class="text-sm text-base-content/70 max-w-xs mx-auto leading-relaxed mb-4">
+            Start building your movie night selection by adding titles from the search results.
+        </p>
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full text-xs font-semibold text-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14"/><path d="M12 5v14"/>
+            </svg>
+            Click "Add" on any movie →
+        </div>
+      `;
       empty.classList.remove("hidden");
     }
     return;
   }
 
+  // No movies match filters
   if (!listToRender.length) {
+    wrap.innerHTML = "";
     if (empty) {
-      empty.textContent = "No movies match your filters.";
+      empty.innerHTML = `
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200/60 mb-4" 
+             style="animation: floatIcon 3s ease-in-out infinite;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" class="text-warning opacity-70">
+                <path d="M4 4h16l-4 7H8l-4-7Z"/>
+                <path d="M10 11v9"/><path d="M14 11v9"/>
+            </svg>
+        </div>
+        <h4 class="font-headline font-bold text-lg mb-2 text-warning">
+            No Movies Match Your Filters
+        </h4>
+        <p class="text-sm text-base-content/70 max-w-xs mx-auto leading-relaxed mb-4">
+            Try adjusting your minimum rating or toggle "Exclude Watched" to see more movies.
+        </p>
+        <button class="btn btn-sm btn-outline" onclick="document.getElementById('btnResetFilters')?.click()">
+            Reset Filters
+        </button>
+      `;
       empty.classList.remove("hidden");
     }
     return;
@@ -263,7 +301,9 @@ export function renderPool() {
 
   empty?.classList.add("hidden");
 
-  // Render rows
+  // Build all rows in a fragment (atomic operation)
+  const fragment = document.createDocumentFragment();
+
   for (const m of listToRender) {
     const p = posterUrl(m.poster_path);
     const thumb = p
@@ -271,8 +311,6 @@ export function renderPool() {
       : `<div class="w-12 h-16 rounded-lg bg-base-200 grid place-items-center text-xs text-base-content/60">No</div>`;
 
     const isWatched = state.watched.has(m.id);
-
-    // For dimming/labeling hidden ones when showHiddenPoolItems=true
     const okRating = Number(m.vote_average ?? 0) >= minRating;
     const okWatched = excludeWatched ? !isWatched : true;
     const isHiddenByFilters = !(okRating && okWatched);
@@ -320,14 +358,17 @@ export function renderPool() {
       if (action === "remove") {
         removeFromPool(mid);
         renderPool();
-        refreshResultsPoolButtons(); // flip “In pool” -> “Add” where relevant
+        refreshResultsPoolButtons?.();
         return;
       }
     });
 
-
-
-    wrap.appendChild(row);
+    fragment.appendChild(row);
   }
+
+  // Clear and replace in ONE atomic operation
+  wrap.innerHTML = "";
+  wrap.appendChild(fragment);
 }
+
 

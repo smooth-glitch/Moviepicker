@@ -567,74 +567,131 @@
                     <div id="poolChatWrap" class="grid grid-cols-1 md:grid-cols-1 gap-4 items-start">
                         <!-- Left: pool -->
                         <div>
-                            <div id="poolEmpty" class="text-xs text-base-content/60">
-                                <p class="text-xs text-base-content/70 font-pool-note flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                            <div id="poolEmpty" class="text-center py-8">
+                                <!-- Icon with animation -->
+                                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-base-200/60 mb-4"
+                                    style="animation: floatIcon 3s ease-in-out infinite;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="opacity-70">
-                                        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Z" />
-                                        <path d="M12 8v5" />
-                                        <path d="M12 16h.01" />
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-waves-ladder-icon lucide-waves-ladder">
+                                        <path d="M19 5a2 2 0 0 0-2 2v11" />
+                                        <path
+                                            d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" />
+                                        <path d="M7 13h10" />
+                                        <path d="M7 9h10" />
+                                        <path d="M9 5a2 2 0 0 0-2 2v11" />
                                     </svg>
-                                    Add movies from results to build your pool.
+                                </div>
+
+                                <!-- Main message -->
+                                <h4
+                                    class="font-headline font-bold text-lg mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                                    Your Pool is Empty
+                                </h4>
+
+                                <!-- Description -->
+                                <p class="text-sm text-base-content/70 max-w-xs mx-auto leading-relaxed mb-4">
+                                    Start building your movie night selection by adding titles from the search results.
                                 </p>
+
+                                <!-- Action hint -->
+                                <div
+                                    class="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/30 rounded-full text-xs font-semibold text-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M5 12h14" />
+                                        <path d="M12 5v14" />
+                                    </svg>
+                                    Click "Add" on any movie →
+                                </div>
                             </div>
                             <div id="pool" class="space-y-2"></div>
                         </div>
 
+
                         <div id="roomMembersWrap" class="card bg-base-100 shadow-xl border border-base-300 hidden">
                             <div class="card-body gap-4 p-4">
-                                <!-- Header -->
-                                <div class="flex items-center justify-between pb-2 border-b border-base-200">
-                                    <h3 class="font-bold text-sm flex items-center gap-2">
+                                <!-- Header with gradient -->
+                                <!-- Replace the header section with this fixed version: -->
+                                <div class="relative overflow-hidden rounded-lg p-4 mb-2"
+                                    style="background: linear-gradient(135deg, hsl(var(--p) / 0.15), hsl(var(--s) / 0.15));">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <!-- FIXED: Larger container, centered icon -->
+                                            <div
+                                                class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-flame-icon lucide-flame">
+                                                    <path
+                                                        d="M12 3q1 4 4 6.5t3 5.5a1 1 0 0 1-14 0 5 5 0 0 1 1-3 1 1 0 0 0 5 0c0-2-1.5-3-1.5-5q0-2 2.5-4" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="font-headline font-bold text-lg">Room Members</h3>
+                                                <p class="text-xs opacity-70">Collaborate in real-time</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div id="roomOnlineCount"
+                                                class="badge badge-success badge-lg font-bold gap-2">
+                                                <span class="relative flex h-2 w-2">
+                                                    <span
+                                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
+                                                    <span
+                                                        class="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
+                                                </span>
+                                                0 Online
+                                            </div>
+                                            <p class="text-xs opacity-60 mt-1">Active now</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <!-- Member List with avatars -->
+                                <div id="roomMembersList"
+                                    class="space-y-2 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                                    <!-- Members will be injected here with enhanced styling -->
+                                </div>
+
+                                <!-- Quick Actions -->
+                                <div class="space-y-2 pt-3 border-t border-base-200">
+                                    <button id="btnCopyRoomLink" class="btn btn-sm btn-primary w-full gap-2 group">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="text-primary">
-                                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                            <circle cx="9" cy="7" r="4" />
-                                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                        </svg>
-                                        Room members
-                                    </h3>
-                                    <span id="roomOnlineCount" class="badge badge-sm badge-ghost"></span>
-                                </div>
-
-                                <!-- Member List -->
-                                <div id="roomMembersList" class="space-y-2 text-sm max-h-48 overflow-y-auto pr-1">
-                                    <!-- Members injected here -->
-                                </div>
-
-                                <!-- Actions (Moved from Left) -->
-                                <div class="grid grid-cols-2 gap-2 mt-2 pt-3 border-t border-base-200">
-                                    <button id="btnCopyRoomLink" class="btn btn-sm btn-outline gap-2 w-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
+                                            class="group-hover:scale-110 transition">
                                             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
                                             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                                         </svg>
-                                        Copy Link
+                                        <span>Copy Invite Link</span>
                                     </button>
 
-                                    <button id="btnLeaveRoom" class="btn btn-sm btn-error btn-outline gap-2 w-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                    <button id="btnLeaveRoom"
+                                        class="btn btn-sm btn-error btn-outline w-full gap-2 group">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
+                                            class="group-hover:scale-110 transition">
                                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                             <polyline points="16 17 21 12 16 7" />
                                             <line x1="21" x2="9" y1="12" y2="12" />
                                         </svg>
-                                        Leave
+                                        <span>Leave Room</span>
                                     </button>
                                 </div>
 
-                                <!-- Room Badge (Moved from Left - Optional info display) -->
-                                <div id="roomBadge" class="text-xs text-center opacity-60 truncate mt-1 select-all">
-                                    <span id="roomBadgeLabel"></span>
+                                <!-- Room ID (styled) -->
+                                <div id="roomBadge" class="mt-2 p-3 bg-base-200/60 rounded-lg border border-base-300">
+                                    <p class="text-xs opacity-60 mb-1">Room ID:</p>
+                                    <p id="roomBadgeLabel"
+                                        class="font-mono text-xs font-semibold select-all cursor-pointer hover:text-primary transition">
+                                    </p>
                                 </div>
                             </div>
                         </div>
+
 
                     </div>
 

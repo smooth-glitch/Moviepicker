@@ -1495,18 +1495,53 @@ async function boot() {
 
     const qEl = id("q");
 
-    // UI wiring (filters/search etc.)
+    // Replace your exclude watched handler (around line 780) with this:
     id("excludeWatched")?.addEventListener("change", () => {
+        const poolWrap = document.getElementById('pool');
+
+        // Fade out
+        if (poolWrap) {
+            poolWrap.style.transition = 'opacity 0.15s ease';
+            poolWrap.style.opacity = '0';
+        }
+
+        // Update state
         state.filters.excludeWatched = id("excludeWatched").checked;
         saveJson(LSFILTERS, state.filters);
-        renderPool();
+
+        // Wait for fade, then render and fade in
+        setTimeout(() => {
+            renderPool();
+
+            if (poolWrap) {
+                setTimeout(() => {
+                    poolWrap.style.opacity = '1';
+                }, 10);
+            }
+        }, 150);
     });
 
+
+    let minRatingTimer;
     id("minRatingPool")?.addEventListener("input", () => {
-        const v = Number(id("minRatingPool").value);
+        const slider = id("minRatingPool");
+        const display = id("minRatingPoolDisplay");
+        const v = Number(slider.value);
+
+        // Update display immediately (no lag)
+        if (display) {
+            display.textContent = v.toFixed(1);
+        }
+
+        // Update state immediately
         state.filters.minRating = Number.isFinite(v) ? v : 0;
-        saveJson(LSFILTERS, state.filters);
-        renderPool();
+
+        // Debounce the save and render (reduce rapid calls)
+        clearTimeout(minRatingTimer);
+        minRatingTimer = setTimeout(() => {
+            saveJson(LSFILTERS, state.filters);
+            renderPool();
+        }, 150); // Wait 150ms after user stops dragging
     });
 
     id("btnMenuSettings")?.addEventListener("click", () => {
@@ -2139,12 +2174,6 @@ async function boot() {
         if (btn) addParticleBurst(btn);
     });
 
-    if (minRatingPoolInput && minRatingPoolDisplay) {
-        minRatingPoolInput.addEventListener('input', () => {
-            const newValue = Number(minRatingPoolInput.value);
-            animateCounter(minRatingPoolDisplay, newValue);
-        });
-    }
     // CHAT ENHANCEMENTS - ADD THESE:
     initChatInputEffects();
     enhanceVoiceNoteAnimations();

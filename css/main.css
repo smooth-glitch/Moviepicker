@@ -1740,3 +1740,142 @@ html[data-theme="noir"] .p-4.bg-base-100.border.border-base-300.rounded-lg {
 [data-theme="noir"] #dmMessages {
   background-color: hsl(240 40% 8%) !important;
 }
+
+/* Pool Empty State Animation */
+@keyframes floatIcon {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Gradient text for empty state */
+#poolEmpty h4 {
+  background: linear-gradient(135deg, hsl(var(--p)), hsl(var(--s)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Theme-specific empty state styling */
+[data-theme="synthwave"] #poolEmpty h4 {
+  background: linear-gradient(135deg, #e738ff, #45a2ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="noir"] #poolEmpty h4 {
+  background: linear-gradient(135deg, #ff4fd8, #42d9ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="cupcake"] #poolEmpty h4 {
+  background: linear-gradient(135deg, #ff69b4, #ff1493);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Add to css/main.css */
+#pool {
+  transition: opacity 0.2s ease;
+}
+
+/* Prevent white/black flash during re-render */
+#pool:empty {
+  min-height: 200px;
+  background-color: transparent !important;
+}
+
+/* Smooth pool transitions */
+#pool {
+  transition: opacity 0.15s ease;
+  will-change: opacity;
+}
+
+/* Prevent background flash */
+#pool,
+#poolEmpty {
+  background-color: transparent !important;
+}
+
+/* ===== ROOM MEMBERS - POLISHED STYLING ===== */
+
+/* Custom scrollbar for members list */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--b2));
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--p) / 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--p));
+}
+
+/* Online count pulse animation */
+#roomOnlineCount {
+  animation: onlinePulse 2s ease-in-out infinite;
+}
+
+@keyframes onlinePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--su) / 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px hsl(var(--su) / 0);
+  }
+}
+
+/* Room badge hover */
+#roomBadge:hover #roomBadgeLabel {
+  color: hsl(var(--p));
+}
+
+/* Button hover effects */
+#btnCopyRoomLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--p) / 0.3);
+}
+
+#btnLeaveRoom:hover {
+  transform: translateY(-2px);
+}
+
+/* Theme-specific room header */
+[data-theme="synthwave"] #roomMembersWrap .relative {
+  background: linear-gradient(
+    135deg,
+    rgba(231, 56, 255, 0.2),
+    rgba(69, 162, 255, 0.2)
+  ) !important;
+  box-shadow: inset 0 0 20px rgba(231, 56, 255, 0.1);
+}
+
+[data-theme="noir"] #roomMembersWrap .relative {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 79, 216, 0.2),
+    rgba(66, 217, 255, 0.2)
+  ) !important;
+  box-shadow: inset 0 0 20px rgba(255, 79, 216, 0.1);
+}
+
+[data-theme="cupcake"] #roomMembersWrap .relative {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 105, 180, 0.15),
+    rgba(255, 182, 193, 0.15)
+  ) !important;
+}
