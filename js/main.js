@@ -1337,8 +1337,6 @@ async function boot() {
             // LOAD COLLECTIONS FROM FIRESTORE - FIX: import both functions
             const { loadCollectionsFromCloud, renderCollections } = await import('./collections.js');
             await loadCollectionsFromCloud();
-            const { loadReviewsFromCloud } = await import('./reviews.js');
-            await loadReviewsFromCloud();
             renderCollections();
 
             // ========== LOAD FIRESTORE DATA FIRST (COMBINED FETCH) ==========
