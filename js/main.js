@@ -1324,10 +1324,12 @@ async function boot() {
                         savePrefs();
                         applyPrefsToUI();
 
-                        // ONLY apply theme if it's different:
-                        if (state.prefs.theme && state.prefs.theme !== currentTheme) {
-                            applyTheme(state.prefs.theme);
+                        // ONLY apply on first login, not subsequent operations
+                        if (!currentTheme || currentTheme === 'synthwave') {
+                            // Default or no theme set - apply from Firestore
+                            applyTheme(state.prefs.theme || 'synthwave');
                         }
+                        // Otherwise keep current theme - user preference wins
                     }
 
                 }
