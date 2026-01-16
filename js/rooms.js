@@ -688,20 +688,91 @@ export async function updatePlaybackFromLocal({
     );
 }
 // Add near the top or before boot():
-export function randomizeVibe() {
-    const vibes = ['🎬 Movie Night', '🍿 Chill', '😱 Horror', '😂 Comedy', '💥 Action', '❤️ Romance', '🚀 Sci-Fi', '🎭 Drama', '🔍 Mystery', '🌟 Classic'];
+// Replace randomizeVibe with this smart version:
+export function generateSmartVibe() {
     const vibeEl = document.getElementById('roomVibe');
-
     if (!vibeEl) return;
 
-    // Pick 3 random vibes
-    const shuffled = vibes.sort(() => 0.5 - Math.random());
+    // Analyze pool for genres
+    const genreCounts = {};
+    state.pool.forEach(movie => {
+        // You'd need to store genres with movies, or detect from titles
+        // For now, let's use a simpler approach
+    });
+
+    // Time-based vibes
+    const hour = new Date().getHours();
+    let timeVibes = [];
+
+    if (hour < 12) {
+        timeVibes = ['☕ Morning Chill', '🌅 Feel-Good', '😊 Light & Fun'];
+    } else if (hour < 18) {
+        timeVibes = ['🌞 Afternoon', '🍿 Popcorn Time', '🎬 Classic'];
+    } else if (hour < 22) {
+        timeVibes = ['🌃 Evening', '🎭 Drama Night', '😱 Thriller'];
+    } else {
+        timeVibes = ['🌙 Late Night', '😨 Horror', '🔥 Intense'];
+    }
+
+    // Pool size based
+    const poolSize = state.pool.length;
+    if (poolSize > 20) {
+        timeVibes.push('🎰 Big Selection');
+    } else if (poolSize < 5) {
+        timeVibes.push('🎯 Curated');
+    }
+
+    // Member count based
+    const memberCount = roomState.members?.length || 0;
+    if (memberCount >= 4) {
+        timeVibes.push('👥 Group Night');
+    } else if (memberCount === 2) {
+        timeVibes.push('💑 Date Night');
+    } else {
+        timeVibes.push('🙋 Solo Vibe');
+    }
+
+    // Shuffle and pick 3
+    const shuffled = timeVibes.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 3);
 
     vibeEl.innerHTML = selected.map(v =>
-        `<span class="badge badge-sm badge-outline">${v}</span>`
+        `<span class="badge badge-sm badge-primary cursor-pointer hover:scale-110 transition" 
+             onclick="vibeClicked('${v}')">${v}</span>`
     ).join('');
 }
+
+// Vibe badge interaction
+window.vibeClicked = function (vibe) {
+    const { addRoomActivity } = require('./rooms.js');
+    addRoomActivity(`Vibe set to ${vibe}`, '✨');
+
+    // Optionally: Let users vote on vibes
+    const fs = window.firebaseStore;
+    if (fs && roomState.id) {
+        fs.setDoc(
+            fs.doc(fs.db, 'rooms', roomState.id),
+            {
+                currentVibe: vibe,
+                vibeSetAt: fs.serverTimestamp(),
+                vibeSetBy: authState.user?.uid,
+            },
+            { merge: true }
+        );
+    }
+};
+
+// Auto-refresh vibe every 30 minutes
+let vibeInterval;
+export function startVibeRefresh() {
+    generateSmartVibe();
+    vibeInterval = setInterval(generateSmartVibe, 30 * 60 * 1000);
+}
+
+export function stopVibeRefresh() {
+    clearInterval(vibeInterval);
+}
+
 
 
 /**
@@ -1241,6 +1312,7 @@ export function joinRoom(roomId) {
     setRoomInUrl(roomId);
     updateRoomUI();
     initRoomStats();
+    startVibeRefresh();
     startRoomListener();
     startMembersListener();
     startHeartbeat();
@@ -1270,6 +1342,7 @@ export async function leaveRoom() {
 
     setLastPickedMovieId(null);
     clearRoomStats();
+    stopVibeRefresh();
     roomState.id = null;
     setRoomInUrl(null);
     updateRoomUI();

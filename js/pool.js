@@ -34,19 +34,46 @@ export function addToPoolById(id) {
     state.pool.unshift(pickFields(m));
     saveJson(LSPOOL, state.pool);
     renderPool();
-    renderResults(state.results);
+
+    // REMOVE THIS LINE - it's causing the grid refresh:
+    // renderResults(state.results); ← DELETE THIS
+
+    // INSTEAD: Update just the button for this movie
+    updateMovieButton(id, true); // true = inPool
+
     scheduleCloudSave();
     toast("Added to pool", "success");
     triggerHeartParticles();
 }
 
+function updateMovieButton(movieId, inPool) {
+    // Find the button in results grid
+    const btn = document.querySelector(`#results button[data-action="add"][data-id="${movieId}"]`);
+
+    if (btn) {
+        if (inPool) {
+            btn.classList.add('btn-disabled');
+            btn.textContent = 'In pool';
+        } else {
+            btn.classList.remove('btn-disabled');
+            btn.textContent = 'Add';
+        }
+    }
+}
+
 export function removeFromPool(id) {
     if (!requireLoginForRoomWrite()) return;
+
     state.pool = state.pool.filter((x) => x.id !== id);
     saveJson(LSPOOL, state.pool);
     renderPool();
+
+    // Update the button back to "Add"
+    updateMovieButton(id, false); // false = not in pool
+
     scheduleCloudSave();
 }
+
 
 export function toggleWatched(id) {
     if (!requireLoginForRoomWrite()) return;
