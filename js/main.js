@@ -288,22 +288,6 @@ function initChatResizeEffects() {
     });
 }
 
-// 2. CONFETTI ON ADD TO POOL
-function triggerConfetti(x, y) {
-    for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'confetti-piece';
-        particle.style.left = x + 'px';
-        particle.style.top = y + 'px';
-        particle.style.setProperty('--x', `${(Math.random() - 0.5) * 200}px`);
-        particle.style.setProperty('--y', `${Math.random() * 100 + 50}px`);
-        particle.style.background = `hsl(${Math.random() * 360}, 70%, 60%)`;
-        particle.style.animationDelay = `${Math.random() * 0.3}s`;
-        document.body.appendChild(particle);
-        setTimeout(() => particle.remove(), 2000);
-    }
-}
-
 // 4. MAGNETIC HOVER FOR PICK BUTTONS
 function initMagneticButtons() {
     const buttons = ['#btnPick', '#btnPickPool', '#pickMeNow'];
@@ -373,31 +357,6 @@ function addParticleBurst(button) {
             setTimeout(() => particle.remove(), 800);
         }
     });
-}
-
-// 9. SMOOTH NUMBER COUNTER FOR RATINGS
-function animateCounter(element, target) {
-    const duration = 500;
-    const start = parseFloat(element.textContent) || 0;
-    const increment = (target - start) / (duration / 16);
-    let current = start;
-
-    const timer = setInterval(() => {
-        current += increment;
-        if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
-            current = target;
-            clearInterval(timer);
-        }
-        element.textContent = current.toFixed(1);
-    }, 16);
-}
-
-function spinThemeButtonOnce() {
-    const btn = document.getElementById("themeToggleBtn");
-    if (!btn) return;
-    btn.classList.remove("theme-spin-right");
-    void btn.offsetWidth;
-    btn.classList.add("theme-spin-right");
 }
 
 const heroThemeBtn = document.getElementById("themeToggleBtn");
@@ -550,13 +509,6 @@ if (voiceBtn && voiceUI && chatInput) {
             reader.readAsDataURL(audioBlob);
         }, { once: true });
     });
-}
-
-
-function setPageLoading(on) {
-    const el = document.getElementById("pageLoader");
-    if (!el) return;
-    el.classList.toggle("hidden", !on);
 }
 
 function updateGenreDropdownLabel() {
@@ -733,15 +685,6 @@ async function loadEmojis() {
     return emojiCache;
 }
 
-function setActiveTab(mode, tabGif, tabSticker, tabEmoji) {
-    [tabGif, tabSticker, tabEmoji].forEach((b) =>
-        b?.classList.remove("is-active")
-    );
-    if (mode === "gif") tabGif?.classList.add("is-active");
-    if (mode === "sticker") tabSticker?.classList.add("is-active");
-    if (mode === "emoji") tabEmoji?.classList.add("is-active");
-}
-
 function closeTray(tray) {
     trayMode = null;
     tray?.classList.add("hidden");
@@ -864,32 +807,6 @@ async function renderTrayEmojis(q, trayGrid, chatInput, tray) {
         console.warn(e);
         trayGrid.innerHTML =
             `<div class="col-span-2 text-xs opacity-70 p-2">Failed to load emojis.</div>`;
-    }
-}
-
-function renderTray(trayGrid, traySearch) {
-    // no-op here: actual dispatch is wired inside boot where we know chatInput
-}
-
-// --------------------------------------------------
-// Shared Emoji popup helper (no longer used for tray)
-// --------------------------------------------------
-
-function positionPopupUnderChat(el) {
-    const form = document.getElementById("roomChatForm");
-    if (!form) return;
-
-    const rect = form.getBoundingClientRect();
-    const margin = 6;
-
-    el.style.left = `${rect.left}px`;
-    el.style.top = `${rect.top - el.offsetHeight - margin + window.scrollY}px`;
-
-    const maxRight = window.innerWidth - 8;
-    const right = rect.left + el.offsetWidth;
-    if (right > maxRight) {
-        const shift = right - maxRight;
-        el.style.left = `${rect.left - shift}px`;
     }
 }
 
@@ -1031,51 +948,6 @@ function applyPrefsToUI() {
     const excludePoolEl = id("excludeWatched");
     if (excludePoolEl) {
         excludePoolEl.checked = state.prefs.poolExcludeWatched;
-    }
-}
-
-// ===== CUPCAKE THEME EFFECTS =====
-
-function triggerHeartParticles() {
-    if (document.documentElement.getAttribute('data-theme') !== 'cupcake') return;
-
-    const hearts = ['💖', '💗', '💕', '💓', '💝'];
-    const centerX = window.innerWidth / 2;
-    const centerY = window.innerHeight / 2;
-
-    hearts.forEach((emoji, i) => {
-        const heart = document.createElement('div');
-        heart.className = 'heart-particle';
-        heart.textContent = emoji;
-
-        // Spread them out in a circle pattern
-        const angle = (Math.PI * 2 * i) / hearts.length;
-        const distance = 50;
-        const offsetX = Math.cos(angle) * distance;
-
-        heart.style.left = (centerX + offsetX) + 'px';
-        heart.style.top = centerY + 'px';
-        heart.style.animationDelay = (i * 0.1) + 's';
-
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 2500);
-    });
-}
-
-function initThemeEffects() {
-    const theme = document.documentElement.getAttribute('data-theme');
-
-    // Clean up old effects
-    document.querySelectorAll('.heart-particle').forEach(el => el.remove());
-    stopBubbles();
-
-    // Remove old tracking line
-    const oldLine = document.getElementById('vhsTrackingLine');
-    if (oldLine) oldLine.remove();
-
-    // Initialize theme-specific effects
-    if (theme === 'cupcake') {
-        initCupcakeEffects();
     }
 }
 
@@ -1445,13 +1317,19 @@ async function boot() {
                     // Store user data globally
                     window.firestoreUserData = data;
 
-                    // Load preferences if they exist
                     if (data.prefs && typeof data.prefs === "object") {
+                        const currentTheme = document.documentElement.getAttribute('data-theme');
+
                         state.prefs = { ...state.prefs, ...data.prefs };
                         savePrefs();
                         applyPrefsToUI();
-                        applyTheme(state.prefs.theme);
+
+                        // ONLY apply theme if it's different:
+                        if (state.prefs.theme && state.prefs.theme !== currentTheme) {
+                            applyTheme(state.prefs.theme);
+                        }
                     }
+
                 }
             } catch (e) {
                 console.warn("Failed to load user data:", e);
@@ -2243,24 +2121,6 @@ async function boot() {
             }
         });
     }
-
-    setTimeout(() => {
-        if (!inRoom()) {
-            const membersWrap = document.getElementById('roomMembersWrap');
-            const chatCol = document.getElementById('roomChatColumn');
-            if (membersWrap) membersWrap.classList.add('hidden');
-            if (chatCol) chatCol.classList.add('hidden');
-        }
-    }, 500);
-
-    setTimeout(() => {
-        const membersWrap = document.getElementById('roomMembersWrap');
-        console.log('After boot - roomState.id:', roomState.id);
-        console.log('After boot - inRoom():', inRoom());
-        console.log('After boot - membersWrap classes:', membersWrap?.className);
-        console.log('After boot - is hidden?', membersWrap?.classList.contains('hidden'));
-    }, 1000);
-
 
 }
 
