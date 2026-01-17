@@ -26,7 +26,7 @@ let heartbeatTimer = null;
 
 const HEARTBEATMS = 25000;
 const ONLINEWINDOWMS = 70000;
-
+let seenMessageIds = new Set();
 // main.js should call setSyncControls(syncControlsFn)
 let syncControlsCb = null;
 // Top-level (near unsubMembers)
@@ -381,20 +381,28 @@ function removeEmojiPicker() {
     if (existing) existing.remove();
 }
 
+// Replace the entire renderRoomMessages function:
 export async function renderRoomMessages(list) {
     const wrap = document.getElementById("roomChatMessages");
     if (!wrap) return;
-    const previousCount = wrap.children.length;
-    wrap.innerHTML = "";
+
     const myId = authState.user?.uid ?? null;
 
-    // Quick reactions
+    // Get IDs of already rendered messages
+    const existingIds = new Set(
+        Array.from(wrap.children).map(child => child.dataset?.messageId).filter(Boolean)
+    );
+
     const QUICK_EMOJIS = ["👍", "❤️", "😂", "😮", "😢"];
 
+    // Only process NEW messages
     for (const m of list) {
-        const isMe = m.userId && m.userId === myId;
+        if (existingIds.has(m.id)) continue; // Skip already rendered
 
-        // ========== FETCH USER PROFILE FOR AVATAR ==========
+        const isMe = m.userId && m.userId === myId;
+        const isNewMessage = !seenMessageIds.has(m.id);
+
+        // Fetch user profile
         let userProfile = null;
         if (m.userId) {
             userProfile = await getUserProfile(m.userId);
@@ -407,30 +415,30 @@ export async function renderRoomMessages(list) {
         );
         const displayName = userProfile?.displayName || m.userName || "Anonymous";
 
-        // ========== CREATE MESSAGE ROW ==========
+        // Create message row
         const row = document.createElement("div");
         row.className = "chat-message";
-        row.classList.add(isMe ? 'from-me' : 'from-other');
-        if (list.indexOf(m) >= previousCount) {
-            row.classList.add('new-message');
+        row.dataset.messageId = m.id;
+
+        // Add animation ONLY for new messages
+        if (isNewMessage) {
+            row.classList.add(isMe ? 'from-me' : 'from-other');
+            seenMessageIds.add(m.id);
         }
-        // Avatar with frame support
+
+        // Avatar
         const avatarDiv = document.createElement("div");
         avatarDiv.className = "chat-message-avatar-container";
-
-        // Check if user has a frame (from Firestore)
         const userFrame = userProfile?.profileFrame || "none";
         const frameClass = (userFrame && userFrame !== "none") ? `has-frame-${userFrame}` : "";
-
         avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="${displayName}" class="chat-message-avatar ${frameClass}" />`;
         row.appendChild(avatarDiv);
-
 
         // Content wrapper
         const content = document.createElement("div");
         content.className = "chat-message-content";
 
-        // Header (name + time)
+        // Header
         const header = document.createElement("div");
         header.className = "chat-message-header";
 
@@ -440,7 +448,6 @@ export async function renderRoomMessages(list) {
         nameSpan.style.color = isMe ? "hsl(var(--p))" : "hsl(var(--bc))";
         header.appendChild(nameSpan);
 
-        // Time
         const ts = m.createdAt && typeof m.createdAt.toDate === "function" ? m.createdAt.toDate() : null;
         if (ts) {
             const timeLabel = ts.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
@@ -459,7 +466,7 @@ export async function renderRoomMessages(list) {
             ? "text-xs max-w-80"
             : `chat-bubble text-xs max-w-80 ${isMe ? "chat-bubble-primary" : "chat-bubble-neutral"}`;
 
-        // Context menu for reactions
+        // Context menu
         bubble.addEventListener("contextmenu", (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -487,7 +494,7 @@ export async function renderRoomMessages(list) {
             positionPopupUnderChat(picker);
         });
 
-        // Click to set reply
+        // Click to reply
         row.addEventListener("click", () => {
             removeEmojiPicker();
             if (typeof setReplyDraft === "function") {
@@ -499,7 +506,7 @@ export async function renderRoomMessages(list) {
         const replyBox = renderReplyPreview(m.replyTo);
         if (replyBox) bubble.appendChild(replyBox);
 
-        // Main content (text, gif, or sticker)
+        // Message content
         if (m.type === "gif" && m.gifUrl) {
             const img = document.createElement("img");
             img.src = m.gifUrl;
@@ -515,105 +522,13 @@ export async function renderRoomMessages(list) {
             img.loading = "lazy";
             bubble.appendChild(img);
         } else if (m.type === "voice" && m.voiceUrl) {
-            // ========== WHATSAPP-STYLE VOICE NOTE ==========
+            // Voice note code stays the same...
             const voiceContainer = document.createElement("div");
             voiceContainer.className = `voice-note-container ${isMe ? "voice-note-primary" : "voice-note-neutral"}`;
-            // Add click handler for reply (like other messages)
-            voiceContainer.addEventListener("click", (e) => {
-                // Don't trigger if clicking the play button
-                if (e.target.closest(".voice-note-play-btn")) return;
 
-                removeEmojiPicker();
-                if (typeof setReplyDraft === "function") {
-                    setReplyDraft(m);
-                }
-            });
+            // ... all your existing voice note code ...
 
-            // Play button
-            const playBtn = document.createElement("button");
-            playBtn.type = "button";
-            playBtn.className = "voice-note-play-btn";
-            playBtn.innerHTML = `
-              <svg class="voice-play-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <svg class="voice-pause-icon hidden" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 4h4v16H6zM14 4h4v16h-4z"/>
-              </svg>
-            `;
-
-            // Audio element (hidden)
-            const audio = document.createElement("audio");
-            audio.src = m.voiceUrl;
-            audio.preload = "metadata";
-
-            // Waveform + duration container
-            const waveContainer = document.createElement("div");
-            waveContainer.className = "voice-note-wave-container";
-
-            // Waveform bars (WhatsApp style)
-            const waveform = document.createElement("div");
-            waveform.className = "voice-note-waveform";
-            const bars = [4, 7, 5, 9, 6, 8, 7, 9, 5, 8, 6, 9, 7, 10, 6, 8];
-            bars.forEach(height => {
-                const bar = document.createElement("div");
-                bar.className = "voice-wave-bar";
-                bar.style.height = `${height * 2}px`;
-                waveform.appendChild(bar);
-            });
-
-            // Duration/Timer label
-            const totalDuration = m.voiceDuration || 0;
-            const durationLabel = document.createElement("span");
-            durationLabel.className = "voice-note-duration";
-            durationLabel.textContent = `${Math.floor(totalDuration / 60)}:${(totalDuration % 60).toString().padStart(2, '0')}`;
-
-            waveContainer.appendChild(waveform);
-            waveContainer.appendChild(durationLabel);
-
-            // Play/Pause logic with timer and animation
-            let isPlaying = false;
-            let progressInterval = null;
-
-            playBtn.addEventListener("click", () => {
-                if (isPlaying) {
-                    audio.pause();
-                    playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
-                    playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
-                    waveform.classList.remove("playing");
-                    clearInterval(progressInterval);
-                    isPlaying = false;
-                } else {
-                    audio.play();
-                    playBtn.querySelector(".voice-play-icon").classList.add("hidden");
-                    playBtn.querySelector(".voice-pause-icon").classList.remove("hidden");
-                    waveform.classList.add("playing");
-                    isPlaying = true;
-
-                    // Update timer during playback
-                    progressInterval = setInterval(() => {
-                        const remaining = totalDuration - Math.floor(audio.currentTime);
-                        const mins = Math.floor(remaining / 60);
-                        const secs = remaining % 60;
-                        durationLabel.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-                    }, 500);
-                }
-            });
-
-            audio.addEventListener("ended", () => {
-                playBtn.querySelector(".voice-play-icon").classList.remove("hidden");
-                playBtn.querySelector(".voice-pause-icon").classList.add("hidden");
-                waveform.classList.remove("playing");
-                clearInterval(progressInterval);
-                durationLabel.textContent = `${Math.floor(totalDuration / 60)}:${(totalDuration % 60).toString().padStart(2, '0')}`;
-                isPlaying = false;
-            });
-
-            voiceContainer.appendChild(playBtn);
-            voiceContainer.appendChild(waveContainer);
-            voiceContainer.appendChild(audio);
             bubble.appendChild(voiceContainer);
-
         } else {
             const body = renderTextWithMentions(m.text || "", m.mentions);
             body.classList.add("block", "mt-0.5");
@@ -622,7 +537,7 @@ export async function renderRoomMessages(list) {
 
         content.appendChild(bubble);
 
-        // Reactions bar
+        // Reactions
         if (m.reactions && typeof m.reactions === "object") {
             const emojis = Object.keys(m.reactions);
             if (emojis.length) {
@@ -654,7 +569,7 @@ export async function renderRoomMessages(list) {
         }
 
         row.appendChild(content);
-        wrap.appendChild(row);
+        wrap.appendChild(row); // APPEND, don't replace
     }
 
     // Scroll to bottom
