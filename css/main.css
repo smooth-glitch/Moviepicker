@@ -3068,3 +3068,160 @@ dialog.closing .modal-box {
   opacity: 0.3;
   pointer-events: none;
 }
+
+/* ===== SMOOTH SCROLL ===== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scroll with custom easing for links */
+.smooth-scroll-target {
+  scroll-margin-top: 1rem;
+}
+
+/* Scroll indicator that appears */
+.scroll-indicator {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.scroll-indicator.visible {
+  opacity: 1;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* Section reveal on scroll */
+section {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+section.reveal-pending {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+section.reveal-active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== CHAT MESSAGE ANIMATIONS ===== */
+
+/* Message bubble pop-in */
+.chat-message {
+  animation: messagePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes messagePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* New message highlight flash */
+.chat-message.new-message {
+  animation: messageFlash 0.6s ease;
+}
+
+@keyframes messageFlash {
+  0%, 100% {
+    background-color: transparent;
+  }
+  30% {
+    background-color: hsl(var(--p) / 0.15);
+  }
+}
+
+/* Own messages slide from right */
+.chat-message.from-me {
+  animation: messageSlideRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes messageSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Others' messages slide from left */
+.chat-message.from-other {
+  animation: messageSlideLeft 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes messageSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* Avatar bounce on new message */
+.chat-message-avatar {
+  animation: avatarBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes avatarBounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Reaction pills pop when added */
+.chat-message .badge {
+  animation: reactionPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes reactionPop {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-10deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}

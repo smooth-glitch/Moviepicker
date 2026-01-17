@@ -384,7 +384,7 @@ function removeEmojiPicker() {
 export async function renderRoomMessages(list) {
     const wrap = document.getElementById("roomChatMessages");
     if (!wrap) return;
-
+    const previousCount = wrap.children.length;
     wrap.innerHTML = "";
     const myId = authState.user?.uid ?? null;
 
@@ -410,7 +410,10 @@ export async function renderRoomMessages(list) {
         // ========== CREATE MESSAGE ROW ==========
         const row = document.createElement("div");
         row.className = "chat-message";
-
+        row.classList.add(isMe ? 'from-me' : 'from-other');
+        if (list.indexOf(m) >= previousCount) {
+            row.classList.add('new-message');
+        }
         // Avatar with frame support
         const avatarDiv = document.createElement("div");
         avatarDiv.className = "chat-message-avatar-container";
@@ -1020,7 +1023,7 @@ export function startUserDocListener() {
             const data = snap.data();
             if (data.settings && typeof data.settings === "object") {
                 const s = data.settings;
-                
+
                 if (typeof s.textScale === "number") {
                     document.documentElement.style.fontSize = `${s.textScale * 100}%`;
                 }

@@ -1066,6 +1066,66 @@ function initRippleEffects() {
     });
 }
 
+// Add to main.js before boot():
+
+// Smooth scroll to element with custom easing
+function smoothScrollTo(elementId, offset = 0) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    const targetPosition = element.offsetTop - offset;
+    const startPosition = window.pageYOffset;
+    const distance = targetPosition - startPosition;
+    const duration = 800;
+    let start = null;
+
+    function easeInOutCubic(t) {
+        return t < 0.5
+            ? 4 * t * t * t
+            : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function animation(currentTime) {
+        if (start === null) start = currentTime;
+        const timeElapsed = currentTime - start;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+
+        window.scrollTo(0, startPosition + distance * ease);
+
+        if (timeElapsed < duration) {
+            requestAnimationFrame(animation);
+        }
+    }
+
+    requestAnimationFrame(animation);
+}
+
+// Reveal sections on scroll (Intersection Observer)
+function initScrollReveal() {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal-active');
+                    entry.target.classList.remove('reveal-pending');
+                }
+            });
+        },
+        {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        }
+    );
+
+    document.querySelectorAll('section').forEach(section => {
+        section.classList.add('reveal-pending');
+        observer.observe(section);
+    });
+}
+
+// Make global
+window.smoothScrollTo = smoothScrollTo;
 
 async function boot() {
     const loaderStatus = document.querySelector('.loader-status');
@@ -2306,6 +2366,17 @@ async function boot() {
 
     // In boot(), add at the end with other init functions:
     initRippleEffects();
+    // At the end of boot(), add:
+    initScrollReveal();
+
+    // Update "Start picking" button to use smooth scroll:
+    const pickMeNow = document.getElementById('pickMeNow');
+    if (pickMeNow) {
+        pickMeNow.addEventListener('click', (e) => {
+            e.preventDefault();
+            smoothScrollTo('results', 80);
+        });
+    }
 
 }
 
