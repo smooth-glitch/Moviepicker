@@ -324,7 +324,7 @@ async function uploadProfilePicture(file) {
                     throw new Error("Could not create user reference");
                 }
 
-                // ONLY update photoURL in Firestore, NOTHING ELSE
+                // Update Firestore
                 await fs.setDoc(
                     userRef,
                     {
@@ -340,17 +340,29 @@ async function uploadProfilePicture(file) {
                 }
                 window.firestoreUserData.photoURL = base64Data;
 
-                // Update UI
+                // Update settings modal avatar
                 const avatarEl = document.getElementById("settingsAvatar");
                 if (avatarEl) {
                     avatarEl.src = base64Data;
                 }
 
-                // ========== UPDATE HEADER BUTTON IMMEDIATELY ==========
+                // UPDATE HEADER AVATAR IMMEDIATELY
+                const headerAvatarRing = document.getElementById('headerAvatarRing');
+                const headerAvatar = headerAvatarRing?.querySelector('img');
+
+                if (headerAvatar) {
+                    headerAvatar.src = base64Data;
+                }
+
+                // Force refresh user chip
+                const userChipLabel = document.getElementById('userChipLabel');
+                if (userChipLabel && user.displayName) {
+                    userChipLabel.textContent = user.displayName;
+                }
+
+                // Call global update function if available
                 if (typeof window.updateUserChip === "function") {
                     window.updateUserChip();
-                } else if (typeof updateUserChip === "function") {
-                    updateUserChip();
                 }
 
                 // Show success
@@ -393,6 +405,7 @@ async function uploadProfilePicture(file) {
         }
     }
 }
+
 
 
 

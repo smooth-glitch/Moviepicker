@@ -1127,6 +1127,22 @@ function initScrollReveal() {
 // Make global
 window.smoothScrollTo = smoothScrollTo;
 
+// ===== PERFORMANCE DETECTION =====
+function detectPerformance() {
+    const hardwareConcurrency = navigator.hardwareConcurrency || 2;
+    const memory = navigator.deviceMemory || 4;
+
+    // Low-end device: reduce animations
+    if (hardwareConcurrency < 4 || memory < 4) {
+        document.body.classList.add('reduced-animations');
+        console.log('⚡ Reduced animations mode enabled for better performance');
+    }
+}
+
+// Call immediately
+detectPerformance();
+
+
 async function boot() {
     const loaderStatus = document.querySelector('.loader-status');
 
@@ -2377,6 +2393,40 @@ async function boot() {
             smoothScrollTo('results', 80);
         });
     }
+
+    // Replace the hostname check with this:
+    if (location.hostname === 'localhost' ||
+        location.hostname === '127.0.0.1' ||
+        location.hostname.includes('github.io')) { // ← ADD THIS
+
+        let lastTime = performance.now();
+        let frames = 0;
+
+        function measureFPS() {
+            frames++;
+            const currentTime = performance.now();
+
+            if (currentTime >= lastTime + 1000) {
+                const fps = Math.round(frames * 1000 / (currentTime - lastTime));
+                console.log(`🎬 FPS: ${fps}`);
+
+                if (fps < 30) {
+                    console.warn('⚠️ Low FPS detected - consider reducing animations');
+                } else if (fps >= 50) {
+                    console.log('✅ Smooth performance!');
+                }
+
+                frames = 0;
+                lastTime = currentTime;
+            }
+
+            requestAnimationFrame(measureFPS);
+        }
+
+        measureFPS();
+    }
+
+
 
 }
 
