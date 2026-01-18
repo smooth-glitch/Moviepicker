@@ -3684,3 +3684,238 @@ section.reveal-active {
 .reduced-animations .theme-particles {
   display: none !important;
 }
+
+/* ===== JOIN ROOM - FIXED SIZING ===== */
+
+/* Both buttons same size */
+#btnShowJoinRoom,
+#btnCreateRoom {
+  min-width: 140px !important;
+  max-width: 140px !important;
+  height: 2.5rem !important;
+  font-size: 0.875rem !important;
+  padding: 0 1rem !important;
+  white-space: nowrap;
+}
+
+/* Join room input container */
+#joinRoomInput {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  max-width: 100%;
+}
+
+/* Input field - compact */
+#joinRoomIdInput {
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
+  height: 2.5rem !important;
+  font-size: 0.75rem !important;
+  padding: 0.5rem !important;
+}
+
+/* Submit button - compact */
+#btnJoinRoomSubmit {
+  min-width: 60px !important;
+  height: 2.5rem !important;
+  font-size: 0.875rem !important;
+  padding: 0 0.75rem !important;
+}
+
+/* Cancel button - compact */
+#btnCancelJoin {
+  min-width: 60px !important;
+  height: 2.5rem !important;
+  font-size: 0.875rem !important;
+  padding: 0 0.75rem !important;
+}
+
+/* Container flex to prevent overflow */
+.flex.gap-2.w-full {
+  flex-wrap: nowrap !important;
+  overflow: hidden;
+}
+
+/* Responsive - stack on smaller screens */
+@media (max-width: 768px) {
+  #btnShowJoinRoom,
+  #btnCreateRoom {
+    min-width: 120px !important;
+    max-width: 120px !important;
+    font-size: 0.75rem !important;
+  }
+  
+  #joinRoomIdInput {
+    width: 140px !important;
+    min-width: 140px !important;
+  }
+}
+
+/* Force hide join input by default */
+#joinRoomInput.hidden {
+  display: none !important;
+}
+
+#joinRoomInput:not(.hidden) {
+  display: flex !important;
+}
+
+/* ===== REMOVE SHADOWS FROM ROOM BUTTONS ===== */
+
+#btnShowJoinRoom,
+#btnCreateRoom,
+#btnJoinRoomSubmit,
+#btnCancelJoin {
+  box-shadow: none !important;
+}
+
+#btnShowJoinRoom:hover,
+#btnCreateRoom:hover,
+#btnJoinRoomSubmit:hover,
+#btnCancelJoin:hover {
+  box-shadow: none !important;
+}
+
+#joinRoomIdInput {
+  box-shadow: none !important;
+}
+
+#joinRoomIdInput:focus {
+  box-shadow: 0 0 0 2px hsl(var(--p) / 0.2) !important;
+}
+
+/* Remove any gap shadows */
+.flex.gap-2.w-full {
+  box-shadow: none !important;
+}
+
+/* Ensure no parent shadows */
+.flex.gap-2.w-full > * {
+  box-shadow: none !important;
+}
+
+/* ===== HIDE SCROLLBARS FOR GRID AND POOL ===== */
+
+/* Results grid - hide scrollbar */
+#results {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+#results::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Pool - hide scrollbar */
+#pool {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#pool::-webkit-scrollbar {
+  display: none;
+}
+
+/* Parent containers */
+.card-body {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.card-body::-webkit-scrollbar {
+  display: none;
+}
+
+/* But keep scrolling functional */
+#results,
+#pool {
+  overflow-y: auto !important;
+}
+
+/* ===== HIDE ROOM MEMBERS SCROLLBAR ===== */
+
+#roomMembersList {
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+#roomMembersList::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Room activity scrollbar */
+#roomActivity {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#roomActivity::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom scrollbar class used in room members */
+.custom-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Keep scrolling functional */
+#roomMembersList,
+#roomActivity {
+  overflow-y: auto !important;
+}
+
+/* ===== NOIR THEME - FORCE HIDE ALL SCROLLBARS ===== */
+
+[data-theme="noir"] #pool,
+[data-theme="noir"] #roomMembersList,
+[data-theme="noir"] #roomActivity,
+[data-theme="noir"] #roomChatMessages,
+[data-theme="noir"] .custom-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+[data-theme="noir"] #pool::-webkit-scrollbar,
+[data-theme="noir"] #roomMembersList::-webkit-scrollbar,
+[data-theme="noir"] #roomActivity::-webkit-scrollbar,
+[data-theme="noir"] #roomChatMessages::-webkit-scrollbar,
+[data-theme="noir"] .custom-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Also hide on parent containers in noir */
+[data-theme="noir"] .card-body {
+  scrollbar-width: none !important;
+}
+
+[data-theme="noir"] .card-body::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Room chat shell */
+[data-theme="noir"] #roomChatShell,
+[data-theme="noir"] #roomChatShell * {
+  scrollbar-width: none !important;
+}
+
+[data-theme="noir"] #roomChatShell::-webkit-scrollbar,
+[data-theme="noir"] #roomChatShell *::-webkit-scrollbar {
+  display: none !important;
+}
+
+.card-body::-webkit-scrollbar {
+  display: none !important; 
+}

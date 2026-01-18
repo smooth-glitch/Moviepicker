@@ -571,9 +571,17 @@ async function populateGenreSelect(kind) {
     updateGenreDropdownLabel();
 }
 
+// WITH THIS - handles both buttons:
 function syncCreateRoomButton() {
     const signedIn = !!authState.user;
-    id("btnCreateRoom")?.classList.toggle("hidden", !signedIn);
+    const inRoomNow = inRoom();
+
+    // Show both Create and Join buttons when signed in and NOT in a room
+    id("btnCreateRoom")?.classList.toggle("hidden", !signedIn || inRoomNow);
+    id("btnShowJoinRoom")?.classList.toggle("hidden", !signedIn || inRoomNow);
+
+    // Hide join input when not in use
+    id("joinRoomInput")?.classList.add("hidden");
 }
 
 function syncControls() {
@@ -1685,7 +1693,96 @@ async function boot() {
     id("btnClearPool")?.addEventListener("click", clearPool);
     id("btnShareList")?.addEventListener("click", sharePoolOnWhatsApp);
 
-    id("btnCreateRoom")?.addEventListener("click", createRoom);
+    // In boot(), find the Create Room button handler and UPDATE it:
+    id("btnCreateRoom")?.addEventListener("click", async () => {
+        // Hide both buttons immediately
+        const btnShowJoinRoom = document.getElementById('btnShowJoinRoom');
+        const btnCreateRoom = document.getElementById('btnCreateRoom');
+
+        btnShowJoinRoom?.classList.add('hidden');
+        btnCreateRoom?.classList.add('hidden');
+        id('joinRoomInput')?.classList.add('hidden');
+        // Create the room
+        await createRoom();
+    });
+
+    // In boot(), add this:
+    const btnShowJoinRoom = document.getElementById('btnShowJoinRoom');
+    const btnCreateRoom = document.getElementById('btnCreateRoom');
+    const joinRoomInput = document.getElementById('joinRoomInput');
+    const joinRoomIdInput = document.getElementById('joinRoomIdInput');
+    const btnJoinRoomSubmit = document.getElementById('btnJoinRoomSubmit');
+    const btnCancelJoin = document.getElementById('btnCancelJoin');
+
+    // Show Join Room input
+    if (btnShowJoinRoom && joinRoomInput && btnCreateRoom) {
+        btnShowJoinRoom.addEventListener('click', () => {
+            btnShowJoinRoom.classList.add('hidden');
+            btnCreateRoom.classList.add('hidden');
+            joinRoomInput.classList.remove('hidden');
+            joinRoomIdInput?.focus();
+        });
+    }
+
+    // Cancel join - go back to buttons
+    if (btnCancelJoin) {
+        btnCancelJoin.addEventListener('click', () => {
+            joinRoomInput?.classList.add('hidden');
+            btnShowJoinRoom?.classList.remove('hidden');
+            btnCreateRoom?.classList.remove('hidden');
+            if (joinRoomIdInput) joinRoomIdInput.value = '';
+        });
+    }
+
+    // Replace btnJoinRoomSubmit handler with this:
+    if (btnJoinRoomSubmit && joinRoomIdInput) {
+        btnJoinRoomSubmit.addEventListener('click', async () => {
+            const roomId = joinRoomIdInput.value.trim();
+
+            if (!roomId) {
+                toast("Enter a room ID", "info");
+                return;
+            }
+
+            if (!authState.user) {
+                toast("Sign in to join rooms", "info");
+                openAuthDialog();
+                return;
+            }
+
+            // VALIDATE ROOM EXISTS:
+            const fs = window.firebaseStore;
+            if (!fs) {
+                toast("Firestore not ready", "error");
+                return;
+            }
+
+            try {
+                const roomRef = fs.doc(fs.db, 'rooms', roomId);
+                const snap = await fs.getDoc(roomRef);
+
+                if (!snap.exists()) {
+                    toast("Room not found. Check the ID and try again.", "error");
+                    return;
+                }
+
+                // Room exists - join it
+                joinRoom(roomId);
+                joinRoomIdInput.value = '';
+                joinRoomInput?.classList.add('hidden');
+                btnShowJoinRoom?.classList.remove('hidden');
+                btnCreateRoom?.classList.remove('hidden');
+                toast("Joining room...", "success");
+
+            } catch (e) {
+                console.error('Failed to validate room', e);
+                toast("Failed to validate room: " + e.message, "error");
+            }
+        });
+    }
+
+
+
     id("btnLeaveRoom")?.addEventListener("click", async () => {
         await leaveRoom();
         // optional immediate UI reset

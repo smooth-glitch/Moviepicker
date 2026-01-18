@@ -376,15 +376,42 @@
                                         Surprise me
                                     </button>
 
-                                    <button id="btnCreateRoom" class="btn btn-secondary gap-2 hidden">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M12 5v14" />
-                                            <path d="M5 12h14" />
-                                        </svg>
-                                        Create room
-                                    </button>
+                                    <!-- Find the "Create room" button in hero and REPLACE with this: -->
+                                    <div class="flex gap-2 w-full">
+                                        <button id="btnCreateRoom" class="btn btn-secondary gap-2 hidden">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 5v14" />
+                                                <path d="M5 12h14" />
+                                            </svg>
+                                            Create room
+                                        </button>
+
+                                        <button id="btnShowJoinRoom" class="btn btn-secondary gap-2 hidden w-full">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                                                <polyline points="10 17 15 12 10 7" />
+                                                <line x1="15" x2="3" y1="12" y2="12" />
+                                            </svg>
+                                            Join room
+                                        </button>
+
+                                        <!-- Join room input (hidden by default) -->
+                                        <div id="joinRoomInput" class="hidden flex gap-2 w-full">
+                                            <input type="text" id="joinRoomIdInput"
+                                                class="input input-bordered input-sm flex-1 font-mono text-xs bg-white/10 backdrop-blur-md border-white/20 text-primary-content placeholder-primary-content/50"
+                                                placeholder="Enter Room ID...">
+                                            <button id="btnJoinRoomSubmit" class="btn btn-primary btn-sm">
+                                                Join
+                                            </button>
+                                            <button id="btnCancelJoin" class="btn btn-ghost btn-sm">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+
+
 
                                     <button id="btnTrending" class="btn btn-ghost gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"

@@ -1028,6 +1028,10 @@ export function updateRoomUI() {
     if (wrap) {
         wrap.classList.toggle("md:grid-cols-2", hasRoom);
     }
+
+    if (typeof window.syncCreateRoomButton === 'function') {
+        window.syncCreateRoomButton();
+    }
 }
 
 
@@ -1259,6 +1263,24 @@ export async function leaveRoom() {
     setRoomInUrl(null);
     updateRoomUI();
 
+    if (typeof window.syncCreateRoomButton === 'function') {
+        window.syncCreateRoomButton();
+    }
+
+    setTimeout(() => {
+        const btnCreateRoom = document.getElementById('btnCreateRoom');
+        const btnShowJoinRoom = document.getElementById('btnShowJoinRoom');
+        const joinRoomInput = document.getElementById('joinRoomInput');
+
+        if (btnCreateRoom) btnCreateRoom.classList.remove('hidden');
+        if (btnShowJoinRoom) btnShowJoinRoom.classList.remove('hidden');
+        if (joinRoomInput) joinRoomInput.classList.add('hidden');
+
+        // Also call the sync function
+        if (typeof window.syncCreateRoomButton === 'function') {
+            window.syncCreateRoomButton();
+        }
+    }, 100);
     state.pool = loadJson(LSPOOL, []);
     state.watched = new Set(loadJson(LSWATCHED, []));
     state.filters = loadJson(LSFILTERS, { excludeWatched: true, minRating: 6 });
