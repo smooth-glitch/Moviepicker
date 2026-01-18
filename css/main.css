@@ -3919,3 +3919,227 @@ section.reveal-active {
 .card-body::-webkit-scrollbar {
   display: none !important; 
 }
+
+/* AI Card Animation */
+#aiSuggestionCard {
+  animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.ai-confidence-badge {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  color: black;
+  font-weight: bold;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+/* AI card entrance */
+.ai-brain-enter {
+  animation: aiBrainIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes aiBrainIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    box-shadow: 0 18px 40px rgba(15,23,42,0.35);
+  }
+}
+
+/* Animated border glow */
+.ai-brain-border {
+  border-radius: 1.5rem;
+  box-shadow:
+    0 0 0 1px rgba(148, 163, 184, 0.5),
+    0 0 40px rgba(129, 140, 248, 0.3);
+  animation: aiBorderPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes aiBorderPulse {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Soft moving gradient background */
+.ai-brain-bg {
+  background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.24), transparent 60%),
+              radial-gradient(circle at 100% 100%, rgba(129, 140, 248, 0.22), transparent 55%);
+  background-size: 200% 200%;
+  animation: aiBgFloat 18s ease-in-out infinite alternate;
+}
+
+@keyframes aiBgFloat {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate3d(-4px, -4px, 0);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate3d(4px, 4px, 0);
+    opacity: 0.5;
+  }
+}
+
+/* Confidence pill */
+.ai-confidence-pill {
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #a3e635);
+  color: #022c22;
+  border: none;
+}
+
+
+/* Flowing RGB border around button/card */
+.rainbow-ring {
+  --c1: #ef4444;
+  --c2: #eab308;
+  --c3: #22c55e;
+  --c4: #3b82f6;
+  --c5: #a855f7;
+
+  position: absolute;
+  inset: 0;
+  border-radius: 0.5rem; /* match button/card radius */
+  padding: 1.5px;
+  background:
+    linear-gradient(120deg, var(--c1), var(--c2), var(--c3), var(--c4), var(--c5), var(--c1));
+  background-size: 300% 300%;
+  animation: rainbowFlow 6s linear infinite;
+}
+
+/* Theme variants (kept same as before, just no rotation) */
+[data-theme="cupcake"] .rainbow-ring {
+  --c1: #f9a8d4; --c2: #fcd34d; --c3: #86efac; --c4: #93c5fd; --c5: #d8b4fe;
+}
+
+[data-theme="synthwave"] .rainbow-ring {
+  --c1: #ff00ff; --c2: #00ffff; --c3: #ff00ff; --c4: #00ffff; --c5: #facc15;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+}
+
+[data-theme="noir"] .rainbow-ring {
+  --c1: #333; --c2: #666; --c3: #fff; --c4: #666; --c5: #333;
+}
+
+/* Inner mask so only border shows */
+.rainbow-ring::before {
+  content: "";
+  position: absolute;
+  inset: 1.5px;
+  border-radius: inherit;
+  background: hsl(var(--b1));
+}
+
+/* Flowing gradient animation */
+@keyframes rainbowFlow {
+  0% {
+      background-position: 0% 50%;
+  }
+  50% {
+      background-position: 100% 50%;
+  }
+  100% {
+      background-position: 0% 50%;
+  }
+}
+
+/* Lock button hover animation */
+.lock-btn .lock-icon {
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.lock-btn .lock-body,
+.lock-btn .lock-shackle {
+  transition: transform 0.25s ease, stroke 0.25s ease;
+  transform-origin: center;
+}
+
+/* Default: slightly “unlocked” */
+.lock-btn .lock-shackle {
+  transform: translateY(-1px);
+}
+
+/* On hover: snap closed + tiny bump */
+.lock-btn:hover .lock-shackle {
+  transform: translateY(0);
+}
+
+.lock-btn:hover .lock-icon {
+  transform: translateY(-0.5px) scale(1.02);
+}
+
+/* Not feeling it icon – subtle reaction */
+.not-feeling-btn .nf-icon {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.not-feeling-btn .nf-slash {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.25s ease;
+}
+
+.not-feeling-btn:hover .nf-icon {
+  transform: translateY(-0.5px);
+}
+
+.not-feeling-btn:hover .nf-slash {
+  stroke-dashoffset: 0;
+}
+
+.ai-brain-shell {
+  box-shadow:
+    0 18px 45px rgba(15, 23, 42, 0.45),
+    0 0 0 1px rgba(148, 163, 184, 0.25);
+}
+
+/* Slight 3D tilt on hover (desktop only) */
+@media (min-width: 768px) {
+  .ai-brain-shell:hover {
+    transform: translateY(-2px) translateZ(0);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow:
+      0 22px 55px rgba(15, 23, 42, 0.55),
+      0 0 0 1px rgba(148, 163, 184, 0.35);
+  }
+}
+
+.ai-brain-wave {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    hsla(var(--p) / 0.15) 20%,
+    hsla(var(--p) / 0.4) 50%,
+    hsla(var(--p) / 0.15) 80%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: aiWave 2.8s ease-in-out infinite;
+  mask-image: radial-gradient(circle at 10% 50%, black 0, transparent 55%),
+               radial-gradient(circle at 50% 50%, black 0, transparent 55%),
+               radial-gradient(circle at 90% 50%, black 0, transparent 55%);
+  mask-composite: add;
+}
+
+@keyframes aiWave {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
+}

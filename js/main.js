@@ -70,7 +70,7 @@ import {
 } from "./collections.js";
 import { loadFriends, addFriend, renderFriends } from "./friends.js";
 import { openDM, sendDM, closeDM } from "./dm.js";
-
+import { getAISuggestion } from "./ai-mediator.js";
 let liveSearchTimer = null;
 // reply draft for chat
 let currentReplyTarget = null;
@@ -2523,7 +2523,178 @@ async function boot() {
         measureFPS();
     }
 
+    // Add this to your boot() function or event listeners section
+    const btnAskAI = document.getElementById('btnAskAI');
+    const aiCard = document.getElementById('aiSuggestionCard');
+    const aiContent = document.getElementById('aiContent');
+    const btnCloseAI = document.getElementById('btnCloseAI');
 
+    if (btnAskAI) {
+        btnAskAI.addEventListener("click", async () => {
+            const aiCard = document.getElementById("aiSuggestionCard");
+            const aiContent = document.getElementById("aiContent");
+            const aiStatus = document.getElementById("aiStatusText");
+
+            if (!aiCard || !aiContent || !aiStatus) return;
+
+            if (!state.pool || state.pool.length === 0) {
+                aiCard.classList.remove("hidden");
+                aiCard.classList.add("ai-brain-enter");
+                aiStatus.textContent = "Nothing to analyze yet.";
+                aiContent.innerHTML = `
+                  <div class="flex items-start gap-3 text-xs md:text-sm text-base-content/80 py-2">
+                    <div class="h-7 w-7 rounded-full bg-base-300/70 flex items-center justify-center text-base-content/70">
+                      📥
+                    </div>
+                    <div class="space-y-1">
+                      <p class="font-semibold">Add some movies first</p>
+                      <p class="text-xs text-base-content/70">
+                        CineCircle Brain needs a pool to work with. Search and add a few titles to your pool, then ask again.
+                      </p>
+                    </div>
+                  </div>
+                `;
+                return;
+            }
+
+            // Show card + animate border glow
+            aiCard.classList.remove("hidden");
+            aiCard.classList.add("ai-brain-enter");
+            aiCard.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            aiStatus.textContent = "Reading your room's vibe...";
+            aiContent.innerHTML = `
+            <div class="flex flex-col gap-2 py-2">
+              <div class="flex items-center gap-2">
+                <span class="loading loading-dots loading-sm text-primary"></span>
+                <span class="text-xs text-base-content/70">
+                  Analyzing chat, pool, and time of day...
+                </span>
+              </div>
+              <!-- ✅ Brainwave loading bar -->
+    <div class="mt-2 h-8 rounded-full bg-base-300/40 overflow-hidden relative">
+      <div class="absolute inset-0 ai-brain-wave"></div>
+    </div>
+            </div>
+          `;
+
+            try {
+                const result = await getAISuggestion();
+                if (!result) {
+                    aiStatus.textContent = "Something went wrong.";
+                    aiContent.innerHTML = `
+                <div class="flex items-start gap-2 text-xs text-error">
+                  <span>⚠️</span>
+                  <span>AI Brain couldn't generate a suggestion. Try again in a bit.</span>
+                </div>
+              `;
+                    return;
+                }
+
+                aiStatus.textContent = "Tailored pick for this moment";
+
+                const safeTitle = (result.movie || "Unknown").replace(/"/g, "&quot;").replace(/'/g, "\\'");
+                const conf = Number.isFinite(result.confidence) ? result.confidence : 0;
+
+                aiContent.innerHTML = `
+  <div class="flex flex-col gap-2">
+    <div class="flex items-start justify-between gap-3">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <h4 class="font-semibold text-base leading-snug">
+            ${safeTitle}
+          </h4>
+          <span class="badge badge-xs ai-confidence-pill">
+            ${conf}% match
+          </span>
+        </div>
+        <p class="text-xs md:text-sm text-base-content/80 leading-relaxed">
+          ${result.reasoning || "No reasoning provided."}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 pt-2 border-t border-base-300/60 mt-1">
+      <!-- Lock this in -->
+      <button
+        class="btn btn-xs btn-primary gap-1.5 lock-btn"
+        onclick="window.pickMovieByTitle && window.pickMovieByTitle('${safeTitle}')">
+        <span class="relative inline-flex items-center justify-center">
+          <svg class="w-3.5 h-3.5 lock-icon" viewBox="0 0 24 24" fill="none"
+               xmlns="http://www.w3.org/2000/svg">
+            <rect x="5" y="10" width="14" height="10" rx="2"
+                  class="lock-body" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M9 10V8a3 3 0 0 1 6 0v2"
+                  class="lock-shackle" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Lock this in</span>
+      </button>
+
+      <!-- Not feeling it -->
+      <button
+        class="btn btn-xs btn-ghost gap-1.5 text-xs not-feeling-btn"
+        onclick="document.getElementById('aiSuggestionCard')?.classList.add('hidden')">
+        <svg class="w-3.5 h-3.5 nf-icon" viewBox="0 0 24 24" fill="none"
+             xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="8"
+                  stroke="currentColor" stroke-width="1.6" opacity="0.8"/>
+          <path d="M9 9h.01M15 9h.01" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round"/>
+          <path d="M9 15c.7-.7 1.6-1.1 3-1.1 1.4 0 2.3.4 3 1.1"
+                stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 7l10 10" stroke="currentColor" stroke-width="1.4"
+                stroke-linecap="round" class="nf-slash"/>
+        </svg>
+        <span>Not feeling it</span>
+      </button>
+    </div>
+
+    <!-- ✅ Explainability footer goes here -->
+    <div class="mt-2 pt-1 border-t border-dashed border-base-300/60">
+      <p class="text-[10px] text-base-content/60 flex items-center gap-1.5">
+        <span class="inline-flex h-3 w-3 rounded-full bg-gradient-to-tr from-primary/70 via-purple-500/70 to-cyan-400/70 opacity-80"></span>
+        <span>Reasoned from pool, time, chat mood, and your watch history.</span>
+      </p>
+    </div>
+  </div>
+`;
+
+            } catch (err) {
+                console.error(err);
+                aiStatus.textContent = "AI Error";
+                aiContent.innerHTML = `
+              <div class="flex items-start gap-2 text-xs text-error">
+                <span>⚠️</span>
+                <span>AI Brain failed to respond. Check console for details.</span>
+              </div>
+            `;
+            }
+        });
+    }
+
+
+    if (btnCloseAI) {
+        btnCloseAI.addEventListener("click", () => {
+            const aiCard = document.getElementById("aiSuggestionCard");
+            if (!aiCard) return;
+            aiCard.classList.add("hidden");
+        });
+    }
+
+    // Helper to pick the movie if they accept the suggestion
+    window.pickMovieByTitle = (title) => {
+        const movie = state.pool.find(m => m.title === title);
+        if (movie) {
+            // Use your existing openDetails function
+            openDetails(movie.id);
+            toast(`AI picked ${title}!`, 'success');
+        } else {
+            toast('Movie not found in pool', 'error');
+        }
+    };
 
 }
 
